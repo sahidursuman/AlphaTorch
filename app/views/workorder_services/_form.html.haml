@@ -1,0 +1,9 @@
+= simple_nested_form_for([:workorder, @workorder_service]) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = render 'shared/service_fields', {f:f}
+    = f.hidden_field :workorder_id, {value:@workorder.id}
+
+  .form-actions
+    = f.button :submit

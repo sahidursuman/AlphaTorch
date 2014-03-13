@@ -1,0 +1,35 @@
+%h1 Listing payment_details
+
+%table
+  %tr
+    %th Payment date
+    %th Cc processing code
+    %th Check name
+    %th Check number
+    %th Check routing
+    %th Cash subtotal
+    %th Check subtotal
+    %th Cc subtotal
+    %th Invoice
+    %th
+    %th
+    %th
+
+  - @payment_details.each do |payment_detail|
+    %tr
+      %td= payment_detail.payment_date
+      %td= payment_detail.cc_processing_code
+      %td= payment_detail.check_name
+      %td= payment_detail.check_number
+      %td= payment_detail.check_routing
+      %td= payment_detail.cash_subtotal
+      %td= payment_detail.check_subtotal
+      %td= payment_detail.cc_subtotal
+      %td= payment_detail.invoice
+      %td= link_to 'Show', payment_detail
+      %td= link_to 'Edit', edit_payment_detail_path(payment_detail)
+      %td= link_to 'Destroy', payment_detail, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Payment detail', new_payment_detail_path

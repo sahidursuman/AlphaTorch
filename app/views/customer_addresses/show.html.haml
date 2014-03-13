@@ -1,0 +1,27 @@
+%p#notice= notice
+
+%p
+  %b Street address 1:
+  = @customer_address.street_address_1
+%p
+  %b Street address 2:
+  = @customer_address.street_address_2
+%p
+  %b City:
+  = @customer_address.city
+%p
+  %b State:
+  = @customer_address.state
+%p
+  %b Postal code:
+  = @customer_address.postal_code
+%p
+  %b Customer:
+  = @customer_address.customer
+%p
+  %b Description:
+  = @customer_address.description
+
+= link_to 'Edit', edit_customer_address_path(@customer_address)
+\|
+= link_to 'Back', customer_addresses_path

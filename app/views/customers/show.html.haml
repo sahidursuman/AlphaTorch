@@ -1,0 +1,27 @@
+%p#notice= notice
+
+%p
+  %b Status:
+  = @customer.status
+%p
+  %b First name:
+  = @customer.first_name
+%p
+  %b Last name:
+  = @customer.last_name
+%p
+  %b Primary phone:
+  = @customer.primary_phone
+%p
+  %b Secondary phone:
+  = @customer.secondary_phone
+%p
+  %b Email:
+  = @customer.email
+%p
+  %b Description:
+  = @customer.description
+
+= link_to 'Edit', edit_customer_path(@customer)
+\|
+= link_to 'Back', customers_path

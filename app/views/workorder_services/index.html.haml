@@ -1,0 +1,25 @@
+%h1 Listing workorder_services
+
+%table
+  %tr
+    %th Service
+    %th Workorder
+    %th Schedule
+    %th Cost
+    %th
+    %th
+    %th
+
+  - @workorder_services.each do |workorder_service|
+    %tr
+      %td= workorder_service.service
+      %td= workorder_service.workorder
+      %td= workorder_service.schedule
+      %td= workorder_service.cost
+      %td= link_to 'Show', workorder_workorder_service_path(@workorder, workorder_service)
+      %td= link_to 'Edit', edit_workorder_workorder_service_path(@workorder, workorder_service)
+      %td= link_to 'Destroy', workorder_workorder_service_path(@workorder, workorder_service), :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Workorder service', new_workorder_workorder_service_path

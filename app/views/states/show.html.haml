@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b Country:
+  = @state.country
+%p
+  %b Name:
+  = @state.name
+%p
+  %b Short name:
+  = @state.short_name
+
+= link_to 'Edit', edit_state_path(@state)
+\|
+= link_to 'Back', states_path

@@ -1,0 +1,24 @@
+= nested_form_for @workorder, :html => { :class => 'form-vertical' } do |f|
+  - if @customer_property
+    = f.hidden_field :customer_property_id, value: @customer_property.id
+  .row
+    %fieldset.col-md-6
+      .row
+        .col-md-8
+          = f.text_field :name, placeholder: 'Name for work order', class:'form-control'
+      .row
+        .col-md-5
+          = f.text_field :start_date, placeholder:'Start date for work order', class:'form-control'
+  .row
+    .col-md-12
+      .row.page-header{style:'margin-top:30px;'}
+        = 'Work Order Services'
+  .row
+    .col-md-4
+      = f.fields_for :workorder_services do |ws|
+        = render partial: 'shared/service_fields', locals:{f:ws, service:ws.object.service}
+      = f.link_to_add 'Add A New Service', :workorder_services, class:'btn btn-sm btn-default'
+  .row
+    .form-actions
+      = f.button :submit, :class => 'btn-primary submit'
+      = link_to t('.cancel', :default => t("helpers.links.cancel")), workorders_path, :class => 'btn'

@@ -1,0 +1,10 @@
+= simple_form_for(@event_service) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.association :service
+    = f.association :event
+    = f.input :cost
+
+  .form-actions
+    = f.button :submit

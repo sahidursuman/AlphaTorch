@@ -1,0 +1,43 @@
+- model_class = Workorder
+.page-header
+  %h1=t '.title', :default => model_class.model_name.human.titleize
+
+%p
+  %strong= model_class.human_attribute_name(:name) + ':'
+  %br
+  = @workorder.name
+
+%p
+  %strong= model_class.human_attribute_name(:start_date) + ':'
+  %br
+  = @workorder.start_date
+
+%p
+  %strong Upcoming Events:
+  %br
+  - @workorder.workorder_services.each do |ws|
+    = "#{ws.service.name} - #{ws.converted_schedule.next_occurrence.strftime('%m/%d/%Y') rescue 'N/A'}"
+    %br
+
+- if @workorder.services.any?
+  %h5.page-header Services
+  .row
+    .span12
+      %table.table.table-striped
+        %tr
+          %th Service
+          %th Cost
+          %th Schedule
+        - @workorder.workorder_services.each do |ws|
+          %tr
+            %td= ws.service.name
+            %td= humanized_money_with_symbol(ws.cost)
+            %td= ws.converted_schedule
+- else
+  %h5.page-header No Services
+
+
+.form-actions
+  = link_to t('.back', :default => t("helpers.links.back")), workorders_path, :class => 'btn'
+  = link_to t('.edit', :default => t("helpers.links.edit")), edit_workorder_path(@workorder), :class => 'btn'
+  = link_to t('.destroy', :default => t("helpers.links.destroy")), workorder_path(@workorder), :method => "delete", :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger'

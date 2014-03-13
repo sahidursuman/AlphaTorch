@@ -1,0 +1,27 @@
+%p#notice= notice
+
+%p
+  %b Status:
+  = Status.get_status(@event.status_code).upcase
+%p
+  %b Workorder:
+  = @event.workorder.name
+%p
+  %b Event Date:
+  = @event.start
+%p
+  %b Name:
+  = @event.name
+
+- if @event.event_services.any?
+  %h5 Services
+  - @event.event_services.each do |es|
+    = es.service.name
+    %br
+- else
+  %h5.page-header No Services
+
+%br
+= link_to 'Edit', edit_event_path(@event), class:' btn btn-small btn-default'
+= link_to 'Delete', event_path(@event), method: 'delete', data:{confirm:'Are You Sure?'}, class:' btn btn-small btn-danger'
+

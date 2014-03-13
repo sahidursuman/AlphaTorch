@@ -1,0 +1,16 @@
+= simple_form_for(@payment_detail) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :payment_date
+    = f.input :cc_processing_code
+    = f.input :check_name
+    = f.input :check_number
+    = f.input :check_routing
+    = f.input :cash_subtotal
+    = f.input :check_subtotal
+    = f.input :cc_subtotal
+    = f.association :invoice
+
+  .form-actions
+    = f.button :submit

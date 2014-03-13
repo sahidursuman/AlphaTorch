@@ -1,0 +1,23 @@
+%h1 Listing customer_properties
+
+%table
+  %tr
+    %th Customer
+    %th Property
+    %th Owner
+    %th
+    %th
+    %th
+
+  - @customer_properties.each do |customer_property|
+    %tr
+      %td= customer_property.customer
+      %td= customer_property.property
+      %td= customer_property.owner
+      %td= link_to 'Show', customer_property
+      %td= link_to 'Edit', edit_customer_property_path(customer_property)
+      %td= link_to 'Destroy', customer_property, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Customer property', new_customer_property_path

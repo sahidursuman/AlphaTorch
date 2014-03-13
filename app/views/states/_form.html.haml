@@ -1,0 +1,10 @@
+= simple_form_for(@state) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.association :country
+    = f.input :name
+    = f.input :short_name
+
+  .form-actions
+    = f.button :submit

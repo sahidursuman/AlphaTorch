@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b Customer:
+  = @customer_property.customer
+%p
+  %b Property:
+  = @customer_property.property
+%p
+  %b Owner:
+  = @customer_property.owner
+
+= link_to 'Edit', edit_customer_property_path(@customer_property)
+\|
+= link_to 'Back', customer_properties_path

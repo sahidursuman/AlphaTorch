@@ -1,0 +1,31 @@
+%h1 Listing customer_addresses
+
+%table
+  %tr
+    %th Street address 1
+    %th Street address 2
+    %th City
+    %th State
+    %th Postal code
+    %th Customer
+    %th Description
+    %th
+    %th
+    %th
+
+  - @customer_addresses.each do |customer_address|
+    %tr
+      %td= customer_address.street_address_1
+      %td= customer_address.street_address_2
+      %td= customer_address.city
+      %td= customer_address.state
+      %td= customer_address.postal_code
+      %td= customer_address.customer
+      %td= customer_address.description
+      %td= link_to 'Show', customer_address
+      %td= link_to 'Edit', edit_customer_address_path(customer_address)
+      %td= link_to 'Destroy', customer_address, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Customer address', new_customer_address_path

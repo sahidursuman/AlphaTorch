@@ -1,0 +1,14 @@
+.row
+  .col-md-12.h4
+    %u='Workorders'
+
+%table.table
+  - @property.current_customer_property.workorders.each do |workorder|
+    %tr
+      %td= workorder.name
+      %td= workorder.status_name
+      %td
+        %a{class:'btn btn-xs btn-default view_workorder_details',
+              id:"wo_#{workorder.id}",
+            href:'#'}
+          View Details

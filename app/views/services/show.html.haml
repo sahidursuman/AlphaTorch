@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @service.name
+%p
+  %b Base cost:
+  = @service.base_cost
+
+= link_to 'Edit', edit_service_path(@service)
+\|
+= link_to 'Back', services_path

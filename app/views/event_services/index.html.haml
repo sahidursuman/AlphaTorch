@@ -1,0 +1,24 @@
+%h1 Listing event_services
+
+%table
+  %tr
+    %th Service
+    %th Event
+    %th Event date
+    %th Invoice
+    %th
+    %th
+    %th
+
+  - @event_services.each do |event_service|
+    %tr
+      %td= event_service.service.name
+      %td= event_service.event.name
+      %td= event_service.cost
+      %td= link_to 'Show', event_event_service_path(@event,event_service)
+      %td= link_to 'Edit', edit_event_event_service_path(@event,event_service)
+      %td= link_to 'Destroy', event_event_service_path(@event,event_service), :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Event service', new_event_event_service_path

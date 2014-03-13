@@ -1,0 +1,18 @@
+%p#notice= notice
+
+%p
+  %b Service:
+  = @workorder_service.service
+%p
+  %b Workorder:
+  = @workorder_service.workorder
+%p
+  %b Schedule:
+  = @workorder_service.schedule
+%p
+  %b Cost:
+  = @workorder_service.cost
+
+= link_to 'Edit', edit_workorder_workorder_service_path(@workorder,@workorder_service)
+\|
+= link_to 'Back', workorder_workorder_services_path

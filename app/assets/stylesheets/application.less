@@ -1,0 +1,85 @@
+/*
+ * This is a manifest file that'll automatically include all the stylesheets available in this directory
+ * and any sub-directories. You're free to add application-wide styles to this file and they'll appear at
+ * the top of the compiled file, but it's generally better to create a new file per style scope.
+ *= require_self
+ *= require recurring_select
+ *= require fullcalendar
+ *= require jquery.ui.all
+ *= require_tree ./components
+ *= require custom_bootstrap/custom_bootstrap
+ *= require dataTables/jquery.dataTables.bootstrap3
+*/
+
+
+body{
+  padding-top: 60px;
+  background-image: url('/assets/glass.jpg');
+  background-size: 100%;
+  background-repeat: repeat;
+}
+
+form.navbar-form.navbar-left{
+  padding-top: 2px;
+  .search_field{
+    height: 35px;
+    width: 265px;
+  }
+  button{
+    height: 35px;
+    padding: 0px 5px;
+  }
+}
+
+.ui-menu-item a
+{ background: none no-repeat;
+  padding:0;
+  margin:0;
+  display:block;
+  border:0;
+  border-collapse:collapse;
+}
+
+.dropdown-menu{
+  max-height: 250px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+
+.search_field{
+  height: 35px;
+  width: 265px;
+}
+
+#icon-container{
+  text-align: center;
+
+  .desktop-icon{
+    height: 175px;
+    width:  175px;
+    margin: 50px;
+    background: none;
+    border:none;
+
+    &:hover, &:focus{
+      height: 220px;
+      width:  220px;
+      margin: 27px;
+    }
+
+    img{
+      height:inherit;
+      width:inherit;
+    }
+  }
+}
+
+.validation-fail{
+  border-radius: 5px;
+  border: 1px solid red;
+}
+
+.well{
+  background-color: rgba(255,255,255,.95)!important;
+}

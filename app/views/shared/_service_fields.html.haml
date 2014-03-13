@@ -1,0 +1,19 @@
+.row
+  .col-md-12
+    %form{action:search_path, method:'get', remote:'true', role: 'search'}
+      - service_name = service ? service.name : ''
+      - unique = Time.now.to_i
+      %input.search_field.form-control{name:'term', type:'text', placeholder:'Service Name', value:"#{service_name}", autocomplete:'off', id:"service-search_#{unique}"}
+  .col-md-7
+    .service_id= f.hidden_field :service_id
+    .service_cost.input-group
+      .input-group-addon $
+      = f.text_field :cost, placeholder:'Service Cost', class:'form-control'
+  .col-md-5
+    - unless controller_name == 'events'
+      .scheduler= f.select_recurring :schedule, [], {}, class:'form-control', allow_blank: true
+  .col-md-12
+    -unless controller_name == 'workorder_services'
+      .remove_service= f.link_to_remove((remove_link('REMOVE SERVICE')),
+        data:{confirm:"This will remove this service from all future events for this #{controller_name.singularize}. Refresh page BEFORE SAVING if you accidentally delete."})
+%hr

@@ -1,0 +1,33 @@
+%p#notice= notice
+
+%p
+  %b Payment date:
+  = @payment_detail.payment_date
+%p
+  %b Cc processing code:
+  = @payment_detail.cc_processing_code
+%p
+  %b Check name:
+  = @payment_detail.check_name
+%p
+  %b Check number:
+  = @payment_detail.check_number
+%p
+  %b Check routing:
+  = @payment_detail.check_routing
+%p
+  %b Cash subtotal:
+  = @payment_detail.cash_subtotal
+%p
+  %b Check subtotal:
+  = @payment_detail.check_subtotal
+%p
+  %b Cc subtotal:
+  = @payment_detail.cc_subtotal
+%p
+  %b Invoice:
+  = @payment_detail.invoice
+
+= link_to 'Edit', edit_payment_detail_path(@payment_detail)
+\|
+= link_to 'Back', payment_details_path

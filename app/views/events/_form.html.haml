@@ -1,0 +1,26 @@
+= simple_nested_form_for @event, :html => { :class => 'form-vertical' } do |f|
+  = f.error_notification
+  .row
+    .span6
+      .row
+        .event_workorder
+          = f.input :workorder_id, collection: Workorder.all, value_method: :id, label_method: :name
+      .row
+        .event_name.input-prepend
+          .add-on Name
+          = f.text_field :name, placeholder: 'Name for event'
+      .row
+        .start.input-prepend
+          .add-on Date
+          = f.text_field :start, placeholder:'Date for event'
+  .row
+    .span12
+      %h5.row.page-header{style:'margin-top:30px;'} Event Services
+      .row
+        = f.fields_for :event_services do |es|
+          = render 'shared/service_fields', {f:es}
+    = f.link_to_add 'Add A New Service', :event_services
+  .row
+    .form-actions
+      = f.button :submit, :class => 'btn-primary'
+      = link_to t('.cancel', :default => t("helpers.links.cancel")), events_path, :class => 'btn'

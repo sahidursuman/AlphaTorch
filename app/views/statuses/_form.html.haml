@@ -1,0 +1,9 @@
+= simple_form_for(@status) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :status_code
+    = f.input :status
+
+  .form-actions
+    = f.button :submit

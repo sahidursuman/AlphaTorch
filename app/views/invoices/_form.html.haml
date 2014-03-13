@@ -1,0 +1,12 @@
+= simple_form_for(@invoice) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.association :invoice_status
+    = f.input :invoice_date
+    = f.input :due_date
+    = f.input :invoice_amount
+    = f.input :balance_due
+
+  .form-actions
+    = f.button :submit

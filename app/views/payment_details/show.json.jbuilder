@@ -1,0 +1,1 @@
+json.extract! @payment_detail, :id, :payment_date, :cc_processing_code, :check_name, :check_number, :check_routing, :cash_subtotal, :check_subtotal, :cc_subtotal, :invoice_id, :created_at, :updated_at

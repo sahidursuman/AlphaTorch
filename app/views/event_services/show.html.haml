@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b Service:
+  = @event_service.service
+%p
+  %b Event:
+  = @event_service.event
+%p
+  %b Cost:
+  = @event_service.cost
+
+= link_to 'Edit', edit_event_service_path(@event_service)
+\|
+= link_to 'Back', event_services_path

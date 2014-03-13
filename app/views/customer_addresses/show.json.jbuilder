@@ -1,0 +1,1 @@
+json.extract! @customer_address, :id, :street_address_1, :street_address_2, :city, :state_id, :postal_code, :customer_id, :description, :created_at, :updated_at

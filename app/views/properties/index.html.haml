@@ -18,16 +18,4 @@
             %th='Current Owner'
             %th='Services'
             %th='Invoice Amount Due'
-            %th{style:'width:20%;'}='Actions'
         %tbody
-          /- @properties.each do |property|
-          /  %tr
-          /    %td= "#{property.street_address_1 + '<br/>' +  property.street_address_2.to_s + '<br/>' + property.city + ', ' + property.state.short_name + ' ' + property.postal_code}".html_safe
-          /    %td= 'Morgan Watson'
-          /    %td= 'Mow Lawn <br/> Pull Weeds'.html_safe
-          /    %td= '$137.56'
-          /    %td
-          /      .btn-group
-          /        = link_to 'View', property, class:'btn btn-default btn-sm'
-          /        = link_to 'Edit', edit_property_path(property), class:'btn btn-default btn-sm'
-          /        = link_to 'Delete', property_path(property), method: :delete, data:{confirm:'Are you sure?'}, class:'btn btn-danger btn-sm'

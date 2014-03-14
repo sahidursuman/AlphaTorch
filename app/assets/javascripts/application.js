@@ -171,19 +171,25 @@ function notify(notify_type, msg) {
     var div = $('<div></div>')
 
     div.append('<button class="close" data-dismiss="alert" href="#">×</button>');
-    div.append('<p>'+msg+'</p>')
 
     if (notify_type == 'success') {
+        div.append('<div class="h4">How about that?! It worked!!! '+msg+'</div>')
         div.addClass('alert alert-success').fadeIn('fast');
     }
 
     if (notify_type == 'error') {
+        div.append('<div class="h4">Oops! There was an error processing your request!</div>')
+        div.append('<div class="h4">'+msg+'</div>')
         div.addClass('alert alert-danger').fadeIn('fast');
     }
 
     alerts.append(div)
 
     $('.alert').delay(10000).fadeOut(5000)
+}
+
+function parse_json_message(jqXHR){
+    return $.parseJSON(jqXHR)[0]['message']
 }
 
 function parse_json_errors(jqXHR){

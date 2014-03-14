@@ -55,7 +55,7 @@ class Invoice < ActiveRecord::Base
         payment.check_subtotal = payment_amount
     end
 
-    payment.save if payment.valid? else false
+    payment.save
 
   end
 

@@ -1,7 +1,19 @@
-= form_for @property_form, method: :post, remote:true do |f|
+- case controller_action
+  - when 'properties#index'
+    - form_method = :post
+    - url = '/properties'
+    - submit_button_text = 'Create New Property'
+    - id = 'new_property'
+  - when 'properties#edit'
+    - form_method = :put
+    - url = "/properties/#{@property.id}"
+    - submit_button_text = 'Update This Property'
+    - id = 'edit_property'
+
+= form_for @property_form, method: form_method, url: url, remote:true, html:{id: id} do |f|
   .row
     %fieldset.col-md-6
-      %legend Property Information
+      %legend.h4 Property Information
 
       .col-md-12.street_address_1
         = f.text_field :street_address_1, placeholder: 'Enter the property\'s address...', class:'form-control', autocomplete:'off'
@@ -14,30 +26,12 @@
       .col-md-6.postal_code
         = f.text_field :postal_code, :required => false, placeholder:'Postal Code', class:'form-control', autocomplete:'off'
       .col-md-12
-        = f.submit 'Create New Property', class:'btn btn-md btn-success'
+        = f.submit submit_button_text, class:'btn btn-md btn-success'
 
-    %fieldset#customer-information.col-md-6
-      %legend Customer Information
+    - case controller_action
+      - when 'properties#index'
+        = render 'customer_form_new', {f:f}
+      - when 'properties#edit'
+        = render 'customer_form_edit', {f:f}
+        = javascript_include_tag 'properties'
 
-      .col-md-12{style:'margin-top:0px;'}
-        #customer-toggle.btn-group.btn-group-sm{data:{toggle:'buttons'}}
-          %label.btn.btn-default
-            %input#new-customer.active{type:'radio', name:'customer_toggle'}New Customer
-          %label.btn.btn-default
-            %input#existing-customer{type:'radio', name:'customer_toggle'}Existing Customer
-      .new-customer.toggle-group
-        .col-md-8.first_name
-          = f.text_field :first_name, placeholder:'First Name', class:'form-control', autocomplete:'off'
-        .col-md-4.middle_initial
-          = f.text_field :middle_initial, placeholder:'Middle', class:'form-control', autocomplete:'off'
-        .col-md-10.last_name
-          = f.text_field :last_name, placeholder:'Last Name', class:'form-control', autocomplete:'off'
-        .col-md-6.primary_phone
-          = f.text_field :primary_phone, placeholder:'Primary Phone', class:'form-control', autocomplete:'off'
-        .col-md-6.secondary_phone
-          = f.text_field :secondary_phone, placeholder:'Secondary', class:'form-control', autocomplete:'off'
-      .existing-customer.toggle-group{style:'display:none'}
-        .col-md-12
-          %form{action:search_path, method:'get', remote:'true', role: 'search', style:'margin-top:0px;'}
-            %input#customer-search.search_field.form-control{name:'term', type:'text', placeholder:'Search...', autocomplete:'off', style:'width:inherit'}
-          %input#customer-id.customer_id{name:'property[customer_id]', type:'hidden'}

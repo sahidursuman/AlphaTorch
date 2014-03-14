@@ -9,5 +9,7 @@ class CreateProperties < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index :properties, [:street_address_1, :street_address_2, :city, :state_id], unique: true, name: 'unique_address'
   end
 end

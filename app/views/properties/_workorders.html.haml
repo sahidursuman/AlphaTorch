@@ -1,14 +1,14 @@
-.row
-  .col-md-12.h4
-    %u='Workorders'
-
-%table.table
-  - @property.current_customer_property.workorders.each do |workorder|
-    %tr
-      %td= workorder.name
-      %td= workorder.status_name
-      %td
-        %a{class:'btn btn-xs btn-default view_workorder_details',
-              id:"wo_#{workorder.id}",
-            href:'#'}
-          View Details
+%table#workorders.table
+  %caption
+    Workorders
+    = link_to content_tag(:i, nil, {class:'glyphicon glyphicon-plus pull-right', style:'color:green;'}), new_workorder_path(customer_property_id: @property.current_customer_property), remote:true
+  - if @property.workorders
+    %thead
+      %tr
+        %th.h5='Name'
+        %th.h5='Status'
+    %tbody
+      - @property.workorders.each do |workorder|
+        %tr
+          %td.h6= link_to workorder.name, workorder
+          %td.h6= workorder.status_name

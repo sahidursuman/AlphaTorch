@@ -105,6 +105,8 @@ ActiveRecord::Schema.define(:version => 20140309210417) do
     t.datetime "updated_at",       :null => false
   end
 
+  add_index "properties", ["street_address_1", "street_address_2", "city", "state_id"], :name => "unique_address", :unique => true
+
   create_table "services", :force => true do |t|
     t.string   "name"
     t.integer  "base_cost"
@@ -157,7 +159,7 @@ ActiveRecord::Schema.define(:version => 20140309210417) do
   create_table "workorders", :force => true do |t|
     t.string   "name"
     t.date     "start_date"
-    t.integer  "status_code",          :default => 1000
+    t.integer  "status_code",          :default => 1011
     t.datetime "created_at",                             :null => false
     t.datetime "updated_at",                             :null => false
     t.integer  "customer_property_id"

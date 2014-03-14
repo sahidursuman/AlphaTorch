@@ -18,12 +18,21 @@ class WorkordersController < ApplicationController
     if params[:customer_property_id]
       @customer_property = CustomerProperty.find(params[:customer_property_id])
     else
-      redirect_to properties_path
+      #redirect_to properties_path
+    end
+
+    respond_to do |format|
+      format.html
+      format.js
     end
   end
 
   # GET /workorders/1/edit
   def edit
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   # POST /workorders

@@ -1,28 +1,36 @@
 .row
-  .col-md-4
+  .col-md-5
     .row
       .col-md-12
-        .h3= @property.street_address_1
+        #id{style:'display:none'}= @property.id
+        .h4= @property.street_address_1
         - if @property.street_address_2
-          .h4= @property.street_address_2
+          .h6= @property.street_address_2
         .h6= @property.city + ', ' + @property.state.short_name + ' ' + @property.postal_code
     .row
       .col-md-12
-        = link_to 'Edit', edit_property_path(@property), class:'btn btn-sm btn-default'
-        = link_to 'New Workorder', new_workorder_path(customer_property_id: @property.current_customer_property), class:'btn btn-sm btn-success'
+        = link_to 'Edit', edit_property_path(@property), class:'btn btn-sm btn-default', remote:true
+        = link_to 'Back To Properties', properties_path, class:'btn btn-sm btn-default'
+    .row{style:'margin-top:10px;'}
+      .col-md-12
+        = link_to 'Delete', property_path(@property), class:'btn btn-xs btn-danger', method: :delete, confirm: 'Are You Sure?'
 
-  .col-md-7.col-md-offset-1
+  .col-md-6.col-md-offset-1
     .row
       .col-md-12
-        .h4= "Invoice Amount Due:&nbsp;&nbsp;&nbsp;#{humanized_money_with_symbol(@property.balance_due)}".html_safe
+        .h4= "Invoice Amount Due:&nbsp;&nbsp;&nbsp;#{humanized_money_with_symbol(@property.balance_due || 0)}".html_safe
     .row
       .col-md-4
         .h6{style:'margin-left:-40px;'}
           %ul{style:'list-style-type:none'}
             %li.h4
               %u='Services'
-            - @property.services.each do |service|
-              %li.h6= service.name
+            - if @property.services
+              - @property.services.each do |service|
+                %li.h6= service.name
+            - else
+              %li.h6= 'None'
+
       .col-md-8
         .h4
           %u='Currently Owned By'

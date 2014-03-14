@@ -6,11 +6,15 @@ class Property < ActiveRecord::Base
   has_many :customers, through: :customer_properties
 
   def to_data_table_row
-    [html_full_address, current_owner_name, html_services, humanized_money_with_symbol(balance_due), links]
+    [html_full_address, current_owner_name, html_services, humanized_money_with_symbol(balance_due || 0)]
   end
 
   def html_full_address
-    "#{street_address_1 + '<br/>' + (street_address_2.to_s=='' ? '' : street_address_2.to_s + '<br/>') + city + ', ' + state.short_name + ' ' + postal_code}".html_safe
+    link_to "#{street_address_1 +
+     '<br/>' +
+     (street_address_2.to_s=='' ? '' : street_address_2.to_s + '<br/>') +
+     city + ', ' + state.short_name + ' ' + postal_code}
+    ".html_safe, Rails.application.routes.url_helpers.property_path(self)
   end
 
   def current_customer_property
@@ -21,8 +25,12 @@ class Property < ActiveRecord::Base
     current_customer_property ? current_customer_property.customer.name : 'No Owner'
   end
 
+  def workorders
+    current_customer_property.try(:workorders)
+  end
+
   def html_services
-    if services && !services.empty?
+    unless services.nil? || services.try(:empty?)
       services.map(&:name).join('<br/>').html_safe
     else
       'No Services'
@@ -30,47 +38,25 @@ class Property < ActiveRecord::Base
   end
 
   def services
-    if current_customer_property
-      current_customer_property.workorders.map do |wo|
-        wo.workorder_services.map do |wos|
-          wos.service
-        end
-      end.flatten
-    else
-      nil
+    if workorders
+      workorders.map(&:workorder_services).flatten.map(&:service).flatten
     end
+  end
+
+  def invoices
+    workorders.map(&:invoices).compact.flatten if workorders
   end
 
   def unpaid_invoices
-    if current_customer_property
-      current_customer_property.workorders.map do |wo|
-        if wo.invoices
-          wo.invoices.map do |invoice|
-            invoice if invoice.unpaid?
-          end
-        else
-          []
-        end
-      end.flatten
-    else
-      nil
-    end
+    invoices.map{|invoice| invoice if invoice.unpaid?} if invoices
   end
 
   def balance_due
-    if unpaid_invoices && !unpaid_invoices.empty?
-      unpaid_invoices.map(&:balance_due).sum
-    else
-      0
-    end
+    unpaid_invoices.map(&:balance_due).sum if unpaid_invoices
   end
 
   def links
-    '<div class="btn-group btn-group-xs">' +
-    "#{link_to('View',   Rails.application.routes.url_helpers.property_path(self), class: 'btn btn-default')}" +
-    "#{link_to('Edit',   Rails.application.routes.url_helpers.edit_property_path(self), class: 'btn btn-default')}" +
-    "#{link_to('Delete', Rails.application.routes.url_helpers.property_path(self), method: :delete, confirm: 'Are You Sure?', class: 'btn btn-danger')}" +
-    '</div>'.html_safe
+    "#{link_to('View', Rails.application.routes.url_helpers.property_path(self), class: 'btn btn-default btn-sm')}".html_safe
   end
 
 end

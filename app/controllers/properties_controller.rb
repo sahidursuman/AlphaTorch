@@ -1,5 +1,6 @@
 class PropertiesController < ApplicationController
-  before_filter :set_property, only: [:show, :edit, :update, :destroy]
+  before_filter :set_property, only: [:show, :edit, :update, :destroy, :refresh_profile]
+  before_filter :set_property_form, except: [:destroy]
 
   # GET /properties
   # GET /properties.json
@@ -15,12 +16,14 @@ class PropertiesController < ApplicationController
 
   # GET /properties/new
   def new
-    @property_form = NewPropertyForm.new
   end
 
   # GET /properties/1/edit
   def edit
-    @property_form = NewPropertyForm.new(@property)
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   # POST /properties
@@ -32,9 +35,10 @@ class PropertiesController < ApplicationController
       if @property_form.submit(params[:property])
         format.html { redirect_to properties_path, notice: 'Property was successfully created.' }
         format.json { render action: 'index', status: :created, location: properties_path }
-        format.js   { render json: [{customer:@property_form.customer},
-                                    {property:@property_form.property},
-                                    {customer_property:@property_form.customer_property}
+        format.js   { render json: [message:'Property successfully created!',
+                                    customer:@property_form.customer,
+                                    property:@property_form.property,
+                                    customer_property:@property_form.customer_property
                                    ], status: :created, location: properties_path}
       else
         format.html { render action: 'index' , error: 'An error prevented the property from being created.'}
@@ -48,12 +52,14 @@ class PropertiesController < ApplicationController
   # PATCH/PUT /properties/1.json
   def update
     respond_to do |format|
-      if @property.update(property_params)
+      if @property_form.update_attributes(params[:property])
         format.html { redirect_to @property, notice: 'Property was successfully updated.' }
         format.json { head :no_content }
+        format.js   { render json: [message:'Property successfully updated!'] }
       else
         format.html { render action: 'edit' }
-        format.json { render json: @property.errors, status: :unprocessable_entity }
+        format.json { render json: @property_form.errors, status: :unprocessable_entity }
+        format.js   { render json: @property_form.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -65,6 +71,7 @@ class PropertiesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to properties_url }
       format.json { head :no_content }
+      format.js   { render nothing: true}
     end
   end
 
@@ -75,10 +82,26 @@ class PropertiesController < ApplicationController
     end
   end
 
+  def refresh_profile
+    respond_to do |format|
+      format.js {render partial:'profile'}
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_property
       @property = Property.find(params[:id])
+    end
+
+    def set_property_form
+      if @property
+        @customer_property = @property.current_customer_property
+        @customer          = @customer_property.try(:customer)
+        @property_form     = NewPropertyForm.new({property:@property, customer_property:@customer_property, customer:@customer})
+      else
+        @property_form     = NewPropertyForm.new
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

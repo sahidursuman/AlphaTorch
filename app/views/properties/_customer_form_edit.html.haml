@@ -1,0 +1,38 @@
+%fieldset#customer-information.col-md-6
+  %legend.h4 Customer Information
+
+  .col-md-12{style:'margin-top:0px;'}
+    #customer-toggle.btn-group.btn-group-sm{data:{toggle:'buttons'}}
+      %label.btn.btn-default
+        %input#current-customer{type:'radio', name:'customer_toggle', class:'active'}Current Customer
+      %label.btn.btn-default
+        %input#new-customer{type:'radio', name:'customer_toggle', class:'active'}New Customer
+      %label.btn.btn-default
+        %input#existing-customer{type:'radio', name:'customer_toggle'}Existing Customer
+  .current-customer.toggle-group
+    .col-md-8.first_name
+      = f.text_field :first_name, placeholder:'First Name', class:'form-control', autocomplete:'off', readonly: true
+    .col-md-4.middle_initial
+      = f.text_field :middle_initial, placeholder:'Middle', class:'form-control', autocomplete:'off', readonly: true
+    .col-md-10.last_name
+      = f.text_field :last_name, placeholder:'Last Name', class:'form-control', autocomplete:'off', readonly: true
+    .col-md-6.primary_phone
+      = f.text_field :primary_phone, placeholder:'Primary Phone', class:'form-control', autocomplete:'off', readonly: true
+    .col-md-6.secondary_phone
+      = f.text_field :secondary_phone, placeholder:'Secondary', class:'form-control', autocomplete:'off', readonly: true
+  .new-customer.toggle-group{style:'display:none'}
+    .col-md-8.first_name
+      = f.text_field :new_first_name, placeholder:'First Name', class:'form-control', autocomplete:'off'
+    .col-md-4.middle_initial
+      = f.text_field :new_middle_initial, placeholder:'Middle', class:'form-control', autocomplete:'off'
+    .col-md-10.last_name
+      = f.text_field :new_last_name, placeholder:'Last Name', class:'form-control', autocomplete:'off'
+    .col-md-6.primary_phone
+      = f.text_field :new_primary_phone, placeholder:'Primary Phone', class:'form-control', autocomplete:'off'
+    .col-md-6.secondary_phone
+      = f.text_field :new_secondary_phone, placeholder:'Secondary', class:'form-control', autocomplete:'off'
+  .existing-customer.toggle-group{style:'display:none'}
+    .col-md-12
+      %form{action:search_path, method:'get', remote:'true', role: 'search', style:'margin-top:0px;'}
+        %input#customer-search.search_field.form-control{name:'term', type:'text', placeholder:'Search...', autocomplete:'off', style:'width:inherit'}
+      %input#customer-id.customer_id{name:'property[customer_id]', type:'hidden'}

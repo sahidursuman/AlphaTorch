@@ -47,21 +47,21 @@ Customer.create(
 
 Property.create(
     [
-        {street_address_1:'10688 Hazelhurst Dr', city:'Houston', state:State.first, postal_code:'77043'},
-        {street_address_1:'6625 Whitewing Dr', city:'Corpus Christi', state:State.first, postal_code:'64532'},
-        {street_address_1:'1214 Almond Grove', city:'Houston', state:State.first, postal_code:'77077'},
+        {street_address_1:'10688 Hazelhurst Dr', street_address_2: '', city:'Houston', state:State.first, postal_code:'77043'},
+        {street_address_1:'6625 Whitewing Dr',   street_address_2: '', city:'Corpus Christi', state:State.first, postal_code:'64532'},
+        {street_address_1:'1214 Almond Grove',   street_address_2: '', city:'Houston', state:State.first, postal_code:'77077'},
 
-        {street_address_1:'10683 Hazelnut Dr', city:'Houston', state:State.first, postal_code:'77041'},
-        {street_address_1:'5624 Anthony St', city:'San Antonio', state:State.first, postal_code:'64532'},
-        {street_address_1:'1734 Nutmeg Ave', city:'Houston', state:State.first, postal_code:'77074'},
+        {street_address_1:'10683 Hazelnut Dr', street_address_2: '', city:'Houston', state:State.first, postal_code:'77041'},
+        {street_address_1:'5624 Anthony St',   street_address_2: '', city:'San Antonio', state:State.first, postal_code:'64532'},
+        {street_address_1:'1734 Nutmeg Ave',   street_address_2: '', city:'Houston', state:State.first, postal_code:'77074'},
 
-        {street_address_1:'10690 Hazelhurst Dr', city:'Houston', state:State.first, postal_code:'77035'},
-        {street_address_1:'66342 Western Dr', city:'Corpus Christi', state:State.first, postal_code:'64532'},
-        {street_address_1:'4324 Cherry Grove', city:'Houston', state:State.first, postal_code:'77077'},
+        {street_address_1:'10690 Hazelhurst Dr', street_address_2: '', city:'Houston', state:State.first, postal_code:'77035'},
+        {street_address_1:'66342 Western Dr',    street_address_2: '', city:'Corpus Christi', state:State.first, postal_code:'64532'},
+        {street_address_1:'4324 Cherry Grove',   street_address_2: '', city:'Houston', state:State.first, postal_code:'77077'},
 
-        {street_address_1:'10846 Duncan Dr', city:'Houston', state:State.first, postal_code:'77143'},
-        {street_address_1:'66545 Shipley Dr', city:'Corpus Christi', state:State.first, postal_code:'64732'},
-        {street_address_1:'1434 Hungry Ave', city:'Houston', state:State.first, postal_code:'77097'}
+        {street_address_1:'10846 Duncan Dr',  street_address_2: '', city:'Houston', state:State.first, postal_code:'77143'},
+        {street_address_1:'66545 Shipley Dr', street_address_2: '', city:'Corpus Christi', state:State.first, postal_code:'64732'},
+        {street_address_1:'1434 Hungry Ave',  street_address_2: '', city:'Houston', state:State.first, postal_code:'77097'}
     ]
 )
 
@@ -74,3 +74,24 @@ CustomerProperty.create(
     ]
 
 )
+
+Workorder.create(
+    [
+        {name:'Workorder #1', start_date:'2014-03-01', customer_property: CustomerProperty.find(2)},
+        {name:'Workorder #2', start_date:'2014-03-01', customer_property: CustomerProperty.find(2)},
+        {name:'Workorder #3', start_date:'2014-03-01', customer_property: CustomerProperty.find(3)},
+        {name:'Workorder #4', start_date:'2014-03-01', customer_property: CustomerProperty.find(4)},
+    ]
+)
+
+WorkorderService.create(
+    [
+        {service_id: 1, workorder_id: 1, schedule: {:validations=>{}, :rule_type=>'IceCube::DailyRule', :interval=>1}, cost: 10},
+        {service_id: 2, workorder_id: 1, schedule: {:validations=>{}, :rule_type=>'IceCube::DailyRule', :interval=>1}, cost: 15},
+        {service_id: 3, workorder_id: 2, schedule: {:validations=>{}, :rule_type=>'IceCube::DailyRule', :interval=>1}, cost: 150},
+        {service_id: 1, workorder_id: 3, schedule: {:validations=>{}, :rule_type=>'IceCube::DailyRule', :interval=>1}, cost: 10},
+        {service_id: 2, workorder_id: 4, schedule: {:validations=>{}, :rule_type=>'IceCube::DailyRule', :interval=>1}, cost: 10}
+    ]
+)
+Workorder.all.each(&:save)
+

@@ -5,4 +5,8 @@ module ApplicationHelper
       concat(content_tag(:i, nil, class:'glyphicon glyphicon-remove', style:'margin-right:5px;') + msg)
     end
   end
+
+  def controller_action
+    controller_name + '#' + params[:action]
+  end
 end

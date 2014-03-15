@@ -1,1 +1,21 @@
+.row
+  .col-md-8.form
+    .well
+      = render 'form'
+  .col-md-4
+    .well
+      = render 'overview'
 
+.row
+  .col-md-12
+    .well
+      %table#customers.table.table-hover.datatable
+        %thead
+          %tr
+            %th='Name'
+            %th='Phone'
+            %th='Alt. Phone'
+            %th='Email'
+            %th='Properties'
+            %th='Balance Due'
+        %tbody

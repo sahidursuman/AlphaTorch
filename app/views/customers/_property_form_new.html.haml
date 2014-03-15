@@ -1,0 +1,25 @@
+%fieldset#property-information.col-md-6
+  %legend.h4 Property Information
+
+  .col-md-12{style:'margin-top:0px;'}
+    #property-toggle.btn-group.btn-group-sm{data:{toggle:'buttons'}}
+      %label.btn.btn-default
+        %input#new-property.active{type:'radio', name:'property_toggle'}New Property
+      %label.btn.btn-default
+        %input#existing-property{type:'radio', name:'customer_toggle'}Existing Property
+  .new-property.toggle-group
+    .col-md-12.street_address_1
+      = f.text_field :street_address_1, placeholder: 'Enter the property\'s address...', class:'form-control', autocomplete:'off'
+    .col-md-5.street_address_2
+      = f.text_field :street_address_2, placeholder:'Apt., PO Box, etc..', class:'form-control', autocomplete:'off'
+    .col-md-8.city
+      = f.text_field :city, :required => false, placeholder:'City', class:'form-control', autocomplete:'off'
+    .col-md-4
+      = f.collection_select :state_id, State.all, :id, :short_name, {}, class:'form-control', autocomplete:'off'
+    .col-md-6.postal_code
+      = f.text_field :postal_code, :required => false, placeholder:'Postal Code', class:'form-control', autocomplete:'off'
+  .existing-property.toggle-group{style:'display:none'}
+    .col-md-12
+      %form{action:search_path, method:'get', remote:'true', role: 'search', style:'margin-top:0px;'}
+        %input#property-search.search_field.form-control{name:'term', type:'text', placeholder:'Search...', autocomplete:'off', style:'width:inherit'}
+      %input#property-id.property_id{name:'customer[property_id]', type:'hidden'}

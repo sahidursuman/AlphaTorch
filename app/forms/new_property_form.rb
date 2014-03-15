@@ -10,12 +10,15 @@ class NewPropertyForm
   delegate :street_address_1,:street_address_2,:city,:state_id,:postal_code, to: :property
   delegate :first_name,:middle_initial,:last_name,:primary_phone,:secondary_phone,:email, to: :customer
 
-  attr :customer_id,:new_first_name,:new_middle_initial,:new_last_name,:new_primary_phone,:new_secondary_phone
+  attr :customer_id,:new_first_name,:new_middle_initial,:new_last_name,:new_email,:new_primary_phone,:new_secondary_phone
 
   validates_presence_of :street_address_1, :city, :state_id, :postal_code
-  #validate  :unique_street_address
-  validates_presence_of :first_name, :last_name, unless: lambda { |x|
-    x.customer_id.present? || x.customer_property.customer_id.present?
+  validate  :unique_email, unless: lambda { |x|
+    x.customer_id.present? || x.customer_property.customer_id.present? || !x.customer.new_record?
+  }
+
+  validates_presence_of :first_name, :last_name, :email, unless: lambda { |x|
+    x.customer_id.present? || x.customer_property.customer_id.present? || !x.customer.new_record?
   }
 
 
@@ -99,6 +102,24 @@ class NewPropertyForm
   end
 
   private
+
+  def customer_exists?(params)
+    if use_existing_customer?(params)
+      @customer = Customer.find(params[:customer_id])
+      return true
+    else
+      Customer.where({email:email}).count > 0
+    end
+  end
+
+  def unique_email
+    if Customer.where(:email => customer.email).exists?
+      errors.add(:email, 'Is Already Taken!')
+      return false
+    else
+      return true
+    end
+  end
 
   #def unique_street_address
   #  p = Property.where(street_address_1: property.street_address_1, city: property.city, state_id: property.state_id)

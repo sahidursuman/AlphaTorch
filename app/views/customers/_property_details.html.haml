@@ -1,0 +1,19 @@
+.row
+  - if @property
+    .col-md-12{style:'height:300px; overflow-y: scroll; overflow-x: hidden;'}
+      .row
+        %table.table.table-hover
+          .col-md-3
+            .h4
+              Property Details
+          .col-md-9
+            .h4
+              Workorder Events
+
+  - else
+    .row
+      %center.col-md-12
+        .h4
+          Click on a property above to view details.
+        .h6
+          (It's time.....click a property please)

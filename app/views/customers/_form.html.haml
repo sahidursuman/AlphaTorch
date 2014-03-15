@@ -1,14 +1,33 @@
-= simple_form_for(@customer) do |f|
-  = f.error_notification
+- case controller_action
+  - when 'customers#index'
+    - form_method = :post
+    - url = '/customers'
+    - submit_button_text = 'Create New Customer'
+    - id = 'new_customer'
+  - when 'customers#edit'
+    - form_method = :put
+    - url = "/customers/#{@customer.id}"
+    - submit_button_text = 'Update This Customer'
+    - id = 'edit_customer'
 
-  .form-inputs
-    = f.association :status
-    = f.input :first_name
-    = f.input :last_name
-    = f.input :primary_phone
-    = f.input :secondary_phone
-    = f.input :email
-    = f.input :description
+= form_for @customer_form, method: form_method, url: url, remote:true, html:{id: id, :'data-type' => :json} do |f|
+  .row
+    %fieldset#customer-information.col-md-6
+      %legend.h4 Customer Information
+      .col-md-8.first_name
+        = f.text_field :first_name, placeholder:'First Name', class:'form-control', autocomplete:'off'
+      .col-md-4.middle_initial
+        = f.text_field :middle_initial, placeholder:'Initial', class:'form-control', autocomplete:'off'
+      .col-md-10.last_name
+        = f.text_field :last_name, placeholder:'Last Name', class:'form-control', autocomplete:'off'
+      .col-md-12.email
+        = f.text_field :email, placeholder: 'Email', class:'form-control', autocomplete:'off'
+      .col-md-6.primary_phone
+        = f.text_field :primary_phone, placeholder:'Primary Phone', class:'form-control', autocomplete:'off'
+      .col-md-6.secondary_phone
+        = f.text_field :secondary_phone, placeholder:'Alternate Phone', class:'form-control', autocomplete:'off'
+      .col-md-12
+        = f.submit submit_button_text, class:'btn btn-md btn-success'
 
-  .form-actions
-    = f.button :submit
+    - if controller_action == 'customers#index'
+      = render 'property_form_new', {f:f}

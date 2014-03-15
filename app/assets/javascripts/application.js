@@ -359,6 +359,18 @@ function handle_ajax(event, jqXHR, stage){
         case 'delete_invoice_link' :
             handle_delete_invoice_link(stage, jqXHR)
             break
+        case 'new_customer' :
+            handle_new_customer_form_submit(stage, jqXHR)
+            break
+        case 'edit_customer_link' :
+            handle_edit_customer_link(stage, jqXHR)
+            break
+        case 'edit_customer' :
+            handle_edit_customer_form_submit(stage, jqXHR)
+            break
+        case 'new_property_link' :
+            handle_new_property_link(stage, jqXHR)
+            break
         default :
             default_ajax_handler(stage, target)
             break
@@ -465,7 +477,18 @@ function handle_new_property_form_submit(stage, jqXHR){
         case 'success' :
             log('new_property_form_submit - ' + stage)
             notify('success', jqXHR.message)
-            $('#properties.datatable').dataTable().fnReloadAjax()
+            if($('#properties.datatable').length)
+                $('#properties.datatable').dataTable().fnReloadAjax()
+            else
+                refresh([$('#profile'), $('#properties')], function(){
+                    $('.property').on('click', function(){
+                        url = $(this).data('url')
+                        $('#property-details').load(url)
+                        log(url)
+                        $('#property-details').attr('data-url', url)
+                    })
+                    $('.modal').modal('hide')
+                })
             break;
         case 'complete' :
             log('new_property_form_submit - ' + stage)
@@ -581,72 +604,75 @@ function handle_edit_workorder_service_form_submit(stage, jqXHR){
     }
 }
 
-function handle_new_payment_detail_link(stage, jqXHR){
+function handle_new_customer_form_submit(stage, jqXHR){
     switch(stage){
         case 'error' :
+            log(jqXHR)
             notify('error', parse_json_errors(jqXHR))
             break
         case 'success' :
-            log('new_payment_detail_link - ' + stage)
-            break;
-        case 'complete' :
-            log('new_payment_detail_link - ' + stage)
-            break;
-    }
-}
-
-function handle_new_payment_detail_form_submit(stage, jqXHR){
-    switch(stage){
-        case 'error' :
-            notify('error', parse_json_errors(jqXHR))
-            break
-        case 'success' :
-            log('new_payment_detail_form_submit - ' + stage)
-            $('.modal').modal('hide')
+            log('edit_workorder_service_form_submit - ' + stage)
             notify('success', jqXHR.message)
-            refresh([$('#profile')])
-            $('#workorder_invoice_link').click()
+            $('#customers.datatable').dataTable().fnReloadAjax()
+            $('#new_customer input:not([type="submit"])').each(function(){
+                $(this).val('')
+            })
             break;
         case 'complete' :
-            log('new_payment_detail_form_submit - ' + stage)
+            log('edit_workorder_service_form_submit - ' + stage)
+            $('#workorder-data').load( $('#workorder-data').data('url'))
             break;
     }
 }
 
-function handle_workorder_invoice_link(stage, jqXHR){
+function handle_edit_customer_link(stage, jqXHR){
     switch(stage){
         case 'error' :
             notify('error', parse_json_errors(jqXHR))
             break
         case 'success' :
-            log('workorder_invoice_link - ' + stage)
-            var helper_area = $('#workorder-service-helper-area')
-            var title = $('<center><div>Invoices</div></center>')
-            var table = $($.parseHTML(jqXHR)).find('table')
-            title.addClass('h4')
-            helper_area.html('')
-            helper_area.html(title)
-            helper_area.append(table)
+            log('edit_customer_link - ' + stage)
             break;
         case 'complete' :
-            log('workorder_invoice_link - ' + stage)
+            log('edit_customer_link - ' + stage)
             break;
     }
 }
 
-function handle_delete_invoice_link(stage, jqXHR){
+function handle_edit_customer_form_submit(stage,jqXHR){
     switch(stage){
         case 'error' :
             notify('error', parse_json_errors(jqXHR))
             break
         case 'success' :
-            log('delete_invoice_link - ' + stage)
+            log('edit_customer_form_submit - ' + stage)
+            $('#ajax-modal').modal('hide')
             notify('success', jqXHR.message)
-            refresh([$('#profile')])
-            $('#workorder_invoice_link').click()
+            refresh([$('#profile'), $('#workorders')], function(){
+                $('.property').on('click', function(){
+                    url = $(this).data('url')
+                    $('#property-details').load(url)
+                    log(url)
+                    $('#property-details').attr('data-url', url)
+                })
+            })
             break;
         case 'complete' :
-            log('delete_invoice_link - ' + stage)
+            log('edit_customer_form_submit - ' + stage)
+            break;
+    }
+}
+
+function handle_new_property_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_property_link - ' + stage)
+            break;
+        case 'complete' :
+            log('new_property_link - ' + stage)
             break;
     }
 }

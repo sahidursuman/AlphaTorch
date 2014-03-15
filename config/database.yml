@@ -19,7 +19,7 @@ development:
   database: CortezLandscaping_development
   pool:     5
   username: CortezLandscaping
-  password:
+  password: bear33
   template: template0
 
   # Connect on a TCP socket. Omitted by default since the client uses a
@@ -48,7 +48,7 @@ test:
   database: CortezLandscaping_test
   pool:     5
   username: CortezLandscaping
-  password:
+  password: bear33
   template: template0
 
 production:
@@ -58,5 +58,5 @@ production:
   database: CortezLandscaping_production
   pool:     5
   username: CortezLandscaping
-  password:
+  password: bear33
   template: template0

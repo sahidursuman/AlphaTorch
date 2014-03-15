@@ -40,6 +40,12 @@ CortezLandscaping::Application.routes.draw do
   get 'properties_refresh_workorders' => 'properties#refresh_workorders'
   get 'properties_load_workorder_data' => 'properties#load_workorder_data'
   get 'properties_load_property_map_data' => 'properties#load_property_map_data'
+  get 'customers_load_property_data' => 'customers#load_property_data'
+  get 'customers_data_tables_source' => 'customers#data_tables_source'
+  get 'customers_refresh_profile' => 'customers#refresh_profile'
+  get 'customers_refresh_properties' => 'customers#refresh_properties'
+
+  get 'refresh_profile' => 'properties#refresh_profile'
 
   get 'workorders_data_tables_source' => 'workorders#data_tables_source'
 

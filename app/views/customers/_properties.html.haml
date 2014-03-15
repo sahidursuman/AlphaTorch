@@ -1,0 +1,27 @@
+%table.table.table-hover
+  %caption
+    .h4
+      Property Information
+      = link_to content_tag(:i, nil, {class:'glyphicon glyphicon-plus pull-right', style:'color:green;'}),
+      new_property_path(:customer_id => @customer.id),
+      remote:true,
+      id:'new_property_link'
+
+    - unless @customer.html_addresses.empty?
+      %thead
+        %tr
+          %th.h5='Address'
+          %th.h5='Workorders'
+          %th.h5='Balance'
+      %tbody
+        - @customer.all_customer_properties.each do |x|
+          %tr.property{data:{url:customers_load_property_data_path(property_id:x.property.id)}}
+            %td.h6= x.property.html_full_address
+            %td.h6= x.workorders.count
+            %td.h6= humanized_money_with_symbol(x.property.balance_due)
+    - else
+      .h5{style:'color:red'}
+        This customer has no properties.  Click "+" to add a property.
+
+
+

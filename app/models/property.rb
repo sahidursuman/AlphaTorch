@@ -34,6 +34,12 @@ class Property < ActiveRecord::Base
     current_customer_property ? current_customer_property.customer.name : 'No Owner'
   end
 
+  #def html_current_owner_name
+  #  current_customer_property ? link_to current_customer_property.customer.html_name.html_safe,
+  #                                      Rails.application.routes.url_helpers.customer_path(current_customer_property.customer_id)
+  #                                  : 'No Owner'
+  #end
+
   def workorders
     current_customer_property ? current_customer_property.try(:workorders) : []
   end

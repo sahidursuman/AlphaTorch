@@ -1,5 +1,5 @@
 - case controller_action
-  - when 'properties#index'
+  - when 'properties#index', 'properties#new'
     - form_method = :post
     - url = '/properties'
     - submit_button_text = 'Create New Property'
@@ -34,4 +34,6 @@
       - when 'properties#edit'
         = render 'customer_form_edit', {f:f}
         = javascript_include_tag 'properties'
+      - when 'properties#new'
+        = f.hidden_field :customer_id, {value:@customer.id, readonly:true}
 

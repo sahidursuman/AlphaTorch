@@ -17,6 +17,10 @@ class PropertiesController < ApplicationController
 
   # GET /properties/new
   def new
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   # GET /properties/1/edit
@@ -30,12 +34,10 @@ class PropertiesController < ApplicationController
   # POST /properties
   # POST /properties.json
   def create
-    @property_form = NewPropertyForm.new
-
     respond_to do |format|
       if @property_form.submit(params[:property])
         format.html { redirect_to properties_path, notice: 'Property was successfully created.' }
-        format.json { render json: {message:'Property successfully created!'}, status: :created, location:properties_path }
+        format.json { render json: {message:'Property successfully created!', id:@property_form.property.id}, status: :created, location:properties_path }
       else
         format.html { render action: 'index' , error: 'An error prevented the property from being created.'}
         format.json { render json: @property_form.errors, status: :unprocessable_entity }
@@ -111,7 +113,12 @@ class PropertiesController < ApplicationController
         @customer          = @customer_property.try(:customer)
         @property_form     = NewPropertyForm.new({property:@property, customer_property:@customer_property, customer:@customer})
       else
-        @property_form     = NewPropertyForm.new
+        options = {}
+        if params[:customer_id]
+          @customer = Customer.find(params[:customer_id])
+          options[:customer] = @customer
+        end
+        @property_form = NewPropertyForm.new(options)
       end
     end
 

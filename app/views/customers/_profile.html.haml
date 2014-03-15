@@ -1,0 +1,35 @@
+.row
+  .col-md-9
+    .pull-left.h3{style:'margin-top: 0px;'}
+      Customer Information
+  .col-md-3
+    .pull-right.h3{style:'margin-top: 0px; margin-right: 10px;'}
+      = link_to 'Delete', customer_path(@customer), class:'btn btn-xs btn-danger', method: :delete, confirm: 'Are you sure you want to delete this customer?'
+%hr
+.row
+  .col-md-12
+    #id{style:'display:none'}= @customer.id
+    .h4= @customer.name
+    - if @customer.primary_phone
+      .row
+        .col-md-3{style:'margin-top:6px;'}
+          %span.class.label.label-info Primary Phone
+        .col-md-9
+          .pull-left.h5= @customer.primary_phone
+      - if @customer.secondary_phone
+        .row
+          .col-md-3{style:'margin-top:6px;'}
+            %span.class.label.label-default Alternate Phone
+          .col-md-9
+            .pull-left.h5= @customer.secondary_phone
+    .row
+      .col-md-3{style:'margin-top:6px;'}
+        %span.class.label.label-info Email
+      .col-md-9
+        .pull-left.h5= @customer.email
+    .row
+      .col-md-4{style: 'margin-top:40px'}
+        = link_to 'All Customers', customers_path, class:'btn btn-large btn-warning'
+      .col-md-8{style: 'margin-top:40px'}
+        .pull-left= link_to 'Edit', edit_customer_path(@customer), class:'btn btn-large btn-danger', remote:true, id:'edit_customer_link'
+

@@ -12,6 +12,8 @@ class Workorder < ActiveRecord::Base
   accepts_nested_attributes_for :workorder_services, allow_destroy: true
   belongs_to :customer_property
 
+  scope :active, ->{where(status_code: Status.get_code('Active'))}
+
   validates_associated :workorder_services
   validates_presence_of :name
   validates_uniqueness_of :name

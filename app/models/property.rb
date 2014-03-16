@@ -29,6 +29,10 @@ class Property < ActiveRecord::Base
     current_customer_property.try(:workorders)
   end
 
+  def has_active_workorders?
+    workorders.active.count > 0
+  end
+
   def html_services
     unless services.nil? || services.try(:empty?)
       services.map(&:name).join('<br/>').html_safe

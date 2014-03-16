@@ -119,8 +119,8 @@ class NewPropertyForm
   def set_new_property_owner(params)
 
     #check if there are workorders for the property. do not allow if there are active workorders.
-    if @property.workorders
-      if @property.workorders.where(status_code: Status.get_code('Active'))
+    unless @property.workorders.empty?
+      if @property.has_active_workorders?
         p 'PROPERTY HAS ACTIVE INVOICES'
         errors.add(:property, 'Has Active Workorders. These <u>MUST</u> Be Cancelled Before Changing Ownership.'.html_safe)
         return false

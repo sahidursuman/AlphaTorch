@@ -26,11 +26,11 @@ class Property < ActiveRecord::Base
   end
 
   def workorders
-    current_customer_property.try(:workorders)
+    current_customer_property ? current_customer_property.try(:workorders) : []
   end
 
   def has_active_workorders?
-    workorders.active.count > 0
+    workorders.empty? ? false : workorders.active.count > 0
   end
 
   def html_services

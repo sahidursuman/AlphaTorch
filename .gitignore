@@ -21,3 +21,4 @@ lib/*.log
 .idea
 *.keep
 *.gitkeep
+.sass-cache

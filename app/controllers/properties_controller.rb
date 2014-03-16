@@ -38,7 +38,6 @@ class PropertiesController < ApplicationController
       else
         format.html { render action: 'index' , error: 'An error prevented the property from being created.'}
         format.json { render json: @property_form.errors, status: :unprocessable_entity }
-        format.js   { render json: @property_form.errors, status: :unprocessable_entity}
       end
     end
   end
@@ -77,13 +76,13 @@ class PropertiesController < ApplicationController
 
   def refresh_profile
     respond_to do |format|
-      format.js {render partial:'profile'}
+      format.html {render partial:'profile'}
     end
   end
 
   def refresh_workorders
     respond_to do |format|
-      format.js {render partial:'workorders'}
+      format.html {render partial:'workorders'}
     end
   end
 

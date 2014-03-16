@@ -321,6 +321,7 @@ function handle_new_workorder_form_submit(stage,jqXHR){
             notify('success', jqXHR.message)
             $.ajax({
                 global: false,
+                cache: false,
                 url:'/properties_refresh_profile',
                 dataType: 'html',
                 data: {id: jqXHR.id},
@@ -333,6 +334,7 @@ function handle_new_workorder_form_submit(stage,jqXHR){
             })
             $.ajax({
                 global: false,
+                cache: false,
                 url: '/properties_refresh_workorders',
                 dataType: 'html',
                 data: {id:jqXHR.id},
@@ -374,7 +376,32 @@ function handle_edit_property_form_submit(stage,jqXHR){
             log('edit_property_form_submit - ' + stage)
             $('#ajax-modal').modal('hide')
             notify('success', jqXHR.message)
-            refresh_profile(jqXHR.id)
+            $.ajax({
+                global: false,
+                cache: false,
+                url:'/properties_refresh_profile',
+                dataType: 'html',
+                data: {id: jqXHR.id},
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert('could not refresh profile. reload the page.')
+                },
+                success: function(data, textStatus, jqXHR){
+                    $('#profile').html(data)
+                }
+            })
+            $.ajax({
+                global: false,
+                cache: false,
+                url: '/properties_refresh_workorders',
+                dataType: 'html',
+                data: {id:jqXHR.id},
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert('could not refresh workorders. reload the page.')
+                },
+                success: function(data, textStatus, jqXHR){
+                    $('#workorders').html(data)
+                }
+            })
             break;
         case 'complete' :
             log('edit_property_form_submit - ' + stage)

@@ -34,7 +34,10 @@ CortezLandscaping::Application.routes.draw do
   resources :services
 
   get 'properties_data_tables_source' => 'properties#data_tables_source'
-  get 'refresh_profile' => 'properties#refresh_profile'
+  get 'properties_refresh_profile' => 'properties#refresh_profile'
+  get 'properties_refresh_workorders' => 'properties#refresh_workorders'
+
+  get 'workorders_data_tables_source' => 'workorders#data_tables_source'
 
   get 'search' => 'application#search'
   get 'workorder_search' => 'application#workorder_search'

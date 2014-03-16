@@ -119,10 +119,12 @@ class NewPropertyForm
   def set_new_property_owner(params)
 
     #check if there are workorders for the property. do not allow if there are active workorders.
-    if @property.workorders.where(status_code: Status.get_code('Active'))
-      p 'PROPERTY HAS ACTIVE INVOICES'
-      errors.add(:property, 'Has Active Workorders. These <u>MUST</u> Be Cancelled Before Changing Ownership.'.html_safe)
-      return false
+    if @property.workorders
+      if @property.workorders.where(status_code: Status.get_code('Active'))
+        p 'PROPERTY HAS ACTIVE INVOICES'
+        errors.add(:property, 'Has Active Workorders. These <u>MUST</u> Be Cancelled Before Changing Ownership.'.html_safe)
+        return false
+      end
     end
 
     @customer = use_existing_customer?(params) ? Customer.find(params[:customer_id]) : Customer.new
@@ -135,7 +137,11 @@ class NewPropertyForm
       customer.last_name = params[:new_last_name]
       customer.primary_phone = params[:new_primary_phone]
       customer.secondary_phone = params[:new_secondary_phone]
-      customer.save
+      if customer.valid?
+        customer.save
+      else
+        return false
+      end
       @customer_property = CustomerProperty.create(property:property, customer:customer, owner:true)
     else #customer already exists
       #check if the customer has owned this property in the past

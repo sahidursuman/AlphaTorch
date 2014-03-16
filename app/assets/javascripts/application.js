@@ -20,7 +20,12 @@
 //= require twitter/bootstrap
 //= require dataTables/jquery.dataTables
 //= require dataTables/jquery.dataTables.bootstrap3
+//= require jquery_nested_form
 //= require_tree ./components
+
+function log(msg){
+    return console.log(msg)
+}
 
 //#initialize site wide searching
 function initialize_search(input_id){
@@ -167,13 +172,15 @@ function initialize_search(input_id){
 }
 
 function notify(notify_type, msg) {
-    var alerts = $('#alerts');
+    var target = $('.modal:visible').length ? (notify_type == 'error' ? $('#modal-alerts') : $('#alerts'))
+                                            : $('#alerts')
     var div = $('<div></div>')
 
     div.append('<button class="close" data-dismiss="alert" href="#">×</button>');
 
     if (notify_type == 'success') {
-        div.append('<div class="h4">How about that?! It worked!!! '+msg+'</div>')
+        div.append('<div class="h4">How about that?! It worked!!!</div>')
+        div.append('<div class="h4">'+msg+'</div>')
         div.addClass('alert alert-success').fadeIn('fast');
     }
 
@@ -183,13 +190,10 @@ function notify(notify_type, msg) {
         div.addClass('alert alert-danger').fadeIn('fast');
     }
 
-    alerts.append(div)
-
-    $('.alert').delay(10000).fadeOut(5000)
-}
-
-function parse_json_message(jqXHR){
-    return $.parseJSON(jqXHR)[0]['message']
+    target.append(div)
+    $('.alert').delay(7000).fadeTo(3000, 0, 'linear', function(){
+        target.html('')
+    })
 }
 
 function parse_json_errors(jqXHR){
@@ -227,10 +231,169 @@ function datatable_defaults(){
 }
 
 $(document).ready(function(){
-    $.fn.editable.defaults.mode = 'inline';
     initialize_search('site-search');
     initialize_search('service-search');
     initialize_search('customer-search');
     initialize_search('workorder-search');
     initialize_search('property-search');
 })
+
+
+/*
+* AJAX event handlers
+*/
+$(document).on('ajax:error', function(event, jqXHR, ajaxSettings, thrownError){
+    handle_ajax(event, jqXHR, 'error')
+})
+
+$(document).on('ajax:success', function(event, jqXHR, ajaxSettings){
+    handle_ajax(event, jqXHR, 'success')
+})
+
+$(document).on('ajax:complete', function(event, jqXHR, ajaxSettings){
+    handle_ajax(event, jqXHR, 'complete')
+})
+
+function handle_ajax(event, jqXHR, stage){
+    var target = $(event.target).attr('id')
+    switch (target){
+        case 'new_workorder_link' :
+            handle_new_workorder_link(stage, jqXHR)
+            break
+        case 'new_workorder' :
+            handle_new_workorder_form_submit(stage, jqXHR)
+            break
+        case 'edit_property_link' :
+            handle_edit_property_link(stage, jqXHR)
+            break
+        case 'edit_property' :
+            handle_edit_property_form_submit(stage, jqXHR)
+            break
+        case 'new_property' :
+            handle_new_property_form_submit(stage, jqXHR)
+            break
+        default :
+            default_ajax_handler(stage, target)
+            break
+    }
+}
+
+function default_ajax_handler(stage, target){
+    log('unidentified target - ')
+    log(target)
+    var msg = ''
+    switch(stage){
+        case 'error' :
+            msg += 'This is doubly embarrassing because we didn\'t account for this!<br/>'
+            msg += 'You really need to contact whoever is supporting this thing.<br/>'
+            break
+        case 'success' :
+            msg += 'Actually, this is kinda embarrassing because we didn\'t account for this. Fortunately, everything seems to be ok!<br/>'
+            msg += 'You should contact whoever is supporting this thing and let them know something\'s up.<br/>'
+            break
+    }
+    notify(stage,msg)
+}
+
+function handle_new_workorder_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_workorder_link - ' + stage)
+            break;
+        case 'complete' :
+            log('new_workorder_link - ' + stage)
+            break;
+    }
+
+}
+
+function handle_new_workorder_form_submit(stage,jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_workorder_form_submit - ' + stage)
+            $('#ajax-modal').modal('hide')
+            notify('success', jqXHR.message)
+            $.ajax({
+                global: false,
+                url:'/properties_refresh_profile',
+                dataType: 'html',
+                data: {id: jqXHR.id},
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert('could not refresh profile. reload the page.')
+                },
+                success: function(data, textStatus, jqXHR){
+                    $('#profile').html(data)
+                }
+            })
+            $.ajax({
+                global: false,
+                url: '/properties_refresh_workorders',
+                dataType: 'html',
+                data: {id:jqXHR.id},
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert('could not refresh workorders. reload the page.')
+                },
+                success: function(data, textStatus, jqXHR){
+                    $('#workorders').html(data)
+                }
+            })
+
+            break;
+        case 'complete' :
+            log('new_workorder_form_submit - ' + stage)
+            break;
+    }
+}
+
+function handle_edit_property_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_property_link - ' + stage)
+            break;
+        case 'complete' :
+            log('edit_property_link - ' + stage)
+            break;
+    }
+}
+
+function handle_edit_property_form_submit(stage,jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_property_form_submit - ' + stage)
+            $('#ajax-modal').modal('hide')
+            notify('success', jqXHR.message)
+            refresh_profile(jqXHR.id)
+            break;
+        case 'complete' :
+            log('edit_property_form_submit - ' + stage)
+            break;
+    }
+}
+
+function handle_new_property_form_submit(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_property_form_submit - ' + stage)
+            notify('success', jqXHR.message)
+            $('#properties.datatable').dataTable().fnReloadAjax()
+            break;
+        case 'complete' :
+            log('new_property_form_submit - ' + stage)
+            break;
+    }
+}

@@ -1,5 +1,6 @@
 class WorkordersController < ApplicationController
   before_filter :set_workorder, only: [:show, :edit, :update, :destroy]
+  before_filter :set_customer_property, only: [:new, :edit, :create, :update]
 
   # GET /workorders
   # GET /workorders.json
@@ -15,14 +16,12 @@ class WorkordersController < ApplicationController
   # GET /workorders/new
   def new
     @workorder = Workorder.new
-    if params[:customer_property_id]
-      @customer_property = CustomerProperty.find(params[:customer_property_id])
-    else
-      #redirect_to properties_path
-    end
-
     respond_to do |format|
-      format.html
+      format.html {
+        unless params[:customer_property_id]
+          redirect_to :back rescue redirect_to properties_path
+        end
+      }
       format.js
     end
   end
@@ -41,11 +40,13 @@ class WorkordersController < ApplicationController
     @workorder = Workorder.new(workorder_params)
     respond_to do |format|
       if @workorder.save
-        format.html { redirect_to @workorder, notice: 'Workorder was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @workorder }
+        format.html { redirect_to @workorder, notice: 'Work Order was successfully created.' }
+        format.json { render json: {message:'Work Order successfully created!', id:@customer_property.property.id}, status: :created }
+        format.js   { render json: {message:'Work Order successfully created!', id:@customer_property.property.id}, status: :created }
       else
         format.html { render action: 'new' }
         format.json { render json: @workorder.errors, status: :unprocessable_entity }
+        format.js   { render json: @workorder.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -56,10 +57,12 @@ class WorkordersController < ApplicationController
     respond_to do |format|
       if @workorder.update_attributes(workorder_params)
         format.html { redirect_to @workorder, notice: 'Workorder was successfully updated.' }
-        format.json { head :no_content }
+        format.json { render json: {message:'Work Order successfully updated!', id:@customer_property.property.id}, status: :created }
+        format.js   { render json: {message:'Work Order successfully updated!', id:@customer_property.property.id}, status: :created }
       else
         format.html { render action: 'edit' }
         format.json { render json: @workorder.errors, status: :unprocessable_entity }
+        format.js   { render json: @workorder.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -78,6 +81,10 @@ class WorkordersController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_workorder
       @workorder = Workorder.find(params[:id])
+    end
+
+    def set_customer_property
+      @customer_property = CustomerProperty.find(params[:customer_property_id] || workorder_params[:customer_property_id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

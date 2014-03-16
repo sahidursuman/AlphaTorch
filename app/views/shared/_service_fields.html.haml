@@ -14,6 +14,8 @@
       .scheduler= f.select_recurring :schedule, [], {}, class:'form-control', allow_blank: true
   .col-md-12
     -unless controller_name == 'workorder_services'
-      .remove_service= f.link_to_remove((remove_link('REMOVE SERVICE')),
-        data:{confirm:"This will remove this service from all future events for this #{controller_name.singularize}. Refresh page BEFORE SAVING if you accidentally delete."})
+      - if controller_action == 'workorders#new'
+        .remove_service= f.link_to_remove(remove_link('REMOVE SERVICE'))
+      - else
+        .remove_service= f.link_to_remove((remove_link('REMOVE SERVICE')), data:{confirm:"This will remove this service from all future events for this #{controller_name.singularize}. Refresh page BEFORE SAVING if you accidentally delete."})
 %hr

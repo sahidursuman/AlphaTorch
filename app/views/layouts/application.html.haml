@@ -5,7 +5,6 @@
     %title= content_for?(:title) ? yield(:title) : 'Cortez Landscaping'
     %meta{:name => "description", :content => "#{content_for?(:description) ? yield(:description) : 'Cortez Landscaping'}"}
     = stylesheet_link_tag "application", media: "all"
-    = stylesheet_link_tag "//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css"
     - unless controller_name == 'home'
       = stylesheet_link_tag controller_name.pluralize
     - else
@@ -16,7 +15,7 @@
       #header= render 'layouts/navigation'
       #main{:role => "main"}
         #content
-          = render 'layouts/messages'
+          #alerts.alerts
           = yield
 
 
@@ -24,8 +23,8 @@
     #ajax-modal.modal.fade
       .modal-dialog.modal-lg
         .modal-content
+          #modal-alerts.alerts
           .modal-body
 
     = javascript_include_tag 'application'
-    = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"
     = javascript_include_tag controller_name

@@ -10,7 +10,7 @@
     - submit_button_text = 'Update This Property'
     - id = 'edit_property'
 
-= form_for @property_form, method: form_method, url: url, remote:true, html:{id: id} do |f|
+= form_for @property_form, method: form_method, url: url, remote:true, html:{id: id, :'data-type' => :json} do |f|
   .row
     %fieldset.col-md-6
       %legend.h4 Property Information

@@ -34,7 +34,7 @@ gem 'pg'
 gem 'simple_form'
 gem 'nested_form'
 gem 'ice_cube'
-gem 'recurring_select'
+gem 'recurring_select', git: 'git://github.com/rgrwatson85/recurring_select'
 gem 'money-rails'
 gem 'fullcalendar-rails'
 gem 'whenever', require: false

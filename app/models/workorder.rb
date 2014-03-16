@@ -2,6 +2,7 @@ class Workorder < ActiveRecord::Base
   after_save :update_events
   require 'model_locking'
   include ModelLocking
+  include ActionView::Helpers::UrlHelper
 
   belongs_to :status, primary_key: 'status_code', foreign_key: 'status_code'
   has_many :events, dependent: :destroy
@@ -12,7 +13,9 @@ class Workorder < ActiveRecord::Base
   belongs_to :customer_property
 
   validates_associated :workorder_services
+  validates_presence_of :name
   validates_uniqueness_of :name
+  validates_presence_of :start_date
 
   def unlock
     self.status_code = Status.get_code('Not Invoiced')
@@ -120,6 +123,18 @@ class Workorder < ActiveRecord::Base
     if invoice_ids.uniq.length > 0
       Invoice.where("id IN (#{invoice_ids.uniq.join(', ')})")
     end
+  end
+
+  def property
+    customer_property.try(:property)
+  end
+
+  def to_data_table_row
+    [html_name, status.status]
+  end
+
+  def html_name
+    link_to name, Rails.application.routes.url_helpers.workorder_path(self)
   end
 
   def self.generate_all_invoices

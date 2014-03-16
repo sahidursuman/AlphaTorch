@@ -1,5 +1,5 @@
 class PropertiesController < ApplicationController
-  before_filter :set_property, only: [:show, :edit, :update, :destroy, :refresh_profile]
+  before_filter :set_property, only: [:show, :edit, :update, :destroy, :refresh_profile, :refresh_workorders]
   before_filter :set_property_form, except: [:destroy]
 
   # GET /properties
@@ -34,12 +34,7 @@ class PropertiesController < ApplicationController
     respond_to do |format|
       if @property_form.submit(params[:property])
         format.html { redirect_to properties_path, notice: 'Property was successfully created.' }
-        format.json { render action: 'index', status: :created, location: properties_path }
-        format.js   { render json: [message:'Property successfully created!',
-                                    customer:@property_form.customer,
-                                    property:@property_form.property,
-                                    customer_property:@property_form.customer_property
-                                   ], status: :created, location: properties_path}
+        format.json { render json: {message:'Property successfully created!', id:@property.id}, status: :created, location:properties_path }
       else
         format.html { render action: 'index' , error: 'An error prevented the property from being created.'}
         format.json { render json: @property_form.errors, status: :unprocessable_entity }
@@ -54,12 +49,10 @@ class PropertiesController < ApplicationController
     respond_to do |format|
       if @property_form.update_attributes(params[:property])
         format.html { redirect_to @property, notice: 'Property was successfully updated.' }
-        format.json { head :no_content }
-        format.js   { render json: [message:'Property successfully updated!'] }
+        format.json { render json: {message:'Property successfully updated!', id:@property.id}, status: :accepted }
       else
         format.html { render action: 'edit' }
         format.json { render json: @property_form.errors, status: :unprocessable_entity }
-        format.js   { render json: @property_form.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -85,6 +78,12 @@ class PropertiesController < ApplicationController
   def refresh_profile
     respond_to do |format|
       format.js {render partial:'profile'}
+    end
+  end
+
+  def refresh_workorders
+    respond_to do |format|
+      format.js {render partial:'workorders'}
     end
   end
 

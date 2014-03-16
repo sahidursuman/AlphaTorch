@@ -4,8 +4,9 @@
 
 $ ->
 
-  $('.submit').on 'click', ->
+  $('.submit').on 'click', (e)->
     $('form[id*="workorder"]').submit()
 
   $(document).on 'nested:fieldAdded', ->
+    console.log('field added')
     initialize_search('service-search')

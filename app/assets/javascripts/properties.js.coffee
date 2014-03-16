@@ -18,7 +18,7 @@ $ ->
           $('#customer-information input[type="text"], #customer-information input[type="hidden"]').each ->
             input = $(this)
             setTimeout( ->
-              input.val('')
+              input.val('') unless input.is('[readonly="readonly"]')
             , 500
             )
 

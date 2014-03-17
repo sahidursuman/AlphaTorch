@@ -1,11 +1,12 @@
 %table#workorders.table.table-hover
   %caption
-    Workorders
-    - if @property.current_customer_property
-      = link_to content_tag(:i, nil, {class:'glyphicon glyphicon-plus pull-right', style:'color:green;'}),
-      new_workorder_path(customer_property_id: @property.current_customer_property),
-      remote:true,
-      id:'new_workorder_link'
+    .h4
+      Workorders
+      - if @property.current_customer_property
+        = link_to content_tag(:i, nil, {class:'glyphicon glyphicon-plus pull-right', style:'color:green;'}),
+        new_workorder_path(customer_property_id: @property.current_customer_property),
+        remote:true,
+        id:'new_workorder_link'
 
     - if @property.current_customer_property
       %thead

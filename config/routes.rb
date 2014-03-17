@@ -36,6 +36,7 @@ CortezLandscaping::Application.routes.draw do
   get 'properties_data_tables_source' => 'properties#data_tables_source'
   get 'properties_refresh_profile' => 'properties#refresh_profile'
   get 'properties_refresh_workorders' => 'properties#refresh_workorders'
+  get 'properties_load_workorder_data' => 'properties#load_workorder_data'
 
   get 'workorders_data_tables_source' => 'workorders#data_tables_source'
 

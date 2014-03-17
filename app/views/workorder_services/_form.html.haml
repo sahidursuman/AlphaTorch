@@ -1,9 +1,28 @@
-= simple_nested_form_for([:workorder, @workorder_service]) do |f|
-  = f.error_notification
-
-  .form-inputs
-    = render 'shared/service_fields', {f:f}
-    = f.hidden_field :workorder_id, {value:@workorder.id}
-
-  .form-actions
-    = f.button :submit
+- case controller_action
+  - when 'workorder_services#new'
+    - form_method = :post
+    - url = "/workorders/#{@workorder.customer_property.property_id}/workorder_services"
+    - submit_button_text = 'Add New Service'
+    - id = 'new_workorder_service'
+  - when 'workorder_services#edit'
+    - form_method = :put
+    - url = "/workorders/#{@workorder.customer_property.property_id}/workorder_services/#{@workorder_service.id}"
+    - submit_button_text = 'Edit This Service'
+    - id = 'edit_workorder_service'
+= form_method
+= nested_form_for([:workorder, @workorder_service], url:url,
+                                                   html: {method:form_method,
+                                                              id: id,
+                                                           class:'form-vertical',
+                                                            data:{remote:true, type: :json}}) do |f|
+  .row
+    .col-md-12
+      .form-inputs
+        - service = @workorder_service.new_record? ? nil : @workorder_service.service
+        = render 'shared/service_fields', {f:f, service:service}
+        = f.hidden_field :workorder_id, {value:@workorder.id}
+  .row
+    .col-md-offset-1.col-md-10
+      .form-actions
+        = f.button submit_button_text, {class:'btn btn-block btn-success submit'}
+        = link_to 'Cancel', '#', class:'btn btn-block btn-default cancel'

@@ -1,4 +1,4 @@
-%table#workorders.table
+%table#workorders.table.table-hover
   %caption
     Workorders
     - if @property.current_customer_property
@@ -15,8 +15,9 @@
       %tbody
         - unless @property.workorders.empty?
           - @property.workorders.each do |workorder|
-            %tr
-              %td.h6= link_to workorder.name, workorder
+            %tr.workorder{data:{url:properties_load_workorder_data_path(workorder_id:workorder.id)}}
+              %td.h6
+                %a= workorder.name
               %td.h6= workorder.status_name
         - else
           %tr.h5

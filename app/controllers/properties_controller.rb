@@ -86,6 +86,13 @@ class PropertiesController < ApplicationController
     end
   end
 
+  def load_workorder_data
+    @workorder = Workorder.find(params[:workorder_id])
+    respond_to do |format|
+      format.html {render partial: 'workorder_data'}
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_property

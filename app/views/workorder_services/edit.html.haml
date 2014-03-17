@@ -1,7 +1,8 @@
 %h1 Editing workorder_service
 
-= render 'form'
+#form
+  = render 'form'
 
-= link_to 'Show', @workorder_service
+= link_to 'Show', workorder_workorder_service_path(@workorder)
 \|
-= link_to 'Back', workorder_services_path
+= link_to 'Back', workorder_workorder_services_path

@@ -272,6 +272,18 @@ function handle_ajax(event, jqXHR, stage){
         case 'new_property' :
             handle_new_property_form_submit(stage, jqXHR)
             break
+        case 'new_workorder_service_link' :
+            handle_new_workorder_service_link(stage, jqXHR)
+            break
+        case 'new_workorder_service' :
+            handle_new_workorder_service_form_submit(stage, jqXHR)
+            break
+        case 'edit_workorder_service_link' :
+            handle_edit_workorder_service_link(stage, jqXHR)
+            break
+        case 'edit_workorder_service' :
+            handle_edit_workorder_service_form_submit(stage, jqXHR)
+            break
         default :
             default_ajax_handler(stage, target)
             break
@@ -421,6 +433,108 @@ function handle_new_property_form_submit(stage, jqXHR){
             break;
         case 'complete' :
             log('new_property_form_submit - ' + stage)
+            break;
+    }
+}
+
+function handle_new_workorder_service_link(stage, jqXHR){
+    var icon = $('#new_workorder_service_link').find('i')
+    var form_area = $('#workorder-service-helper-area')
+    var title = $('<div><center>Add New Service To Workorder</center></div>')
+    var form = $($.parseHTML(jqXHR)).find('#form').html()
+
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_workorder_service_link - ' + stage)
+            if(!icon.hasClass('disabled')){
+                title.addClass('h4')
+                form_area.html('')
+                form_area.append(title)
+                form_area.append(form)
+                initialize_search('service-search')
+                form_area.fadeIn('fast')
+                icon.addClass('disabled').css('color', 'gray')
+            }
+            break;
+        case 'complete' :
+            log('new_workorder_service_link - ' + stage)
+            $('.cancel').on('click', function(e){
+                e.preventDefault()
+                form_area.fadeOut('fast')
+                icon.removeClass('disabled').css('color', 'green')
+            })
+            $('.submit').on('click', function(){
+                $('form[id*="workorder_service"]').submit()
+            })
+            break;
+    }
+}
+
+function handle_new_workorder_service_form_submit(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_workorder_service_form_submit - ' + stage)
+            notify('success', jqXHR.message)
+            $('.cancel').click()
+            break;
+        case 'complete' :
+            log('new_workorder_service_form_submit - ' + stage)
+            $('#workorder-data').load( $('#workorder-data').data('url'))
+            break;
+    }
+}
+
+function handle_edit_workorder_service_link(stage, jqXHR){
+    var icon = $('#new_workorder_service_link').find('i')
+    var form_area = $('#workorder-service-helper-area')
+    var title = $('<div><center>Edit This Service</center></div>')
+    var form = $($.parseHTML(jqXHR)).find('#form').html()
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_workorder_service_link - ' + stage)
+            title.addClass('h4')
+            form_area.html('')
+            form_area.append(title)
+            form_area.append(form)
+            initialize_search('service-search')
+            form_area.fadeIn('fast')
+            break;
+        case 'complete' :
+            log('edit_workorder_service_link - ' + stage)
+            icon.removeClass('disabled').css('color', 'green')
+            $('.cancel').on('click', function(e){
+                e.preventDefault()
+                form_area.fadeOut('fast')
+            })
+            $('.submit').on('click', function(){
+                $('form[id*="workorder_service"]').submit()
+            })
+            break;
+    }
+}
+
+function handle_edit_workorder_service_form_submit(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_workorder_service_form_submit - ' + stage)
+            notify('success', jqXHR.message)
+            $('.cancel').click()
+            break;
+        case 'complete' :
+            log('edit_workorder_service_form_submit - ' + stage)
+            $('#workorder-data').load( $('#workorder-data').data('url'))
             break;
     }
 }

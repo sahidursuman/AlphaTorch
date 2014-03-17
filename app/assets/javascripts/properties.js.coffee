@@ -24,4 +24,10 @@ $ ->
 
   $("#customer-toggle label.btn:first").trigger 'click'
 
+  $('.workorder').on 'click', ->
+    url = $(this).data('url')
+    $('#workorder-data').load(url)
+    log(url)
+    $('#workorder-data').attr('data-url', url)
+
 

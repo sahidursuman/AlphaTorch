@@ -1,4 +1,5 @@
 class Property < ActiveRecord::Base
+  require 'net/http'
   include ActionView::Helpers::UrlHelper
   include MoneyRails::ActionViewExtension
   belongs_to :state
@@ -15,6 +16,14 @@ class Property < ActiveRecord::Base
      (street_address_2.to_s=='' ? '' : street_address_2.to_s + '<br/>') +
      city + ', ' + state.short_name + ' ' + postal_code}
     ".html_safe, Rails.application.routes.url_helpers.property_path(self)
+  end
+
+  def full_address
+    street_address_1.gsub(' ', '+') + '+' +
+    (street_address_2.to_s == '' ? '' : street_address_2.to_s.gsub(' ', '+')+ '+') +
+    city.gsub(' ', '+') + '+' +
+    state.short_name + '+' +
+    postal_code
   end
 
   def current_customer_property
@@ -61,6 +70,22 @@ class Property < ActiveRecord::Base
 
   def links
     "#{link_to('View', Rails.application.routes.url_helpers.property_path(self), class: 'btn btn-default btn-sm')}".html_safe
+  end
+
+  def self.generate_map_data
+    lat_long_arr = []
+    all.map do |property|
+      parsed_url = URI.parse("https://maps.googleapis.com/maps/api/geocode/json?address=#{property.full_address}&sensor=true")
+      http = Net::HTTP.new(parsed_url.host, parsed_url.port)
+      http.use_ssl = true
+      request = Net::HTTP::Get.new(parsed_url.request_uri)
+      response = http.request(request)
+      json = JSON.parse(response.body)
+      json['results'].each do |key|
+        lat_long_arr << [key['geometry']['location']['lat'], key['geometry']['location']['lng']]
+      end
+      lat_long_arr
+    end
   end
 
 end

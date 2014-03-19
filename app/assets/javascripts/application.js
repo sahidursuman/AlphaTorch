@@ -27,9 +27,35 @@ function log(msg){
     return console.log(msg)
 }
 
+function ajax_loader(element, callback, callback_params){
+    var timer = setTimeout(function(){
+                    clear_ajax_loader()
+                    alert('Request Timed Out. Please Try Again.')
+                }, 15000)
+    $.ajax({
+        url: '/ajax_loader',
+        method: 'get',
+        success: function(loader){
+          clearTimeout(timer)
+          element.append(loader)
+          if(!(typeof callback === 'undefined')){
+              if(!(typeof callback_params === 'undefined')){
+                 callback(callback_params)
+              }else{
+                 callback()
+              }
+
+          }
+        }
+    });
+}
+
+function clear_ajax_loader(){
+    $('.ajax-loader').remove()
+}
+
 //#initialize site wide searching
 function initialize_search(input_id){
-    console.log('site search initialized with: ' + input_id)
     var input = $("[id *= '"+input_id+"']")
 
     $.each(input, function(){

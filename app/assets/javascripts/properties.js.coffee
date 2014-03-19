@@ -1,4 +1,9 @@
+adjustMapHeight = ->
+  $('#map-canvas').css('height', $('#property-form').height())
+
 $ ->
+  adjustMapHeight()
+  ajax_loader($('#map-canvas'),fetch_map_data)
 
   options = $.extend(datatable_defaults(), "sAjaxSource": "/properties_data_tables_source")
   $('#properties.datatable').dataTable(options);
@@ -27,7 +32,24 @@ $ ->
   $('.workorder').on 'click', ->
     url = $(this).data('url')
     $('#workorder-data').load(url)
-    log(url)
     $('#workorder-data').attr('data-url', url)
 
+  $('#new_property').on 'ajax:success', ->
+    ajax_loader($('#map-canvas'),fetch_map_data)
 
+  $(window).on 'resize', ->
+    adjustMapHeight()
+
+
+fetch_map_data = ->
+  $.ajax({
+    cache: false
+    global: false
+    method: 'get'
+    url: '/properties_load_property_map_data'
+    success: (data)->
+      new HeatMap(data)
+    complete: ->
+      clear_ajax_loader()
+
+  })

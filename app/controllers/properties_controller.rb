@@ -7,6 +7,7 @@ class PropertiesController < ApplicationController
   def index
     @properties = Property.all
     @property_form = NewPropertyForm.new
+    gon.watch.map_data = nil
   end
 
   # GET /properties/1
@@ -34,7 +35,7 @@ class PropertiesController < ApplicationController
     respond_to do |format|
       if @property_form.submit(params[:property])
         format.html { redirect_to properties_path, notice: 'Property was successfully created.' }
-        format.json { render json: {message:'Property successfully created!', id:@property.id}, status: :created, location:properties_path }
+        format.json { render json: {message:'Property successfully created!'}, status: :created, location:properties_path }
       else
         format.html { render action: 'index' , error: 'An error prevented the property from being created.'}
         format.json { render json: @property_form.errors, status: :unprocessable_entity }
@@ -91,6 +92,11 @@ class PropertiesController < ApplicationController
     respond_to do |format|
       format.html {render partial: 'workorder_data'}
     end
+  end
+
+  def load_property_map_data
+    gon.watch.map_data = Property.generate_map_data
+    render json: gon.watch.map_data
   end
 
   private

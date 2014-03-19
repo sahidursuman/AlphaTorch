@@ -1,12 +1,12 @@
+= javascript_include_tag '//maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization'
+
 .row
   .col-md-8.form
     .well
-      = render 'form'
+      #property-form= render 'form'
   .col-md-4.map
     .well
-      = image_tag 'http://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=800x600&maptype=roadmap' + |
-                  '&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318' + |
-                  '&markers=color:red%7Clabel:C%7C40.718217,-73.998284&sensor=false' |
+      #map-canvas
 
 .row
   .col-md-12

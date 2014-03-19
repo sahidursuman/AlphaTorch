@@ -37,6 +37,7 @@ CortezLandscaping::Application.routes.draw do
   get 'properties_refresh_profile' => 'properties#refresh_profile'
   get 'properties_refresh_workorders' => 'properties#refresh_workorders'
   get 'properties_load_workorder_data' => 'properties#load_workorder_data'
+  get 'properties_load_property_map_data' => 'properties#load_property_map_data'
 
   get 'workorders_data_tables_source' => 'workorders#data_tables_source'
 
@@ -46,5 +47,6 @@ CortezLandscaping::Application.routes.draw do
   get 'customer_search' => 'application#customer_search'
   get 'property_search' => 'properties#property_search'
 
+  get 'ajax_loader' => 'application#ajax_loader'
   root :to => "home#index"
 end

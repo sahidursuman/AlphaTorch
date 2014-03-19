@@ -40,6 +40,7 @@ gem 'fullcalendar-rails'
 gem 'whenever', require: false
 gem 'yard'
 gem 'jquery-datatables-rails'
+gem 'gon'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

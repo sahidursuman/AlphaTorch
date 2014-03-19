@@ -9,4 +9,5 @@ module ApplicationHelper
   def controller_action
     controller_name + '#' + params[:action]
   end
+
 end

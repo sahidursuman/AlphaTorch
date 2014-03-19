@@ -33,4 +33,8 @@ class ApplicationController < ActionController::Base
     render :json => results
   end
 
+  def ajax_loader
+    render partial: 'shared/ajax_loader'
+  end
+
 end

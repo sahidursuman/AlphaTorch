@@ -1,16 +1,74 @@
-= simple_form_for(@payment_detail) do |f|
-  = f.error_notification
+= form_for(@payment_detail, html:{data:{remote:true, type: :json}}) do |f|
+  .row
+    .col-md-6
+      .row
+        .col-md-12
+          %form{action:search_path, method:'get', remote:'true', role: 'search', style:'margin-top:0px;'}
+            %input#invoice-search.search_field.form-control{name:'term', type:'text', placeholder:'Invoice Search', autocomplete:'off', style:'width:inherit'}
+          %input#invoice-id.customer_id{name:'payment_detail[invoice_id]', type:'hidden'}
+      .row
+        .col-md-4
+          .row
+            .col-md-12
+              = f.text_field :payment_date, placeholder:'Payment Date', class:'form-control', autocomplete:'off'
+          .row
+            .col-md-12.visible-lg.visible-md.hidden-sm.hidden-xs
+              = f.submit 'Record Payment', class:'btn btn-lg btn-success'
+    .col-md-6
+      .row
+        .col-md-12{style:'margin-top:0px; margin-bottom:15px;'}
+          #payment-toggle.btn-group.btn-group-sm{data:{toggle:'buttons'}}
+            %label.btn.btn-default
+              %input#cash-payment.active{type:'radio', name:'payment_toggle'}Cash
+            %label.btn.btn-default
+              %input#check-payment{type:'radio', name:'payment_toggle'}Check
+            %label.btn.btn-default
+              %input#credit-payment{type:'radio', name:'payment_toggle'}Credit
+      .row
+        .cash-payment.toggle-group
+          .col-md-12
+            .row
+              .col-md-12
+                = f.text_field :cash_name, placeholder:'Name Of Payer', class:'form-control', autocomplete:'off'
+            .row
+              .col-md-8
+                .input-group
+                  .input-group-addon $
+                  = f.text_field :cash_subtotal, placeholder:'Cash Amount', class:'form-control', autocomplete:'off'
+      .row
+        .check-payment.toggle-group{style:'display:none'}
+          .col-md-12
+            .row
+              .col-md-12
+                = f.text_field :check_name, placeholder:'Name On Check', class:'form-control', autocomplete:'off'
+            .row
+              .col-md-6
+                .input-group
+                  .input-group-addon $
+                  = f.text_field :check_subtotal, placeholder:'Check Amount', class:'form-control', autocomplete:'off'
+              .col-md-6
+                = f.text_field :check_number, placeholder:'Check Number', class:'form-control', autocomplete:'off'
+            .row
+              .col-md-12
+                = f.text_field :check_routing, placeholder:'Routing Number', class:'form-control', autocomplete:'off'
+      .row
+        .credit-payment.toggle-group{style:'display:none'}
+          .col-md-12
+            .row
+              .col-md-12
+                = f.text_field :cc_name, placeholder:'Name On Card', class:'form-control', autocomplete:'off'
+            .row
+              .col-md-6
+                .input-group
+                  .input-group-addon $
+                  = f.text_field :cc_subtotal, placeholder:'Amount', class:'form-control', autocomplete:'off'
+              .col-md-6
+                = f.select :cc_type, PaymentDetail::CC_TYPES, {}, class:'form-control'
+            .row
+              .col-md-12
+                = f.text_field :cc_processing_code, placeholder:'Processing Code', class:'form-control', autocomplete:'off'
+      .row
+        .col-md-12.hidden-lg.hidden-md.visible-sm.visible-xs{style:'margin-top:15px;'}
+          = f.submit 'Record Payment', class:'btn btn-lg btn-success'
 
-  .form-inputs
-    = f.input :payment_date
-    = f.input :cc_processing_code
-    = f.input :check_name
-    = f.input :check_number
-    = f.input :check_routing
-    = f.input :cash_subtotal
-    = f.input :check_subtotal
-    = f.input :cc_subtotal
-    = f.association :invoice
-
-  .form-actions
-    = f.button :submit
+= javascript_include_tag 'payment_details'

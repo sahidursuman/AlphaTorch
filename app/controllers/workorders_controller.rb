@@ -89,6 +89,6 @@ class WorkordersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def workorder_params
-      params.require(:workorder).permit(:name, :start_date, :customer_property_id, workorder_services_attributes:[:id, :service_id, :cost, :schedule, :_destroy])
+      params.require(:workorder).permit(:status_code, :name, :start_date, :customer_property_id, workorder_services_attributes:[:id, :service_id, :cost, :schedule, :_destroy])
     end
 end

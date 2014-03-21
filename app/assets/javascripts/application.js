@@ -57,7 +57,7 @@ function clear_ajax_loader(){
 //#initialize site wide searching
 function initialize_search(input_id){
     var input = $("[id *= '"+input_id+"']")
-
+    log('initializing search with ' + input_id)
     $.each(input, function(){
         var input = $(this)
         input.closest("form[role~='search']").submit(function(e){
@@ -88,6 +88,10 @@ function initialize_search(input_id){
             case 'property-search' :
                 var source = '/property_search'
                 property_search_autocomplete();
+                break
+            case 'invoice-search' :
+                var source = '/invoice_search'
+                invoice_search_autocomplete();
                 break
             default:
                 return
@@ -190,7 +194,21 @@ function initialize_search(input_id){
                 open: function(){
                     //removes the outdated jquery-ui hover colors
                     //$('li.ui-menu-item').removeClass('ui-menu-item')
-                    $('.dropdown-menu li a').css({'font-size':'18px'});
+                    $('.dropdown-menu li a').css({'font-size':'12px'});
+                }
+            });
+        }
+        function invoice_search_autocomplete(){
+            return input.autocomplete({
+                source: source,
+                delay: 500,
+                select: function(event, ui){
+                    $('#invoice-id').val(ui.item.id)
+                },
+                open: function(){
+                    //removes the outdated jquery-ui hover colors
+                    //$('li.ui-menu-item').removeClass('ui-menu-item')
+                    $('.dropdown-menu li a').css({'font-size':'12px'});
                 }
             });
         }
@@ -309,6 +327,12 @@ function handle_ajax(event, jqXHR, stage){
             break
         case 'edit_workorder_service' :
             handle_edit_workorder_service_form_submit(stage, jqXHR)
+            break
+        case 'new_payment_detail_link' :
+            handle_new_payment_detail_link(stage, jqXHR)
+            break
+        case 'new_payment_detail' :
+            handle_new_payment_detail_form_submit(stage, jqXHR)
             break
         default :
             default_ajax_handler(stage, target)
@@ -561,6 +585,50 @@ function handle_edit_workorder_service_form_submit(stage, jqXHR){
         case 'complete' :
             log('edit_workorder_service_form_submit - ' + stage)
             $('#workorder-data').load( $('#workorder-data').data('url'))
+            break;
+    }
+}
+
+function handle_new_payment_detail_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_payment_detail_link - ' + stage)
+            break;
+        case 'complete' :
+            log('new_payment_detail_link - ' + stage)
+            break;
+    }
+}
+
+function handle_new_payment_detail_form_submit(stage, jqXHR){
+    log(jqXHR)
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_payment_detail_form_submit - ' + stage)
+            $('.modal').modal('hide')
+            notify('success', jqXHR.message)
+            $.ajax({
+                global: false,
+                cache: false,
+                url:'/properties_refresh_profile',
+                dataType: 'html',
+                data: {id: jqXHR.id},
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert('could not refresh profile. reload the page.')
+                },
+                success: function(data, textStatus, jqXHR){
+                    $('#profile').html(data)
+                }
+            })
+            break;
+        case 'complete' :
+            log('new_payment_detail_form_submit - ' + stage)
             break;
     }
 }

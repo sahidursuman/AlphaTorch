@@ -3,7 +3,8 @@ adjustMapHeight = ->
 
 $ ->
   adjustMapHeight()
-  ajax_loader($('#map-canvas'),fetch_map_data)
+  if $('#map-canvas').length
+    ajax_loader($('#map-canvas'),fetch_map_data)
 
   options = $.extend(datatable_defaults(), "sAjaxSource": "/properties_data_tables_source")
   $('#properties.datatable').dataTable(options);

@@ -255,7 +255,7 @@
 
 // Small screen / tablet
 // Note: Deprecated @screen-sm and @screen-tablet as of v3.0.1
-@screen-sm:                  768px;
+@screen-sm:                  810px;//768px;
 @screen-sm-min:              @screen-sm;
 @screen-tablet:              @screen-sm-min;
 
@@ -289,7 +289,7 @@
 //** Point at which the navbar becomes uncollapsed.
 @grid-float-breakpoint:     @screen-sm-min;
 //** Point at which the navbar begins collapsing.
-@grid-float-breakpoint-max: (@grid-float-breakpoint - 1);
+@grid-float-breakpoint-max: (@grid-float-breakpoint + 1);
 
 
 //== Container sizes

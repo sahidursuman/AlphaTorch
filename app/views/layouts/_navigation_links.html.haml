@@ -1,13 +1,16 @@
 %ul.nav.navbar-nav.navbar-right{style:'padding-top:5px;'}
-  %li#properties-link
-    %a{href: "#{properties_path}"}
+  %li
+    %a#properties-link{href: "#{properties_path}"}
       %span.glyphicon.glyphicon-home
-  %li#workorders-link
-    %a{href: "#{workorders_path}"}
+  %li
+    %a#workorders-link{href: "#{workorders_path}"}
       %span.glyphicon.glyphicon-list-alt
-  %li#people-link
-    %a{href: '#'}
+  %li
+    %a#people-link{href: "#{customers_path}"}
       %span.glyphicon.glyphicon-user
+  %li
+    %a#new_payment_detail_link{href: "#{new_payment_detail_path}", data:{remote:true}}
+      %span.glyphicon.glyphicon-usd
   %li.dropdown
     %a.dropdown-toggle{"data-toggle" => "dropdown", href: "#"}
       Morgan Watson

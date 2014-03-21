@@ -107,8 +107,9 @@ class Workorder < ActiveRecord::Base
 
   def generate_invoice(invoice_events=valid_uninvoiced_billing_cycle_events)
     invoice = Invoice.new
+    invoice.id = Time.now.to_i
     invoice_events.each do |event|
-      event.invoice = invoice
+      event.invoice_id = invoice.id
       if event.lock && event.save
         invoice.invoice_amount += event.event_services.map(&:cost).sum
       end

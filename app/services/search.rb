@@ -25,24 +25,30 @@ class Search
     customer_basic    = Customer.select('*, 1 as Basic').where("first_name || ' ' || middle_initial || ' ' || last_name ILIKE ?", @query).to_sql
     customer_advanced = Customer.select('*, 0 as Basic').where("first_name || ' ' || middle_initial || ' ' || last_name ILIKE ?", @a_query).to_sql
 
-    #manually use columns because the id column in property and state will conflict and cause an
-    #ambiguous column error in postgres.
-    prop_cols         = 'properties.id, street_address_1, street_address_2, city, postal_code'
-    property_basic    = Property.select("#{prop_cols}, 1 as Basic").joins(:state).where("street_address_1 ILIKE ? OR street_address_2 ILIKE ? OR city ILIKE ? OR states.name ILIKE ? OR postal_code ILIKE ?", @query,@query,@query,@query,@query).to_sql
-    property_advanced = Property.select("#{prop_cols}, 0 as Basic").joins(:state).where("street_address_1 ILIKE ? OR street_address_2 ILIKE ? OR city ILIKE ? OR states.name ILIKE ? OR postal_code ILIKE ?", @a_query,@a_query,@a_query,@a_query,@a_query,).to_sql
+    property_basic    = Property.select('properties.*, states.name, 1 as Basic').joins(:state).where("street_address_1 ILIKE ? OR street_address_2 ILIKE ? OR city ILIKE ? OR states.name ILIKE ? OR postal_code ILIKE ?", @query,@query,@query,@query,@query).to_sql
+    property_advanced = Property.select('properties.*, states.name, 0 as Basic').joins(:state).where("street_address_1 ILIKE ? OR street_address_2 ILIKE ? OR city ILIKE ? OR states.name ILIKE ? OR postal_code ILIKE ?", @a_query,@a_query,@a_query,@a_query,@a_query,).to_sql
+
+    invoice_basic     = Invoice.joins(:status).select('invoices.*, statuses.status, 1 as Basic').where("invoices.id::text ILIKE ? OR statuses.status ILIKE ?", @query, @query).to_sql
+    invoice_advanced  = Invoice.joins(:status).select('invoices.*, statuses.status, 0 as Basic').where("invoices.id::text ILIKE ? OR statuses.status ILIKE ?", @a_query, @a_query).to_sql
 
     workorder = query(Workorder, workorder_basic, workorder_advanced)
     service = query(Service, service_basic, service_advanced)
     customer = query(Customer, customer_basic, customer_advanced)
     property = query(Property, property_basic, property_advanced)
+    invoice = query(Invoice, invoice_basic, invoice_advanced)
 
-    customer + property + workorder + service
+    customer + property + workorder + service + invoice
 
   end
 
   def query(klass, basic, advanced)
-    #property query joins state and the id columns will conflict
-    prefix = klass.to_s == 'Property' ? 'properties.' : nil
+    prefix = case klass.to_s
+               when 'Property'
+                 'properties.'
+               when 'Invoice'
+                 'invoices.'
+             end
+
     sql = "WITH
             basic    AS (#{basic}),
             advanced AS (#{advanced} AND #{prefix}id NOT IN(SELECT #{prefix}id FROM basic))
@@ -58,7 +64,6 @@ class Search
 
 end
 
-
 class SearchResult
   attr_reader :result
 
@@ -69,7 +74,7 @@ class SearchResult
     else
       @result = {
           value:    '',
-          icon:     'icon-remove',
+          icon:     'glyphicon glyphicon-remove',
           category: 'No Results...',
           url:      '#'
       }
@@ -77,15 +82,14 @@ class SearchResult
   end
 end
 
-
 class WorkorderSearchResult < SearchResult
   def initialize(workorder)
     @result = {
         value:     workorder.name,
         id:        workorder.id,
-        icon:     'icon-book',
+        icon:     'glyphicon glyphicon-book',
         category: 'Workorders',
-        url:      "workorders/#{workorder.id}"
+        url:      "/workorders/#{workorder.id}"
     }
   end
 end
@@ -96,9 +100,9 @@ class ServiceSearchResult < SearchResult
         value:     service.name,
         id:        service.id,
         cost:      service.base_cost,
-        icon:     'icon-wrench',
+        icon:     'glyphicon glyphicon-wrench',
         category: 'Services',
-        url:       "services/#{service.id}"
+        url:       "/services/#{service.id}"
     }
   end
 end
@@ -108,9 +112,9 @@ class CustomerSearchResult < SearchResult
     @result = {
         value:     customer.name,
         id:        customer.id,
-        icon:     'icon-user',
+        icon:     'glyphicon glyphicon-user',
         category: 'Customers',
-        url:       "customers/#{customer.id}"
+        url:       "/customers/#{customer.id}"
     }
   end
 end
@@ -120,9 +124,21 @@ class PropertySearchResult < SearchResult
     @result = {
         value:     property.street_address_1,
         id:        property.id,
-        icon:     'icon-home',
+        icon:     'glyphicon glyphicon-home',
         category: 'Properties',
-        url:       "properties/#{property.id}"
+        url:       "/properties/#{property.id}"
+    }
+  end
+end
+
+class InvoiceSearchResult < SearchResult
+  def initialize(invoice)
+    @result = {
+        value:     "##{invoice.id} - #{invoice.status.status} - $#{(invoice.balance_due)}",
+        id:        invoice.id,
+        icon:     'glyphicon glyphicon-usd',
+        category: 'Invoices',
+        url:       "/invoices/#{invoice.id}"
     }
   end
 end

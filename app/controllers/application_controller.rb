@@ -33,6 +33,12 @@ class ApplicationController < ActionController::Base
     render :json => results
   end
 
+  def invoice_search
+    search_term = params[:term]
+    results = Search.new(search_term).results.group_by {|k| k[:category]}['Invoices']
+    render :json => results
+  end
+
   def ajax_loader
     render partial: 'shared/ajax_loader'
   end

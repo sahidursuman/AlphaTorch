@@ -16,9 +16,9 @@ CortezLandscaping::Application.routes.draw do
 
   resources :statuses
 
-  resources :invoices do
-    resources :payment_details
-  end
+  resources :invoices
+
+  resources :payment_details
 
   get 'calendar_data'   => 'events#to_calendar'
   resources :events do
@@ -45,7 +45,8 @@ CortezLandscaping::Application.routes.draw do
   get 'workorder_search' => 'application#workorder_search'
   get 'service_search' => 'application#service_search'
   get 'customer_search' => 'application#customer_search'
-  get 'property_search' => 'properties#property_search'
+  get 'property_search' => 'application#property_search'
+  get 'invoice_search' => 'application#invoice_search'
 
   get 'ajax_loader' => 'application#ajax_loader'
   root :to => "home#index"

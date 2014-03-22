@@ -4,12 +4,17 @@ class InvoicesController < ApplicationController
   # GET /invoices
   # GET /invoices.json
   def index
-    @invoices = Invoice.all
+    if params[:workorder_id]
+      @invoices = Invoice.includes(:events).where("events.workorder_id = #{params[:workorder_id]}")
+    else
+      @invoices = Invoice.all
+    end
   end
 
   # GET /invoices/1
   # GET /invoices/1.json
   def show
+    render layout:false
   end
 
   # GET /invoices/new

@@ -1,8 +1,8 @@
-adjustMapHeight = ->
+adjustDivHeight = ->
   $('#map-canvas').css('height', $('#property-form').height())
-
+  $('#workorders').css('height', $('#profile').height())
 $ ->
-  adjustMapHeight()
+  adjustDivHeight()
   if $('#map-canvas').length
     ajax_loader($('#map-canvas'),fetch_map_data)
 
@@ -39,7 +39,7 @@ $ ->
     ajax_loader($('#map-canvas'),fetch_map_data)
 
   $(window).on 'resize', ->
-    adjustMapHeight()
+    adjustDivHeight()
 
 
 fetch_map_data = ->

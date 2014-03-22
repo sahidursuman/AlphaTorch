@@ -1,6 +1,6 @@
 class PaymentDetailsController < ApplicationController
   before_filter :set_payment_detail, only: [:show, :edit, :update, :destroy]
-
+  before_filter :set_invoice, only: [:new, :edit]
   # GET /payment_details
   # GET /payment_details.json
   def index
@@ -83,6 +83,11 @@ class PaymentDetailsController < ApplicationController
                             AND payment_details.invoice_id = invoices.id
                             AND payment_details.id = #{@payment_detail.id}
                             ").first
+    end
+
+    def set_invoice
+      id = params[:invoice_id] ? params.delete(:invoice_id) : nil
+      @invoice = id ? Invoice.find(id) : nil
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

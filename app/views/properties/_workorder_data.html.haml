@@ -1,37 +1,45 @@
 .row
   - if @workorder
-    .col-md-8{style:'height:300px; overflow-y: scroll; overflow-x: hidden;'}
+    .col-md-7{style:'height:300px; overflow-y: scroll; overflow-x: hidden;'}
       .row
         %table.table.table-hover
           %caption.h4
-            = @workorder.name + ' Services'
-            = link_to content_tag(:i, nil, {class:'glyphicon glyphicon-plus pull-right', style:'color:green;'}),
-                  new_workorder_workorder_service_path(workorder_id:@workorder.id),
+            .row
+              .col-md-12
+                = @workorder.name + ' Services'
+                = link_to content_tag(:i, nil, {class:'glyphicon glyphicon-plus pull-right', style:'color:green;'}),
+                      new_workorder_workorder_service_path(workorder_id:@workorder.id),
+                      remote:true,
+                      id:'new_workorder_service_link'
+            .row{style:'margin-top:5px;'}
+              .col-md-12
+                %center
+                  = link_to 'View Invoices',
+                  workorder_invoices_path(@workorder),
                   remote:true,
-                  id:'new_workorder_service_link'
+                  id:'workorder_invoice_link',
+                  class:'btn btn-sm btn-success'
           %thead
             %tr
-              %th= 'Service Name'
-              %th= 'Schedule'
-              %th= 'Cost'
+              %th.h5= 'Service Name'
+              %th.h5= 'Schedule'
+              %th.h5= 'Cost'
               %th
           %tbody
             - @workorder.workorder_services.each do |wo_service|
               %tr
-                %td.col-md-2= wo_service.service.name
-                %td.col-md-4= wo_service.converted_schedule.to_s
-                %td.col-md-1= humanized_money_with_symbol(wo_service.cost)
+                %td.col-md-2.h6= link_to wo_service.service.name, service_path(wo_service.service)
+                %td.col-md-4.h6= wo_service.converted_schedule.to_s
+                %td.col-md-1.h6= humanized_money_with_symbol(wo_service.cost)
                 %td.col-md-2
                   .row
-                    .col-md-6
-                      =link_to 'Edit', edit_workorder_workorder_service_path(@workorder, wo_service),
-                      class:'btn btn-xs btn-default', remote:true, id:'edit_workorder_service_link'
+                    =link_to 'Edit', edit_workorder_workorder_service_path(@workorder, wo_service),
+                    class:'btn btn-xs btn-default pull-left', remote:true, id:'edit_workorder_service_link',
+                    style:'margin-right: 10px;'
+                    =link_to 'Delete', workorder_workorder_service_path(@workorder, wo_service), method: :delete,
+                    class:'btn btn-xs btn-danger pull-left', confirm: 'Are You Sure?', remote:true, id:'delete_workorder_service_link'
 
-                    .col-md-6.delete_workorder_service
-                      =link_to 'Delete', workorder_workorder_service_path(@workorder, wo_service), method: :delete,
-                      class:'btn btn-xs btn-danger', confirm: 'Are You Sure?', remote:true, id:'delete_workorder_service_link'
-
-    .col-md-4
+    .col-md-5
       #workorder-service-helper-area
 
   - else

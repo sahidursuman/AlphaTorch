@@ -334,6 +334,9 @@ function handle_ajax(event, jqXHR, stage){
         case 'new_payment_detail' :
             handle_new_payment_detail_form_submit(stage, jqXHR)
             break
+        case 'workorder_invoice_link' :
+            handle_workorder_invoice_link(stage, jqXHR)
+            break
         default :
             default_ajax_handler(stage, target)
             break
@@ -404,7 +407,7 @@ function handle_new_workorder_form_submit(stage,jqXHR){
                     alert('could not refresh workorders. reload the page.')
                 },
                 success: function(data, textStatus, jqXHR){
-                    $('#workorders').html(data)
+                    $('#workorders table').html(data)
                 }
             })
 
@@ -604,7 +607,6 @@ function handle_new_payment_detail_link(stage, jqXHR){
 }
 
 function handle_new_payment_detail_form_submit(stage, jqXHR){
-    log(jqXHR)
     switch(stage){
         case 'error' :
             notify('error', parse_json_errors(jqXHR))
@@ -629,6 +631,27 @@ function handle_new_payment_detail_form_submit(stage, jqXHR){
             break;
         case 'complete' :
             log('new_payment_detail_form_submit - ' + stage)
+            break;
+    }
+}
+
+function handle_workorder_invoice_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('workorder_invoice_link - ' + stage)
+            var helper_area = $('#workorder-service-helper-area')
+            var title = $('<center><div>Invoices</div></center>')
+            var table = $($.parseHTML(jqXHR)).find('table')
+            title.addClass('h4')
+            helper_area.html('')
+            helper_area.html(title)
+            helper_area.append(table)
+            break;
+        case 'complete' :
+            log('workorder_invoice_link - ' + stage)
             break;
     }
 }

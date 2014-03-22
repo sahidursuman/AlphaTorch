@@ -1,26 +1,23 @@
 %h1 Listing invoices
 
-%table
-  %tr
-    %th Invoice status
-    %th Invoice date
-    %th Due date
-    %th Invoice amount
-    %th Balance due
-    %th
-    %th
-    %th
-
-  - @invoices.each do |invoice|
+%table.table
+  %thead
     %tr
-      %td= invoice.status.status
-      %td= invoice.invoice_date
-      %td= invoice.due_date
-      %td= invoice.invoice_amount
-      %td= invoice.balance_due
-      %td= link_to 'Show', invoice
-      %td= link_to 'Edit', edit_invoice_path(invoice)
-      %td= link_to 'Destroy', invoice, :method => :delete, :data => { :confirm => 'Are you sure?' }
+      %th.h5 Number
+      %th.h5 Due By
+      %th.h5 Balance
+      %th.h5 Status
+      %th
+  %tbody
+    - @invoices.each do |invoice|
+      %tr
+        %td.h6= link_to invoice.id, invoice, target:'_blank'
+        %td.h6= invoice.due_date
+        %td.h6= humanized_money_with_symbol(invoice.balance_due)
+        %td.h6= invoice.status.status
+        %td
+          =link_to 'Payment', new_payment_detail_path(invoice_id:invoice.id), remote:true, id:'new_payment_detail_link', class:'btn btn-xs btn-success', style:'margin-right: 5px;'
+          =link_to 'Delete', invoice, remote:true, :method => :delete, :data => { :confirm => 'Are you sure?' }, class:'btn btn-xs btn-danger'
 
 %br
 

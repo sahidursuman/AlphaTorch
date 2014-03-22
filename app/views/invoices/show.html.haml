@@ -1,21 +1,21 @@
+%style
+  html, body{margin:0 auto;}
+  container{width:800px;}
 %p#notice= notice
 
-%p
-  %b Invoice status:
-  = @invoice.status.status
-%p
-  %b Invoice date:
-  = @invoice.invoice_date
-%p
-  %b Due date:
-  = @invoice.due_date
-%p
-  %b Invoice amount:
-  = @invoice.invoice_amount
-%p
-  %b Balance due:
-  = @invoice.balance_due
-
-= link_to 'Edit', edit_invoice_path(@invoice)
-\|
-= link_to 'Back', invoices_path
+%container
+  %p
+    %b Invoice status:
+    = @invoice.status.status
+  %p
+    %b Invoice date:
+    = @invoice.invoice_date
+  %p
+    %b Due date:
+    = @invoice.due_date
+  %p
+    %b Invoice amount:
+    = @invoice.invoice_amount
+  %p
+    %b Balance due:
+    = @invoice.balance_due

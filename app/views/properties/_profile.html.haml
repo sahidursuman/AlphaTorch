@@ -3,10 +3,10 @@
     .pull-left.h3{style:'margin-top: 0px;'}
       Property Information
   .col-md-6
-    .pull-right.h3{style:'margin-top: 0px;'}
-      = link_to 'Edit', edit_property_path(@property), class:'btn btn-xs btn-default', remote:true, id:'edit_property_link'
-    .pull-right.h3{style:'margin-top: 0px; margin-right: 10px;'}
+    .pull-right{style:'margin-left: 10px;'}
       = link_to 'Delete', property_path(@property), class:'btn btn-xs btn-danger', method: :delete, confirm: 'Are You Sure?'
+    .pull-right
+      = link_to 'Edit', edit_property_path(@property), class:'btn btn-xs btn-default', remote:true, id:'edit_property_link'
 %hr
 .row
   .col-md-5

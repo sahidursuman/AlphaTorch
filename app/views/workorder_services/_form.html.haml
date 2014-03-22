@@ -9,7 +9,7 @@
     - url = "/workorders/#{@workorder.customer_property.property_id}/workorder_services/#{@workorder_service.id}"
     - submit_button_text = 'Edit This Service'
     - id = 'edit_workorder_service'
-= form_method
+
 = nested_form_for([:workorder, @workorder_service], url:url,
                                                    html: {method:form_method,
                                                               id: id,

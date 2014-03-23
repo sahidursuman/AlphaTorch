@@ -21,6 +21,8 @@ CortezLandscaping::Application.routes.draw do
   resources :payment_details
 
   get 'calendar_data'   => 'events#to_calendar'
+  post 'events_remove_from_invoice' => 'events#remove_from_invoice'
+  post 'events_add_to_invoice' => 'events#add_to_invoice'
   resources :events do
     resources :event_services
   end

@@ -14,11 +14,36 @@ class PaymentDetail < ActiveRecord::Base
   validate :only_one_payment_type
   validate :has_payment_type
   validate :payment_less_than_amount_due
+  validate :invoice_status_not_paid
 
   CC_TYPES = %w(Visa Mastercard American\ Express Discover)
 
   def amount
-    cash_subtotal + check_subtotal + cc_subtotal
+    cash_subtotal.to_i + check_subtotal.to_i + cc_subtotal.to_i
+  end
+
+  def payment_method
+    if cash_subtotal
+      'Cash'
+    elsif check_subtotal
+      'Check'
+    elsif cc_subtotal
+      'Credit'
+    else
+      nil
+    end
+  end
+
+  def name
+    if cash_subtotal
+      cash_name
+    elsif check_subtotal
+      check_name
+    elsif cc_subtotal
+      cc_name
+    else
+      nil
+    end
   end
 
   private
@@ -42,7 +67,7 @@ class PaymentDetail < ActiveRecord::Base
 
   def cash_fields_valid
     if (cash_subtotal || cash_name).present?
-      errors.add(:payment_amount, "cannot be greater than the balance due - $#{invoice.balance_due}") if cash_subtotal.nil?
+      errors.add(:payment_amount, 'cannot be blank') if cash_subtotal.nil?
       errors.add(:cash_amount, 'must be greater than $0') unless cash_subtotal.nil? || cash_subtotal.to_i > 0
       errors.add(:name, 'cannot be blank') unless cash_name.present?
     end
@@ -50,7 +75,7 @@ class PaymentDetail < ActiveRecord::Base
 
   def check_fields_valid
     if (check_subtotal || check_name || check_number || check_routing).present?
-      errors.add(:payment_amount, "cannot be greater than the balance due - $#{invoice.balance_due}") if check_subtotal.nil?
+      errors.add(:payment_amount, 'cannot be blank') if check_subtotal.nil?
       errors.add(:check_amount, 'must be greater than $0') unless check_subtotal.nil? || check_subtotal.to_i > 0
       errors.add(:name, 'cannont be blank') unless check_name
       errors.add(:check_number, 'cannont be blank') unless check_number
@@ -60,7 +85,7 @@ class PaymentDetail < ActiveRecord::Base
 
   def credit_fields_valid
     if (cc_subtotal || cc_name || cc_processing_code).present?
-      errors.add(:payment_amount, "cannot be greater than the balance due - $#{invoice.balance_due}") if cc_subtotal.nil?
+      errors.add(:payment_amount, 'cannot be blank') if cc_subtotal.nil?
       errors.add(:credit_amount, 'must be greater than $0') unless cc_subtotal.nil? || cc_subtotal.to_i > 0
       errors.add(:name, 'cannot be blank') unless cc_name
       errors.add(:processing_code, 'cannot be blank') unless cc_processing_code
@@ -69,8 +94,22 @@ class PaymentDetail < ActiveRecord::Base
 
   def payment_less_than_amount_due
     if (cc_subtotal || check_subtotal || cash_subtotal).to_i > invoice.balance_due
-      errors.add(:payment_amount, 'cannot be greater than the amount due.')
+      errors.add(:payment_amount, "cannot be greater than the amount due - $#{invoice.balance_due}")
     end
+  end
+
+  def invoice_status_not_paid
+    unless invoice.unpaid?
+      errors.clear
+      errors.add(:invoice, 'has already been paid. Payments are no longer authorized')
+    end
+  end
+
+  private
+
+  def update_invoice
+    self.invoice.reload
+    self.invoice.update_status
   end
 
 end

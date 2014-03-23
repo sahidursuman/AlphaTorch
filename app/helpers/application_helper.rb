@@ -1,7 +1,7 @@
 module ApplicationHelper
 
   def remove_link(msg)
-    content_tag(:div, class:'btn btn-sm btn-danger col-md-12') do
+    content_tag(:div, class:'btn btn-sm btn-danger') do
       concat(content_tag(:i, nil, class:'glyphicon glyphicon-remove', style:'margin-right:5px;') + msg)
     end
   end

@@ -41,6 +41,7 @@ $ ->
       $.ajax({
         url:  "/events/#{event.id}"
         async: true
+        dataType:'html'
         error: (jqXHR, status, error) ->
           console.log(error)
         success: (data, status, jqXHR) ->

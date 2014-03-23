@@ -1,21 +1,71 @@
-%style
-  html, body{margin:0 auto;}
-  container{width:800px;}
-%p#notice= notice
+.row
+  .col-md-8.col-md-offset-2.well
+    - if !@invoice.new_record?
+      .row
+        #header.col-md-12
+          .col-md-4
+            = image_tag 'cortez_logo.png', size: '75x75'
+          .col-md-4.h3
+            #invoice_paid= 'PAID' unless @invoice.unpaid?
+          .col-md-4.h4
+            = "Invoice# #{@invoice.id}"
+            .row
+              .col-md-12.noprint
+                = link_to 'Print', 'javascript:window.print()', class:'btn btn-xs btn-default'
+                - if @invoice.unpaid?
+                  = link_to 'Edit', edit_invoice_path(@invoice, workorder_id:@workorder.id), class:'btn btn-xs btn-default'
 
-%container
-  %p
-    %b Invoice status:
-    = @invoice.status.status
-  %p
-    %b Invoice date:
-    = @invoice.invoice_date
-  %p
-    %b Due date:
-    = @invoice.due_date
-  %p
-    %b Invoice amount:
-    = @invoice.invoice_amount
-  %p
-    %b Balance due:
-    = @invoice.balance_due
+    - else
+      .row
+        .col-md-12
+          = link_to 'Save Invoice', nil, class:'btn btn-lg btn-success'
+    %hr
+    .row
+      .col-md-3.pull-left
+        .h5= @customer.name
+        .h5= @property.street_address_1
+        - if @property.street_address_2
+          .h5= @property.street_address_2
+        .h5= "#{@property.city}, #{@property.state.short_name} #{@property.postal_code}"
+        - if @customer.primary_phone
+          .h5= @customer.primary_phone
+        - elsif @customer.secondary_phone
+          .h5= @customer.secondary_phone
+        - if @customer.email
+          .h5= @customer.email
+      .col-md-3.pull-right
+        .h5= "Created: #{(@invoice.invoice_date.strftime('%m/%d/%Y') rescue Date.today.strftime('%m/%d/%Y'))}"
+        .h5= "Due By: #{(@invoice.due_date.strftime('%m/%d/%Y') rescue (Date.today+1.month).strftime('%m/%d/%Y'))}"
+        .h5= "Total: #{humanized_money_with_symbol(@invoice.invoice_amount)}"
+        .h5= "Balance: #{humanized_money_with_symbol(@invoice.balance_due)}"
+
+    %hr
+    .row
+      .col-md-12
+        %table.table.table-striped
+          %thead
+            %tr
+              %th.h5= 'Date'
+              %th.h5= 'Services'
+              %th.h5= 'Cost'
+          %tbody
+            - unless @invoice.events.empty?
+              - @invoice.events.order('start asc').each do |event|
+                = render 'line_item', event:event
+
+    - unless @invoice.payment_details.empty?
+      %hr
+        .row
+          .col-md-12
+            %table.table.table-striped
+              %caption.h3 Payments Received
+              %thead
+                %tr
+                  %th.h5= 'Date'
+                  %th.h5= 'Received From'
+                  %th.h5= 'Amount'
+                  %th.h5= 'Payment Method'
+
+              %tbody
+                - @invoice.payment_details.order('payment_date asc').each do |payment|
+                  = render 'payment_line', {payment:payment}

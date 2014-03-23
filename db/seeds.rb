@@ -75,23 +75,12 @@ CustomerProperty.create(
 
 )
 
-Workorder.create(
-    [
-        {name:'Workorder #1', start_date:'2014-03-01', customer_property: CustomerProperty.find(2)},
-        {name:'Workorder #2', start_date:'2014-03-01', customer_property: CustomerProperty.find(2)},
-        {name:'Workorder #3', start_date:'2014-03-01', customer_property: CustomerProperty.find(3)},
-        {name:'Workorder #4', start_date:'2014-03-01', customer_property: CustomerProperty.find(4)},
-    ]
-)
-
-WorkorderService.create(
-    [
-        {service_id: 1, workorder_id: 1, schedule: {:validations=>{}, :rule_type=>'IceCube::DailyRule', :interval=>1}, cost: 10},
-        {service_id: 2, workorder_id: 1, schedule: {:validations=>{}, :rule_type=>'IceCube::DailyRule', :interval=>1}, cost: 15},
-        {service_id: 3, workorder_id: 2, schedule: {:validations=>{}, :rule_type=>'IceCube::DailyRule', :interval=>1}, cost: 150},
-        {service_id: 1, workorder_id: 3, schedule: {:validations=>{}, :rule_type=>'IceCube::DailyRule', :interval=>1}, cost: 10},
-        {service_id: 2, workorder_id: 4, schedule: {:validations=>{}, :rule_type=>'IceCube::DailyRule', :interval=>1}, cost: 10}
-    ]
-)
-Workorder.all.each(&:save)
+#Workorder.create(
+#    [
+#        {name:'Workorder #1', start_date:'2014-03-01', customer_property: CustomerProperty.find(2)},
+#        {name:'Workorder #2', start_date:'2014-03-01', customer_property: CustomerProperty.find(2)},
+#        {name:'Workorder #3', start_date:'2014-03-01', customer_property: CustomerProperty.find(3)},
+#        {name:'Workorder #4', start_date:'2014-03-01', customer_property: CustomerProperty.find(4)},
+#    ]
+#)
 

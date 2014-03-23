@@ -1,5 +1,6 @@
 class Workorder < ActiveRecord::Base
-  after_save :update_events
+  after_commit :create_events, on: :create
+  after_commit :update_events, on: :update
   require 'model_locking'
   include ModelLocking
   include ActionView::Helpers::UrlHelper
@@ -99,6 +100,10 @@ class Workorder < ActiveRecord::Base
 
   def valid_uninvoiced_billing_cycle_events
     Event.billing_cycle.not_invoiced.past.where(workorder_id: self.id)
+  end
+
+  def has_valid_uninvoiced_billing_cycle_events
+    valid_uninvoiced_billing_cycle_events.count > 0
   end
 
   def has_uninvoiced_events_in_past

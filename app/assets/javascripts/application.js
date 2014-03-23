@@ -282,6 +282,25 @@ $(document).ready(function(){
     initialize_search('property-search');
 })
 
+function refresh(elements, callback){
+        $.ajax({
+            url:window.location,
+            dataType:'html',
+            method: 'get',
+            cache:false,
+            success: function(data){
+                $.each(elements, function(idx, element){
+                    var content = $($.parseHTML(data)).find('#'+element.attr('id'))
+                    element.html(content)
+                });
+            },
+            complete: function(){
+                if(!(typeof callback === 'undefined'))
+                  callback()
+            }
+        })
+}
+
 
 /*
 * AJAX event handlers
@@ -337,6 +356,9 @@ function handle_ajax(event, jqXHR, stage){
         case 'workorder_invoice_link' :
             handle_workorder_invoice_link(stage, jqXHR)
             break
+        case 'delete_invoice_link' :
+            handle_delete_invoice_link(stage, jqXHR)
+            break
         default :
             default_ajax_handler(stage, target)
             break
@@ -384,33 +406,13 @@ function handle_new_workorder_form_submit(stage,jqXHR){
             log('new_workorder_form_submit - ' + stage)
             $('#ajax-modal').modal('hide')
             notify('success', jqXHR.message)
-            $.ajax({
-                global: false,
-                cache: false,
-                url:'/properties_refresh_profile',
-                dataType: 'html',
-                data: {id: jqXHR.id},
-                error: function(jqXHR, textStatus, errorThrown){
-                    alert('could not refresh profile. reload the page.')
-                },
-                success: function(data, textStatus, jqXHR){
-                    $('#profile').html(data)
-                }
+            refresh([$('#profile'),$('#workorders')], function(){
+                $('.workorder').on('click', function(){
+                    var url = $(this).data('url')
+                    $('#workorder-data').load(url)
+                    $('#workorder-data').attr('data-url', url)
+                })
             })
-            $.ajax({
-                global: false,
-                cache: false,
-                url: '/properties_refresh_workorders',
-                dataType: 'html',
-                data: {id:jqXHR.id},
-                error: function(jqXHR, textStatus, errorThrown){
-                    alert('could not refresh workorders. reload the page.')
-                },
-                success: function(data, textStatus, jqXHR){
-                    $('#workorders table').html(data)
-                }
-            })
-
             break;
         case 'complete' :
             log('new_workorder_form_submit - ' + stage)
@@ -441,31 +443,12 @@ function handle_edit_property_form_submit(stage,jqXHR){
             log('edit_property_form_submit - ' + stage)
             $('#ajax-modal').modal('hide')
             notify('success', jqXHR.message)
-            $.ajax({
-                global: false,
-                cache: false,
-                url:'/properties_refresh_profile',
-                dataType: 'html',
-                data: {id: jqXHR.id},
-                error: function(jqXHR, textStatus, errorThrown){
-                    alert('could not refresh profile. reload the page.')
-                },
-                success: function(data, textStatus, jqXHR){
-                    $('#profile').html(data)
-                }
-            })
-            $.ajax({
-                global: false,
-                cache: false,
-                url: '/properties_refresh_workorders',
-                dataType: 'html',
-                data: {id:jqXHR.id},
-                error: function(jqXHR, textStatus, errorThrown){
-                    alert('could not refresh workorders. reload the page.')
-                },
-                success: function(data, textStatus, jqXHR){
-                    $('#workorders').html(data)
-                }
+            refresh([$('#profile'), $('#workorders')], function(){
+                $('.workorder').on('click', function(){
+                    var url = $(this).data('url')
+                    $('#workorder-data').load(url)
+                    $('#workorder-data').attr('data-url', url)
+                })
             })
             break;
         case 'complete' :
@@ -516,7 +499,10 @@ function handle_new_workorder_service_link(stage, jqXHR){
             log('new_workorder_service_link - ' + stage)
             $('.cancel').on('click', function(e){
                 e.preventDefault()
-                form_area.fadeOut('fast')
+                form_area.fadeOut('fast', function(){
+                    form_area.html('')
+                    form_area.fadeIn('fast')
+                })
                 icon.removeClass('disabled').css('color', 'green')
             })
             $('.submit').on('click', function(){
@@ -566,7 +552,10 @@ function handle_edit_workorder_service_link(stage, jqXHR){
             icon.removeClass('disabled').css('color', 'green')
             $('.cancel').on('click', function(e){
                 e.preventDefault()
-                form_area.fadeOut('fast')
+                form_area.fadeOut('fast', function(){
+                    form_area.html('')
+                    form_area.fadeIn('fast')
+                })
             })
             $('.submit').on('click', function(){
                 $('form[id*="workorder_service"]').submit()
@@ -615,19 +604,8 @@ function handle_new_payment_detail_form_submit(stage, jqXHR){
             log('new_payment_detail_form_submit - ' + stage)
             $('.modal').modal('hide')
             notify('success', jqXHR.message)
-            $.ajax({
-                global: false,
-                cache: false,
-                url:'/properties_refresh_profile',
-                dataType: 'html',
-                data: {id: jqXHR.id},
-                error: function(jqXHR, textStatus, errorThrown){
-                    alert('could not refresh profile. reload the page.')
-                },
-                success: function(data, textStatus, jqXHR){
-                    $('#profile').html(data)
-                }
-            })
+            refresh([$('#profile')])
+            $('#workorder_invoice_link').click()
             break;
         case 'complete' :
             log('new_payment_detail_form_submit - ' + stage)
@@ -652,6 +630,23 @@ function handle_workorder_invoice_link(stage, jqXHR){
             break;
         case 'complete' :
             log('workorder_invoice_link - ' + stage)
+            break;
+    }
+}
+
+function handle_delete_invoice_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('delete_invoice_link - ' + stage)
+            notify('success', jqXHR.message)
+            refresh([$('#profile')])
+            $('#workorder_invoice_link').click()
+            break;
+        case 'complete' :
+            log('delete_invoice_link - ' + stage)
             break;
     }
 }

@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  before_filter :set_event, only: [:show, :edit, :update, :destroy]
+  before_filter :set_event, only: [:show, :edit, :update, :destroy, :remove_from_invoice, :add_to_invoice]
 
   # GET /events
   # GET /events.json
@@ -69,6 +69,26 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       format.js {render json: Event.to_calendar(from_date, to_date)}
+    end
+  end
+
+  def remove_from_invoice
+    respond_to do |format|
+      if @event.remove_from_invoice
+        format.json { render json: {message: 'Removed From Invoice.'}, status: :ok}
+      else
+        format.json { render json: {message: 'Unable To Remove Item'}, status: :unprocessable_entity}
+      end
+    end
+  end
+
+  def add_to_invoice
+    respond_to do |format|
+      if @event.add_to_invoice(params[:invoice_id])
+        format.json { render json: {message: 'Added To Invoice.'}, status: :ok}
+      else
+        format.json { render json: {message: 'Unable To Add Item'}, status: :unprocessable_entity}
+      end
     end
   end
 

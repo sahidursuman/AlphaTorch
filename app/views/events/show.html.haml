@@ -1,27 +1,19 @@
 %p#notice= notice
+.content
 
-%p
-  %b Status:
-  = Status.get_status(@event.status_code).upcase
-%p
-  %b Workorder:
-  = @event.workorder.name
-%p
-  %b Event Date:
-  = @event.start
-%p
-  %b Name:
-  = @event.name
+  .h6= Status.get_status(@event.status_code).upcase
+  .h6= @event.workorder.customer_property.property.html_full_address
+  .h6= @event.start.strftime('%m/%d/%Y')
 
-- if @event.event_services.any?
-  %h5 Services
-  - @event.event_services.each do |es|
-    = es.service.name
-    %br
-- else
-  %h5.page-header No Services
+  - if @event.event_services.any?
+    %hr
+    - @event.event_services.each do |es|
+      .h6= es.service.name
+      %br
+  - else
+    .h5.page-header No Services
 
-%br
-= link_to 'Edit', edit_event_path(@event), class:' btn btn-small btn-default'
-= link_to 'Delete', event_path(@event), method: 'delete', data:{confirm:'Are You Sure?'}, class:' btn btn-small btn-danger'
+  %br
+  = link_to 'Edit', edit_event_path(@event), class:' btn btn-small btn-default'
+  = link_to 'Delete', event_path(@event), method: 'delete', data:{confirm:'Are You Sure?'}, class:' btn btn-small btn-danger'
 

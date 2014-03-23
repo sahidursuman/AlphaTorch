@@ -1,11 +1,12 @@
 class InvoicesController < ApplicationController
   before_filter :set_invoice, only: [:show, :edit, :update, :destroy]
+  before_filter :set_workorder, only: [:index, :show, :new, :edit]
 
   # GET /invoices
   # GET /invoices.json
   def index
-    if params[:workorder_id]
-      @invoices = Invoice.includes(:events).where("events.workorder_id = #{params[:workorder_id]}")
+    if @workorder
+      @invoices = Invoice.includes(:events).where("events.workorder_id = #{@workorder.id}")
     else
       @invoices = Invoice.all
     end
@@ -14,16 +15,28 @@ class InvoicesController < ApplicationController
   # GET /invoices/1
   # GET /invoices/1.json
   def show
-    render layout:false
+    @property = @workorder.customer_property.property
+    @customer = @workorder.customer_property.customer
   end
 
   # GET /invoices/new
   def new
     @invoice = Invoice.new
+    @property = @workorder.customer_property.property
+    @customer = @workorder.customer_property.customer
   end
 
   # GET /invoices/1/edit
   def edit
+    @property = @workorder.customer_property.property
+    @customer = @workorder.customer_property.customer
+    respond_to do |format|
+      format.html {
+        unless @invoice.unpaid?
+          redirect_to invoice_path(@invoice, workorder_id:@workorder.id)
+        end
+      }
+    end
   end
 
   # POST /invoices
@@ -62,7 +75,7 @@ class InvoicesController < ApplicationController
     @invoice.destroy
     respond_to do |format|
       format.html { redirect_to invoices_url }
-      format.json { head :no_content }
+      format.json { render json: {message:'Invoice was successfully deleted.'} }
     end
   end
 
@@ -70,6 +83,10 @@ class InvoicesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_invoice
       @invoice = Invoice.find(params[:id])
+    end
+
+    def set_workorder
+      @workorder = Workorder.find(params[:workorder_id]) rescue nil
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

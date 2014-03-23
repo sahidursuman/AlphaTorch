@@ -1,15 +1,15 @@
 class Invoice < ActiveRecord::Base
   belongs_to :status, primary_key: 'status_code', foreign_key: 'status_code'
-  has_many :payment_details
+  has_many :payment_details, dependent: :destroy
   has_many :events
-  has_one :workorder, through: :events
+  has_many :workorders, through: :events
 
   scope :past_due, ->{where("due_date < '#{Date.today}' AND (status_code != '#{Status.get_code('Paid')}' OR status_code != '#{Status.get_code('Processing')}')")}
 
   def update_total
-    'Updating Invoice Total'
+    p 'Updating Invoice Total'
     self.invoice_amount = events.map {|e| e.event_services.map(&:cost).sum}.sum
-    self.save!
+    self.save
   end
 
   def finalize
@@ -65,6 +65,28 @@ class Invoice < ActiveRecord::Base
 
   def balance_due
     invoice_amount - payment_total
+  end
+
+  def update_status
+    if balance_due == 0
+      set_paid
+    else
+      set_created
+    end
+
+  end
+
+
+  private
+
+  def set_paid
+    self.status_code = Status.get_code('Paid')
+    self.save
+  end
+
+  def set_created
+    self.status_code = Status.get_code('Created')
+    self.save
   end
 
 end

@@ -15,7 +15,7 @@
               .col-md-12
                 %center
                   = link_to 'View Invoices',
-                  workorder_invoices_path(@workorder),
+                  workorder_invoices_path(@workorder)+"?_#{Time.now.to_i}",
                   remote:true,
                   id:'workorder_invoice_link',
                   class:'btn btn-sm btn-success'
@@ -45,6 +45,6 @@
   - else
     %center.col-md-12
       .h4
-        No work order selected. Select One From Above.
+        No work order selected. Select one from above.
       .h6
         (Go on. You know you want to.)

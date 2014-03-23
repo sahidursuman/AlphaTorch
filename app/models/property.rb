@@ -61,11 +61,13 @@ class Property < ActiveRecord::Base
   end
 
   def unpaid_invoices
-    invoices.map{|invoice| invoice if invoice.unpaid?} if invoices
+    invoices.compact.map{|invoice| invoice if invoice.unpaid?} if invoices
   end
 
   def balance_due
-    unpaid_invoices.map(&:balance_due).sum if unpaid_invoices
+    unless unpaid_invoices.nil? || unpaid_invoices.compact.empty?
+      unpaid_invoices.map(&:balance_due).sum
+    end
   end
 
   def links

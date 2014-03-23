@@ -1,0 +1,9 @@
+- event_services = event.event_services
+%tr
+  - unless controller_action == 'invoices#show'
+    %td.h6.noprint
+      = content_tag(:i, nil, class:'glyphicon glyphicon-remove remove-line-item', style:'color:red')
+      .event_id{style:'display:none'}= event.id
+  %td.h6= event.start.strftime('%m/%d/%Y')
+  %td.h6= event_services.map(&:service).flatten.map(&:name).flatten.join(', ')
+  %td.h6= humanized_money_with_symbol(event_services.map(&:cost).sum)

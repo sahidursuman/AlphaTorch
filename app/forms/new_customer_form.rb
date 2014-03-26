@@ -151,7 +151,7 @@ class NewCustomerForm
   end
 
   def unique_email
-    if Customer.where("email = '#{customer.email}' AND id != #{customer.id}").exists?
+    if Customer.where("email = '#{customer.email}'#{' AND id = ' + customer.id.to_s unless customer.id.nil?}").exists?
     #if self.customer.exists?(email: customer.email)
       errors.add(:email, 'Is Already Taken!')
       return false

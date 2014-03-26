@@ -31,8 +31,9 @@ remove_item = (id, callback)->
     method: 'post'
     dataType: 'json'
     success: ->
-      $('#workorder_invoice_link',window.opener.document)[0].click()
-      window.opener.refresh([$('#profile',window.opener.document), $('#workorders',window.opener.document)])
+      if(window.opener != null)
+        $('#workorder_invoice_link',window.opener.document)[0].click()
+        window.opener.refresh([$('#profile',window.opener.document), $('#workorders',window.opener.document)])
       callback()
   })
 
@@ -44,9 +45,10 @@ add_item = (event_id, invoice_id, callback)->
     dataType: 'json'
     cache:false
     success: ->
-      log($('#profile',window.opener.document))
-      $('#workorder_invoice_link',window.opener.document)[0].click()
-      window.opener.refresh([$('#profile',window.opener.document), $('#workorders',window.opener.document)])
+      if(window.opener != null)
+        log($('#profile',window.opener.document))
+        $('#workorder_invoice_link',window.opener.document)[0].click()
+        window.opener.refresh([$('#profile',window.opener.document), $('#workorders',window.opener.document)])
       callback()
   })
 

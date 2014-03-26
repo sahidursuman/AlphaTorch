@@ -5,6 +5,7 @@ class Invoice < ActiveRecord::Base
   has_many :workorders, through: :events
 
   scope :past_due, ->{where("due_date < '#{Date.today}' AND (status_code != '#{Status.get_code('Paid')}' OR status_code != '#{Status.get_code('Processing')}')")}
+  scope :orphaned, ->{where(status_code: 1000, invoice_date: nil, due_date: nil, invoice_amount: 0)}
 
   def update_total
     p 'Updating Invoice Total'
@@ -60,7 +61,7 @@ class Invoice < ActiveRecord::Base
   end
 
   def unpaid?
-    invoice_amount > payment_total
+    status_code == Status.get_code('Created')
   end
 
   def balance_due
@@ -68,7 +69,7 @@ class Invoice < ActiveRecord::Base
   end
 
   def update_status
-    if balance_due == 0
+    if balance_due == 0 && events.present?
       set_paid
     else
       set_created
@@ -87,6 +88,10 @@ class Invoice < ActiveRecord::Base
   def set_created
     self.status_code = Status.get_code('Created')
     self.save
+  end
+
+  def self.destroy_orphaned
+    orphaned.map(&:destroy)
   end
 
 end

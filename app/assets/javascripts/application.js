@@ -32,7 +32,7 @@ function ajax_loader(element, callback, callback_params){
     var timer = setTimeout(function(){
                     clear_ajax_loader()
                     alert('Request Timed Out. Please Try Again.')
-                }, 15000)
+                }, 30000)
     $.ajax({
         url: '/ajax_loader',
         method: 'get',
@@ -45,7 +45,6 @@ function ajax_loader(element, callback, callback_params){
               }else{
                  callback()
               }
-
           }
         }
     });
@@ -657,11 +656,8 @@ function handle_workorder_invoice_link(stage, jqXHR){
         case 'success' :
             log('workorder_invoice_link - ' + stage)
             var helper_area = $('#workorder-service-helper-area')
-            var title = $('<center><div>Invoices</div></center>')
             var table = $($.parseHTML(jqXHR)).find('table')
-            title.addClass('h4')
             helper_area.html('')
-            helper_area.html(title)
             helper_area.append(table)
             break;
         case 'complete' :

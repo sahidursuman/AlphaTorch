@@ -22,8 +22,13 @@ class InvoicesController < ApplicationController
   # GET /invoices/new
   def new
     @invoice = Invoice.new
+    @invoice.id = Time.now.to_i
+    @invoice.invoice_date = Date.today
+    @invoice.due_date = Date.today + 1.month
+    @invoice.save!
     @property = @workorder.customer_property.property
     @customer = @workorder.customer_property.customer
+    redirect_to edit_invoice_path(id:@invoice.id, workorder_id:@workorder.id)
   end
 
   # GET /invoices/1/edit

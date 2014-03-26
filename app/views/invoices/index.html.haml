@@ -1,6 +1,9 @@
-%h1 Listing invoices
-
 %table.table
+  %caption.h4
+    %center
+      Invoices
+      - unless @workorder.locked?
+        = link_to content_tag(:i, nil, {class:'glyphicon glyphicon-plus pull-right', style:'color:green'}), new_invoice_path(workorder_id:@workorder.id), target:'_blank'
   %thead
     %tr
       %th.h5 Number
@@ -18,7 +21,8 @@
         %td
           - disabled = (invoice.status.status == 'Created') ? false : true
           =link_to 'Payment', new_payment_detail_path(invoice_id:invoice.id), remote:true, id:'new_payment_detail_link', class:'btn btn-xs btn-success', style:'margin-right: 5px;', disabled:disabled
-          =link_to 'Delete', invoice_path(invoice), remote:true, id:'delete_invoice_link', :method => :delete, :data => { :confirm => 'Are you sure?', type: :json}, class:'btn btn-xs btn-danger'
+          - unless @workorder.locked?
+            =link_to 'Delete', invoice_path(invoice), remote:true, id:'delete_invoice_link', :method => :delete, :data => { :confirm => 'Are you sure?', type: :json}, class:'btn btn-xs btn-danger'
 
 %br
 

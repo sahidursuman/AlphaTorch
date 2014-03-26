@@ -13,11 +13,11 @@ class NewPropertyForm
   attr :customer_id,:new_first_name,:new_middle_initial,:new_last_name,:new_email,:new_primary_phone,:new_secondary_phone
 
   validates_presence_of :street_address_1, :city, :state_id, :postal_code
-  validate  :unique_email, unless: lambda { |x|
+  validate  :unique_email, :unique_primary_phone, unless: lambda { |x|
     x.customer_id.present? || x.customer_property.customer_id.present? || !x.customer.new_record?
   }
 
-  validates_presence_of :first_name, :last_name, :email, unless: lambda { |x|
+  validates_presence_of :first_name, :last_name, unless: lambda { |x|
     x.customer_id.present? || x.customer_property.customer_id.present? || !x.customer.new_record?
   }
 
@@ -48,6 +48,7 @@ class NewPropertyForm
     property_owner       = using_existing ? Customer.find(params[:customer_id]) : customer
     customer_property.attributes = {customer:property_owner, property:property, owner: true}
     if self.valid?#uniqueness validation moved to database.
+      p 'PROPERTY IS VALID'
       property.save! rescue(errors.add(:property, 'already exists!'); return false;)#database error thrown if duplicate address added.
       unless using_existing
         customer.save!
@@ -55,6 +56,7 @@ class NewPropertyForm
       customer_property.save!
       true
     else
+      p 'PROPERTY IS INVALID'
       false
     end
   end
@@ -113,10 +115,26 @@ class NewPropertyForm
   end
 
   def unique_email
-    if Customer.where(:email => customer.email).exists?
-      errors.add(:email, 'Is Already Taken!')
+    unless customer.email.blank?
+      if (Customer.where("email = '#{customer.email}'#{' AND id = ' + customer.id.to_s unless customer.id.nil?}").exists?) && (customer.email != customer.email_was)
+      #if Customer.where(:email => customer.email).exists?
+        errors.add(:email, 'Is Already Taken!')
+        return false
+      else
+        p 'UNIQUE EMAIL RETURNING TRUE - CUSTOMER WILL BE CREATED'
+        return true
+      end
+    end
+    p 'EMAIL IS NIL OR EMPTY, RETURNING TRUE'
+    return true
+  end
+
+  def unique_primary_phone
+    if (Customer.where(:primary_phone => customer.primary_phone).exists?) && (customer.primary_phone != customer.primary_phone_was)
+      errors.add(:primary_phone, 'number is taken or blank. Please enter a unique phone number')
       return false
     else
+      p 'UNIQUE PHONE RETURNING TRUE - CUSTOMER WILL BE CREATED'
       return true
     end
   end
@@ -138,7 +156,7 @@ class NewPropertyForm
   end
 
   def set_new_property_owner(params)
-
+    p 'set_new_property_owner TRUE'
     #check if there are workorders for the property. do not allow if there are active workorders.
     if @property.has_active_workorders?
       p 'PROPERTY HAS ACTIVE INVOICES'
@@ -149,6 +167,7 @@ class NewPropertyForm
     @customer = use_existing_customer?(params) ? Customer.find(params[:customer_id]) : Customer.new
 
     if customer.new_record?
+      p 'CUSTOMER NEW RECORD TRUE'
       customer_property.owner = false
       customer_property.save
       customer.first_name = params[:new_first_name]
@@ -156,8 +175,20 @@ class NewPropertyForm
       customer.last_name = params[:new_last_name]
       customer.primary_phone = params[:new_primary_phone]
       customer.secondary_phone = params[:new_secondary_phone]
-      if customer.valid?
-        customer.save
+      if self.valid?
+        if unique_primary_phone
+          p 'CUSTOMER UNIQUE PRIMARY PHONE TRUE'
+          if unique_email
+            p 'CUSTOMER UNIQUE EMAIL TRUE'
+            customer.save
+          else
+            p 'CUSTOMER UNIQUE EMAIL FALSE'
+            return false
+          end
+        else
+          p 'CUSTOMER UNIQUE PRIMARY PHONE FALSE'
+          return false
+        end
       else
         return false
       end
@@ -191,3 +222,4 @@ class NewPropertyForm
   end
 
 end
+

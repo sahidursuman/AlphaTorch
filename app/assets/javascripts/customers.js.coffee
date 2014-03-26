@@ -18,7 +18,7 @@ $ ->
         display_element.find("input:first").focus()
         if selected is "existing-property" or selected is "current-property"
           initialize_search "property-search"
-          $('.new-property input').each ->
+          $('.new-property input, .existing-property input').each ->
             input = $(this)
             setTimeout( ->
               input.val('')
@@ -30,3 +30,50 @@ $ ->
     $('#property-data').load(url)
     log(url)
     $('#property-data').attr('data-url', url)
+
+
+  # Validate form dynamically as user inputs information before submitting
+  $ ->
+    $("[id*=_customer]").validate
+      rules:
+        'customer[first_name]':
+          required: true
+          minlength: 2
+
+        'customer[last_name]':
+          required: true
+          minlength: 2
+
+        'customer[email]':
+          required: false
+          email: true
+
+        'customer[primary_phone]':
+          required: true
+
+      messages:
+        'customer[first_name]':
+          required: "* Enter customer's first name"
+          minlength: "* {0} characters required"
+
+        'customer[last_name]':
+          required: "* Enter customer's last name"
+          minlength: "* {0} characters required"
+
+        'customer[email]':
+          minlength: "* Please enter a valid email address"
+
+        'customer[primary_phone]':
+          required: "* Phone required"
+
+    errorPlacement: (error, element) ->
+      if element.parent().is(".input-append")
+        error.appendTo element.parents(".controls:first")
+      else
+        error.insertAfter element
+      return
+
+  return
+
+
+

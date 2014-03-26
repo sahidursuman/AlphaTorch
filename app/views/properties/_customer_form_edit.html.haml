@@ -26,15 +26,15 @@
     .col-md-8.first_name
       = f.text_field :new_first_name, placeholder:'First Name', class:'form-control', autocomplete:'off'
     .col-md-4.middle_initial
-      = f.text_field :new_middle_initial, placeholder:'Middle', class:'form-control', autocomplete:'off'
+      = f.text_field :new_middle_initial, placeholder:'Middle', class:'form-control', id:'middle-initial', autocomplete:'off'
     .col-md-10.last_name
       = f.text_field :new_last_name, placeholder:'Last Name', class:'form-control', autocomplete:'off'
     .col-md-12.email
       = f.text_field :new_email, placeholder:'Email', class:'form-control', autocomplete:'off'
     .col-md-6.primary_phone
-      = f.text_field :new_primary_phone, placeholder:'Primary Phone', class:'form-control', autocomplete:'off'
+      = f.text_field :new_primary_phone, placeholder:'Primary Phone', class:'form-control', id:'primary-phone', autocomplete:'off'
     .col-md-6.secondary_phone
-      = f.text_field :new_secondary_phone, placeholder:'Secondary', class:'form-control', autocomplete:'off'
+      = f.text_field :new_secondary_phone, placeholder:'Secondary', class:'form-control', id:'secondary-phone', autocomplete:'off'
   .existing-customer.toggle-group{style:'display:none'}
     .col-md-12
       %form{action:search_path, method:'get', remote:'true', role: 'search', style:'margin-top:0px;'}

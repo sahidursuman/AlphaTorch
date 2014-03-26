@@ -24,7 +24,7 @@
       .col-md-4
         = f.collection_select :state_id, State.all, :id, :short_name, {}, class:'form-control', autocomplete:'off'
       .col-md-6.postal_code
-        = f.text_field :postal_code, :required => false, placeholder:'Postal Code', class:'form-control', autocomplete:'off'
+        = f.text_field :postal_code, :required => false, placeholder:'Postal Code', id:'postal-code', class:'form-control', autocomplete:'off'
       .col-md-12
         = f.submit submit_button_text, class:'btn btn-md btn-success'
 

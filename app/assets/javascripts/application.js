@@ -315,6 +315,12 @@ function document_ready_events(){
     $.each($('.datepicker'), function(idx, element){
         $(this).datepicker(datepicker_defaults())
     })
+    // Masked inputs on form fields
+    $('#primary-phone').mask('(999) 999-9999')
+    $('#secondary-phone').mask('(999) 999-9999')
+    $.mask.definitions['~'] = '[A-Za-z.]';
+    $('#middle-initial').mask('?~~~', {placeholder:' '})
+    $('#postal-code').mask('99999? -9999')
 }
 
 $(document).ready(function(){
@@ -759,6 +765,7 @@ function handle_edit_customer_link(stage, jqXHR){
             break;
         case 'complete' :
             log('edit_customer_link - ' + stage)
+            document_ready_events()
             break;
     }
 }

@@ -57,3 +57,91 @@ fetch_map_data = ->
       clear_ajax_loader()
 
   })
+
+
+  # Validate form dynamically as user inputs information before submitting
+  $ ->
+    $("[id*=_property]").validate
+      rules:
+        'property[first_name]':
+          required: true
+          minlength: 2
+
+        'property[last_name]':
+          required: true
+          minlength: 2
+
+        'property[email]':
+          required: false
+          email: true
+
+        'property[primary_phone]':
+          required: true
+
+      messages:
+        'property[first_name]':
+          required: "* Enter customer's first name"
+          minlength: "* {0} characters required"
+
+        'property[last_name]':
+          required: "* Enter customer's last name"
+          minlength: "* {0} characters required"
+
+        'property[email]':
+          minlength: "* Please enter a valid email address"
+
+        'property[primary_phone]':
+          required: "* Phone required"
+
+    errorPlacement: (error, element) ->
+      if element.parent().is(".input-append")
+        error.appendTo element.parents(".controls:first")
+      else
+        error.insertAfter element
+      return
+
+  return
+
+
+
+  $ ->
+    $("#edit_property").validate
+      rules:
+        'property[first_name]':
+          required: true
+          minlength: 2
+
+        'property[last_name]':
+          required: true
+          minlength: 2
+
+        'property[email]':
+          required: false
+          email: true
+
+        'property[primary_phone]':
+          required: true
+
+      messages:
+        'property[first_name]':
+          required: "* Enter customer's first name"
+          minlength: "* {0} characters required"
+
+        'property[last_name]':
+          required: "* Enter customer's last name"
+          minlength: "* {0} characters required"
+
+        'property[email]':
+          minlength: "* Please enter a valid email address"
+
+        'property[primary_phone]':
+          required: "* Phone required"
+
+    errorPlacement: (error, element) ->
+      if element.parent().is(".input-append")
+        error.appendTo element.parents(".controls:first")
+      else
+        error.insertAfter element
+      return
+
+  return

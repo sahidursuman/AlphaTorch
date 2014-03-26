@@ -5,7 +5,7 @@
 %p
   %strong= model_class.human_attribute_name(:name) + ':'
   %br
-  = @workorder.name
+  = @workorder.name + ' - ' + @workorder.status.status
 
 %p
   %strong= model_class.human_attribute_name(:start_date) + ':'

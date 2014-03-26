@@ -1,5 +1,5 @@
 class WorkorderService < ActiveRecord::Base
-  after_commit {|ws| ws.workorder.update_events}
+  after_commit(on: :update) {|ws| ws.workorder.update_events}
   include IceCube
   require 'date_helper'
   include DateHelper

@@ -43,4 +43,18 @@ class ApplicationController < ActionController::Base
     render partial: 'shared/ajax_loader'
   end
 
+  def change_status
+    object = params[:class]
+    klass = object.constantize
+    if klass.attribute_names.include?('status_code')
+      id = params[:id]
+      object = klass.find(id)
+      status = params[:status]
+      object.change_status(status)
+      render json: {message:"Customer Status Changed To #{status}"}
+    else
+      false
+    end
+  end
+
 end

@@ -7,7 +7,7 @@
       .col-md-12.workorder-name
         = f.text_field :name, placeholder: 'Name', class:'form-control'
       .col-md-6.workorder-start
-        = f.text_field :start_date, placeholder:'Start Date', class:'form-control'
+        = f.text_field :start_date, placeholder:'Start Date', class:'form-control datepicker', autocomplete:'off'
       .col-md-12
         = f.submit 'Create Work Order', class:'btn btn-md btn-success'
     %fieldset.col-md-6

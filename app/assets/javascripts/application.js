@@ -17,6 +17,7 @@
 //= require jquery.ui.draggable
 //= require jquery.ui.resizable
 //= require jquery.ui.autocomplete
+//= require jquery.ui.datepicker
 //= require twitter/bootstrap
 //= require dataTables/jquery.dataTables
 //= require dataTables/jquery.dataTables.bootstrap3
@@ -280,6 +281,10 @@ $(document).ready(function(){
     initialize_search('customer-search');
     initialize_search('workorder-search');
     initialize_search('property-search');
+    $.each($('.datepicker'), function(idx, element){
+        $(this).datepicker()
+        $(this).datepicker('option', 'dateFormat', 'yyyy-mm-dd' )
+    })
 })
 
 function refresh(elements, callback){
@@ -290,13 +295,18 @@ function refresh(elements, callback){
             cache:false,
             success: function(data){
                 $.each(elements, function(idx, element){
+                    element.fadeTo('fast',.75)
                     var content = $($.parseHTML(data)).find('#'+element.attr('id'))
-                    element.html(content)
+                    ajax_loader(element, function(){
+                        setTimeout(function(){
+                            element.html(content)
+                            element.fadeTo('fast', 1)
+                            if(!(typeof callback === 'undefined'))
+                                callback()
+                        }, 1500)
+                    })
+
                 });
-            },
-            complete: function(){
-                if(!(typeof callback === 'undefined'))
-                  callback()
             }
         })
 }
@@ -370,6 +380,9 @@ function handle_ajax(event, jqXHR, stage){
             break
         case 'new_property_link' :
             handle_new_property_link(stage, jqXHR)
+            break
+        case 'change_status_link' :
+            handle_change_status_link(stage, jqXHR)
             break
         default :
             default_ajax_handler(stage, target)
@@ -604,6 +617,76 @@ function handle_edit_workorder_service_form_submit(stage, jqXHR){
     }
 }
 
+function handle_new_payment_detail_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_payment_detail_link - ' + stage)
+            break;
+        case 'complete' :
+            log('new_payment_detail_link - ' + stage)
+            break;
+    }
+}
+
+function handle_new_payment_detail_form_submit(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_payment_detail_form_submit - ' + stage)
+            $('.modal').modal('hide')
+            notify('success', jqXHR.message)
+            refresh([$('#profile')])
+            $('#workorder_invoice_link').click()
+            break;
+        case 'complete' :
+            log('new_payment_detail_form_submit - ' + stage)
+            break;
+    }
+}
+
+function handle_workorder_invoice_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('workorder_invoice_link - ' + stage)
+            var helper_area = $('#workorder-service-helper-area')
+            var title = $('<center><div>Invoices</div></center>')
+            var table = $($.parseHTML(jqXHR)).find('table')
+            title.addClass('h4')
+            helper_area.html('')
+            helper_area.html(title)
+            helper_area.append(table)
+            break;
+        case 'complete' :
+            log('workorder_invoice_link - ' + stage)
+            break;
+    }
+}
+
+function handle_delete_invoice_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('delete_invoice_link - ' + stage)
+            notify('success', jqXHR.message)
+            refresh([$('#profile')])
+            $('#workorder_invoice_link').click()
+            break;
+        case 'complete' :
+            log('delete_invoice_link - ' + stage)
+            break;
+    }
+}
+
 function handle_new_customer_form_submit(stage, jqXHR){
     switch(stage){
         case 'error' :
@@ -648,12 +731,12 @@ function handle_edit_customer_form_submit(stage,jqXHR){
             log('edit_customer_form_submit - ' + stage)
             $('#ajax-modal').modal('hide')
             notify('success', jqXHR.message)
-            refresh([$('#profile'), $('#workorders')], function(){
+            refresh([$('#profile'), $('#properties')], function(){
                 $('.property').on('click', function(){
                     url = $(this).data('url')
-                    $('#property-details').load(url)
+                    $('#property-data').load(url)
                     log(url)
-                    $('#property-details').attr('data-url', url)
+                    $('#property-data').attr('data-url', url)
                 })
             })
             break;
@@ -673,6 +756,40 @@ function handle_new_property_link(stage, jqXHR){
             break;
         case 'complete' :
             log('new_property_link - ' + stage)
+            break;
+    }
+}
+
+function handle_change_status_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('change_status_link - ' + stage)
+            refresh([$('#profile')])
+            if($('#properties').length){
+                refresh([$('#properties')],function(){
+                    $('.property').on('click', function(){
+                        var url = $(this).data('url')
+                        $('#property-data').load(url)
+                        $('#property-data').attr('data-url', url)
+                    })
+                })
+            }
+            if($('#workorders').length){
+                refresh([$('#properties')],function(){
+                    $('.workorder').on('click', function(){
+                        var url = $(this).data('url')
+                        $('#workorder-data').load(url)
+                        $('#workorder-data').attr('data-url', url)
+                    })
+                })
+            }
+
+            break;
+        case 'complete' :
+            log('change_status_link - ' + stage)
             break;
     }
 }

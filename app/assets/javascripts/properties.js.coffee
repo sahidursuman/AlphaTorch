@@ -6,7 +6,10 @@ $ ->
   if $('#map-canvas').length
     ajax_loader($('#map-canvas'),fetch_map_data)
 
-  options = $.extend(datatable_defaults(), "sAjaxSource": "/properties_data_tables_source")
+  options = $.extend(datatable_defaults(),
+    "sAjaxSource": "/properties_data_tables_source",
+    "aaSorting": [[3, "asc"]]
+  )
   $('#properties.datatable').dataTable(options);
 
   $('.datatable th').addClass('h4')

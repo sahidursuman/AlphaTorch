@@ -1,4 +1,6 @@
 class Workorder < ActiveRecord::Base
+  after_create :set_default_status
+  after_initialize :set_default_status
   after_commit :create_events, on: :create
   after_commit :update_events, on: :update
   require 'model_locking'
@@ -13,20 +15,24 @@ class Workorder < ActiveRecord::Base
   accepts_nested_attributes_for :workorder_services, allow_destroy: true
   belongs_to :customer_property
 
+  scope :created, ->{where(status_code: Status.get_code('Created'))}
   scope :active, ->{where(status_code: Status.get_code('Active'))}
+  scope :on_hold, ->{where(status_code: Status.get_code('Locked'))}
+  scope :cancelled, ->{where(status_code: Status.get_code('Cancelled'))}
 
   validates_associated :workorder_services
   validates_presence_of :name
   validates_uniqueness_of :name
   validates_presence_of :start_date
 
-  def unlock
-    self.status_code = Status.get_code('Not Invoiced')
-    self.save ? true : false
-  end
-
-  def status_name
-    Status.get_status(status_code)
+  def set_default_status
+    unless self.new_record?
+      if !customer_property.locked?
+        self.start_date <= Date.today ?
+            self.change_status('Active') :
+            self.change_status('Created')
+      end
+    end
   end
 
   def create_events(future_only=false)
@@ -34,7 +40,7 @@ class Workorder < ActiveRecord::Base
 
     workorder_services.each do |ws|
       all = ws.converted_schedule.all_occurrences
-      future = ws.converted_schedule.remaining_occurrences
+      future = ws.converted_schedule.remaining_occurrences << Date.today
       occurrences = future_only ? future : all
 
       occurrences.each do |date|
@@ -44,6 +50,7 @@ class Workorder < ActiveRecord::Base
       end
     end
 
+    p unique_dates
     unique_dates.each do |date|
       event = Event.new
       event.workorder = self
@@ -115,7 +122,7 @@ class Workorder < ActiveRecord::Base
     invoice.id = Time.now.to_i
     invoice_events.each do |event|
       event.invoice_id = invoice.id
-      if event.lock && event.save
+      if event.make_invoiced && event.save
         invoice.invoice_amount += event.event_services.map(&:cost).sum
       end
     end
@@ -143,6 +150,19 @@ class Workorder < ActiveRecord::Base
 
   def html_name
     link_to name, Rails.application.routes.url_helpers.workorder_path(self)
+  end
+
+  def change_status(status)
+    unless status_code == Status.get_code(status)
+      self.status_code = Status.get_code(status)
+      self.save
+      case status
+        when 'Locked'
+          events.not_invoiced.map(&:lock)
+        when 'Active'
+          events.not_invoiced.map(&:unlock)
+      end
+    end
   end
 
   def self.generate_all_invoices

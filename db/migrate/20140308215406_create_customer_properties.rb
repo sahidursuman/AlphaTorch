@@ -4,6 +4,7 @@ class CreateCustomerProperties < ActiveRecord::Migration
       t.references :customer, index: true
       t.references :property, index: true
       t.boolean :owner
+      t.integer :status_code, default: 1011
 
       t.timestamps
     end

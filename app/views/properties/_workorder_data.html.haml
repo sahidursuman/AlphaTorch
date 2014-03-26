@@ -6,11 +6,12 @@
           %caption.h4
             .row
               .col-md-12
-                = @workorder.name + ' Services'
-                = link_to content_tag(:i, nil, {class:'glyphicon glyphicon-plus pull-right', style:'color:green;'}),
-                      new_workorder_workorder_service_path(workorder_id:@workorder.id),
-                      remote:true,
-                      id:'new_workorder_service_link'
+                = @workorder.name + ' – Work Order Services'
+                - unless @workorder.locked?
+                  = link_to content_tag(:i, nil, {class:'glyphicon glyphicon-plus pull-right', style:'color:green;'}),
+                        new_workorder_workorder_service_path(workorder_id:@workorder.id),
+                        remote:true,
+                        id:'new_workorder_service_link'
             .row{style:'margin-top:5px;'}
               .col-md-12
                 %center
@@ -32,12 +33,13 @@
                 %td.col-md-4.h6= wo_service.converted_schedule.to_s
                 %td.col-md-1.h6= humanized_money_with_symbol(wo_service.cost)
                 %td.col-md-2
-                  .row
-                    =link_to 'Edit', edit_workorder_workorder_service_path(@workorder, wo_service),
-                    class:'btn btn-xs btn-default pull-left', remote:true, id:'edit_workorder_service_link',
-                    style:'margin-right: 10px;'
-                    =link_to 'Delete', workorder_workorder_service_path(@workorder, wo_service), method: :delete,
-                    class:'btn btn-xs btn-danger pull-left', confirm: 'Are You Sure?', remote:true, id:'delete_workorder_service_link'
+                  - unless @workorder.locked?
+                    .row
+                      =link_to 'Edit', edit_workorder_workorder_service_path(@workorder, wo_service),
+                      class:'btn btn-xs btn-default pull-left', remote:true, id:'edit_workorder_service_link',
+                      style:'margin-right: 10px;'
+                      =link_to 'Delete', workorder_workorder_service_path(@workorder, wo_service), method: :delete,
+                      class:'btn btn-xs btn-danger pull-left', confirm: 'Are You Sure?', remote:true, id:'delete_workorder_service_link'
 
     .col-md-5
       #workorder-service-helper-area

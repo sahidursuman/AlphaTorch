@@ -1,35 +1,53 @@
 .row
-  .col-md-9
+  .col-md-6
     .pull-left.h3{style:'margin-top: 0px;'}
       Customer Information
-  .col-md-3
-    .pull-right.h3{style:'margin-top: 0px; margin-right: 10px;'}
-      = link_to 'Delete', customer_path(@customer), class:'btn btn-xs btn-danger', method: :delete, confirm: 'Are you sure you want to delete this customer?'
+  .col-md-6
+    - unless @customer.locked?
+      .pull-right{style:'margin-left: 10px;'}
+        = link_to 'Delete', customer_path(@customer), class:'btn btn-xs btn-danger', method: :delete, confirm: 'Are You Sure?'
+      .pull-right
+        = link_to 'Edit', edit_customer_path(@customer), class:'btn btn-xs btn-default', remote:true, id:'edit_customer_link'
 %hr
 .row
-  .col-md-12
-    #id{style:'display:none'}= @customer.id
-    .h4= @customer.name
-    - if @customer.primary_phone
-      .row
-        .col-md-3{style:'margin-top:6px;'}
-          %span.class.label.label-info Primary Phone
-        .col-md-9
-          .pull-left.h5= @customer.primary_phone
-      - if @customer.secondary_phone
-        .row
-          .col-md-3{style:'margin-top:6px;'}
-            %span.class.label.label-default Alternate Phone
-          .col-md-9
-            .pull-left.h5= @customer.secondary_phone
+  .col-md-6{style:'border-right: 1px solid black'}
     .row
-      .col-md-3{style:'margin-top:6px;'}
-        %span.class.label.label-info Email
-      .col-md-9
-        .pull-left.h5= @customer.email
+      .col-md-12
+        .h4= @customer.name
     .row
-      .col-md-4{style: 'margin-top:40px'}
-        = link_to 'All Customers', customers_path, class:'btn btn-large btn-warning'
-      .col-md-8{style: 'margin-top:40px'}
-        .pull-left= link_to 'Edit', edit_customer_path(@customer), class:'btn btn-large btn-danger', remote:true, id:'edit_customer_link'
+      .col-md-12
+        .h6
+          %b
+            Email:
+          = mail_to @customer.email
 
+    .row
+      .col-md-12
+        .h6
+          %b
+            Primary Phone:
+          = @customer.primary_phone.blank? ? 'N/A' : @customer.primary_phone
+    .row
+      .col-md-12
+        .h6
+          %b
+            Secondary Phone:
+          = @customer.secondary_phone.blank? ? 'N/A' : @customer.secondary_phone
+    .row
+      .col-md-12
+        .h6= link_to 'Back To Customers', customers_path, class:'btn btn-sm btn-default'
+
+  .col-md-6
+    .row
+      .col-md-12
+        .h4
+          %b
+            Status:
+          = change_status_link(Customer, @customer.id, %w(Active Locked), @customer.status.status)
+
+
+      .col-md-12
+        .h4
+          %b
+            Invoice Amount Due:
+          = humanized_money_with_symbol(@customer.balance_due)

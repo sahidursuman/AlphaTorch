@@ -3,8 +3,7 @@ class CreateWorkorders < ActiveRecord::Migration
     create_table :workorders do |t|
       t.string :name
       t.date :start_date
-      t.integer :status_code, default: 1011
-
+      t.integer :status_code, default: 1000
       t.timestamps
     end
   end

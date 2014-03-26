@@ -7,11 +7,12 @@ Status.create([
     {status_code:1005 , status:'Paid'                         },
     {status_code:1006 , status:'Final'                        },
     {status_code:1007 , status:'Not Invoiced'                 },
-    {status_code:1008 , status:'Locked'                       },
+    {status_code:1008 , status:'Invoiced'                     },
     {status_code:1009 , status:'Past Due'                     },
     {status_code:1010 , status:'Error'                        },
     {status_code:1011 , status:'Active'                       },
     {status_code:1012 , status:'Inactive'                     },
+    {status_code:1013 , status:'Locked'                       },
 ])
 
 Service.create(

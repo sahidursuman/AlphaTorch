@@ -19,7 +19,7 @@
             %tr.workorder{data:{url:properties_load_workorder_data_path(workorder_id:workorder.id)}}
               %td.h6
                 %a= workorder.name
-              %td.h6= workorder.status_name
+              %td.h6= workorder.status.status
         - else
           %tr.h5
             %td{colspan:2}

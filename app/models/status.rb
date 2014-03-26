@@ -3,6 +3,7 @@ class Status < ActiveRecord::Base
   has_many :events
   has_many :workorders
   has_many :customers
+  has_many :customer_properties
 
   def self.statuses
     statuses = {}

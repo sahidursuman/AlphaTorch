@@ -57,5 +57,7 @@ CortezLandscaping::Application.routes.draw do
   get 'invoice_search' => 'application#invoice_search'
 
   get 'ajax_loader' => 'application#ajax_loader'
+
+  get 'change_status' => 'application#change_status'
   root :to => "home#index"
 end

@@ -35,8 +35,9 @@ ActiveRecord::Schema.define(:version => 20140321043500) do
     t.integer  "customer_id"
     t.integer  "property_id"
     t.boolean  "owner"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.integer  "status_code", :default => 1011
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
   end
 
   create_table "customers", :force => true do |t|
@@ -162,7 +163,7 @@ ActiveRecord::Schema.define(:version => 20140321043500) do
   create_table "workorders", :force => true do |t|
     t.string   "name"
     t.date     "start_date"
-    t.integer  "status_code",          :default => 1011
+    t.integer  "status_code",          :default => 1000
     t.datetime "created_at",                             :null => false
     t.datetime "updated_at",                             :null => false
     t.integer  "customer_property_id"

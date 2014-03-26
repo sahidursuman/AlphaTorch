@@ -18,19 +18,23 @@ class Event < ActiveRecord::Base
   scope :future_events,        ->{where("start > '#{Date.today}'")}
   scope :billing_cycle,        ->{where("start BETWEEN '#{DateHelper.first_day_of_month}' AND '#{DateHelper.last_day_of_month}'")}
   scope :before_billing_cycle, ->{where("start < '#{DateHelper.first_day_of_month}'")}
-  scope :past,                 ->{where("start < '#{Date.today}'")}
+  scope :past,                 ->{where("start <= '#{Date.today}'")}
 
   validates_uniqueness_of :name, scope: :start
   validates_associated :event_services
 
   STATUS_COLORS = {
-      Status.get_code('Not Invoiced') =>      {backgroundColor: 'gray',  borderColor: 'gray',  textColor: 'white'},
-      Status.get_code('Locked')       =>      {backgroundColor: 'green', borderColor: 'green', textColor: 'white'}
+      Status.get_code('Not Invoiced') => {backgroundColor: 'gray',  borderColor: 'gray',  textColor: 'white'},
+      Status.get_code('Invoiced')     => {backgroundColor: 'green', borderColor: 'green', textColor: 'white'},
+      Status.get_code('Locked')       => {backgroundColor: 'red',   borderColor: 'red',   textColor: 'white'}
   }
 
   def unlock(force=false)
     if !self.invoice || force
       self.status_code = Status.get_code('Not Invoiced')
+      self.save ? true : false
+    elsif self.invoice
+      self.status_code = Status.get_code('Invoiced')
       self.save ? true : false
     else
       false
@@ -55,12 +59,21 @@ class Event < ActiveRecord::Base
 
   def add_to_invoice(id)
     self.invoice = Invoice.find(id)
-    if self.save && self.lock
+    if self.save && self.make_invoiced
       self.invoice.update_total
       true
     else
       false
     end
+  end
+
+  def make_invoiced
+    self.status_code = Status.get_code('Invoiced')
+    self.save ? true : false
+  end
+
+  def invoiced?
+    self.invoice_id != nil
   end
 
   def self.invoice_destroyed(invoice_id)
@@ -84,7 +97,7 @@ class Event < ActiveRecord::Base
        start: event.start,
        end: event.end,
        allDay: event.all_day,
-       editable: !event.locked?,
+       editable: (!event.locked? && !event.invoiced?),
        services: services}.merge(STATUS_COLORS[event.status_code])
     end.flatten
   end

@@ -1,6 +1,9 @@
 $ ->
 
-  options = $.extend(datatable_defaults(), "sAjaxSource": "/customers_data_tables_source")
+  options = $.extend(datatable_defaults(),
+    "sAjaxSource": "/customers_data_tables_source",
+    "aaSorting": [[5, "asc"]]
+  )
   $('#customers.datatable').dataTable(options);
 
   $('.datatable th').addClass('h4')
@@ -24,6 +27,6 @@ $ ->
 
   $('.property').on 'click', ->
     url = $(this).data('url')
-    $('#property-details').load(url)
+    $('#property-data').load(url)
     log(url)
-    $('#property-details').attr('data-url', url)
+    $('#property-data').attr('data-url', url)

@@ -7,7 +7,7 @@ class Property < ActiveRecord::Base
   has_many :customers, through: :customer_properties
 
   def to_data_table_row
-    [html_full_address, current_owner_name, html_services, humanized_money_with_symbol(balance_due || 0)]
+    [html_full_address, html_owner, html_services, humanized_money_with_symbol(balance_due || 0)]
   end
 
   def html_full_address
@@ -34,11 +34,13 @@ class Property < ActiveRecord::Base
     current_customer_property ? current_customer_property.customer.name : 'No Owner'
   end
 
-  #def html_current_owner_name
-  #  current_customer_property ? link_to current_customer_property.customer.html_name.html_safe,
-  #                                      Rails.application.routes.url_helpers.customer_path(current_customer_property.customer_id)
-  #                                  : 'No Owner'
-  #end
+  def html_owner
+    if current_owner_name != 'No Owner'
+      link_to current_owner_name, Rails.application.routes.url_helpers.customer_path(current_customer_property.customer)
+    else
+      current_owner_name
+    end
+  end
 
   def workorders
     current_customer_property ? current_customer_property.try(:workorders) : []
@@ -73,6 +75,8 @@ class Property < ActiveRecord::Base
   def balance_due
     unless unpaid_invoices.nil? || unpaid_invoices.compact.empty?
       unpaid_invoices.map(&:balance_due).sum
+    else
+      0
     end
   end
 

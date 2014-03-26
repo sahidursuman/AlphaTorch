@@ -281,8 +281,20 @@ function document_ready_events(){
     initialize_search('workorder-search');
     initialize_search('property-search');
     $.each($('.datepicker'), function(idx, element){
-        $(this).datepicker()
-        $(this).datepicker('option', 'dateFormat', 'yyyy-mm-dd' )
+        $(this).datepicker({
+            dateFormat:'yy-mm-dd',
+            beforeShow: function(input, inst) {
+                var cal = inst.dpDiv;
+                var top  = $(this).offset().top + $(this).outerHeight();
+                var left = $(this).offset().left;
+                setTimeout(function() {
+                    cal.css({
+                        'top' : top,
+                        'left': left
+                    });
+                }, 10);
+            }
+        })
     })
 }
 

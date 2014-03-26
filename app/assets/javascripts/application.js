@@ -274,7 +274,7 @@ function datatable_defaults(){
     }
 }
 
-$(document).ready(function(){
+function document_ready_events(){
     initialize_search('site-search');
     initialize_search('service-search');
     initialize_search('customer-search');
@@ -284,6 +284,10 @@ $(document).ready(function(){
         $(this).datepicker()
         $(this).datepicker('option', 'dateFormat', 'yyyy-mm-dd' )
     })
+}
+
+$(document).ready(function(){
+    document_ready_events()
 })
 
 function refresh(elements, callback){
@@ -324,6 +328,7 @@ $(document).on('ajax:success', function(event, jqXHR, ajaxSettings){
 
 $(document).on('ajax:complete', function(event, jqXHR, ajaxSettings){
     handle_ajax(event, jqXHR, 'complete')
+    document_ready_events()
 })
 
 function handle_ajax(event, jqXHR, stage){

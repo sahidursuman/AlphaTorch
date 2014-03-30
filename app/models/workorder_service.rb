@@ -29,6 +29,7 @@ class WorkorderService < ActiveRecord::Base
         [self.single_occurrence_date.to_date + 5.hours]
 
     process_occurrence_dates(occurrence_dates)
+    destroy_invalid_events
   end
 
   def process_occurrence_dates(occurrence_dates)
@@ -54,7 +55,11 @@ class WorkorderService < ActiveRecord::Base
   end
 
   def get_remaining_occurrence_dates
-    converted_schedule.remaining_occurrences.map(&:to_date)
+    dates = converted_schedule.remaining_occurrences.map(&:to_date)
+    if get_all_occurrence_dates.include? Date.today
+      dates << Date.today unless dates.include? Date.today
+    end
+    dates
   end
 
   def create_event(event_date)
@@ -115,6 +120,33 @@ class WorkorderService < ActiveRecord::Base
     schedule.present?
   end
 
+  def future_events
+    Event.future_events.where(workorder_id:self.workorder_id)
+  end
+
+  def destroy_invalid_events
+    remaining_dates = future_events.map(&:start).map(&:to_date)
+    valid_dates = get_remaining_occurrence_dates
+    to_destroy = remaining_dates - valid_dates
+    to_destroy.each do |event_date|
+      event = Event.where("workorder_id = #{self.workorder_id} AND start::date = '#{event_date}'").first
+      if event.present?
+        should_destroy_event = true
+        event.event_services.each do |event_service|
+          if event_service.workorder_service_id == self.id
+            event_service.destroy
+          else
+            should_destroy_event = false
+          end
+        end
+
+        if should_destroy_event
+          event.destroy
+        end
+      end
+    end
+  end
+
   def schedule=(new_schedule)
     if new_schedule != 'null' && new_schedule.present?
       write_attribute(:schedule, RecurringSelect.dirty_hash_to_rule(new_schedule).to_hash)
@@ -138,7 +170,7 @@ class WorkorderService < ActiveRecord::Base
     #check to see if there are any invoices
     #if not then the workorder is starting in the middle of a cycle
     #if so then all recurring workorders will start the billing cycle on the first
-    (workorder.invoices.nil? || workorder.invoices.empty?) ? workorder.start_date : DateHelper.first_day_of_month
+    workorder.invoices.present? ? DateHelper.first_day_of_month : workorder.start_date
   end
 
   def billing_cycle_end

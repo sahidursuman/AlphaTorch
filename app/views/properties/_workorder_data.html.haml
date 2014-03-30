@@ -30,7 +30,11 @@
             - @workorder.workorder_services.each do |wo_service|
               %tr
                 %td.col-md-2.h6= link_to wo_service.service.name, service_path(wo_service.service)
-                %td.col-md-4.h6= wo_service.converted_schedule.to_s
+                %td.col-md-4.h6
+                  - if wo_service.schedule.present?
+                    = wo_service.converted_schedule.to_s
+                  - else
+                    = wo_service.single_occurrence_date.strftime('%A %B %d, %Y')
                 %td.col-md-1.h6= humanized_money_with_symbol(wo_service.cost)
                 %td.col-md-2
                   - unless @workorder.locked?

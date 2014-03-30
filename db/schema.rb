@@ -56,10 +56,13 @@ ActiveRecord::Schema.define(:version => 20140321043500) do
   create_table "event_services", :force => true do |t|
     t.integer  "service_id"
     t.integer  "event_id"
+    t.integer  "workorder_service_id"
     t.integer  "cost"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
   end
+
+  add_index "event_services", ["workorder_service_id"], :name => "index_event_services_on_workorder_service_id"
 
   create_table "events", :force => true do |t|
     t.integer  "workorder_id"
@@ -154,10 +157,11 @@ ActiveRecord::Schema.define(:version => 20140321043500) do
   create_table "workorder_services", :force => true do |t|
     t.integer  "service_id"
     t.integer  "workorder_id"
-    t.text     "schedule"
+    t.datetime "single_occurrence_date", :null => true
+    t.text     "schedule",               :null => true
     t.integer  "cost"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
   end
 
   create_table "workorders", :force => true do |t|

@@ -88,6 +88,9 @@ $ ->
       error: (jqXHR, status, error)->
         console.log("Error - #{error}")
         revertFunc()
+        notify('error', 'Sorry about this, but that date is unavailable right now.')
       success: (data, status, jqXHR)->
         console.log(status)
+      complete: ->
+        $('#calendar').fullCalendar('refetchEvents')
     })

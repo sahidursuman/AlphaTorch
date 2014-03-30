@@ -24,28 +24,43 @@
 //= require jquery_nested_form
 //= require_tree ./components
 
+months = {
+    0:'January',
+    1:'February',
+    2:'March',
+    3:'April',
+    4:'May',
+    5:'June',
+    6:'July',
+    7:'August',
+    8:'September',
+    9:'October',
+    10:'November',
+    11:'December'
+}
+
 function log(msg){
     return console.log(msg)
 }
 
 function ajax_loader(element, callback, callback_params){
     var timer = setTimeout(function(){
-                    clear_ajax_loader()
-                    alert('Request Timed Out. Please Try Again.')
-                }, 30000)
+        clear_ajax_loader()
+        alert('Request Timed Out. Please Try Again.')
+    }, 30000)
     $.ajax({
         url: '/ajax_loader',
         method: 'get',
         success: function(loader){
-          clearTimeout(timer)
-          element.append(loader)
-          if(!(typeof callback === 'undefined')){
-              if(!(typeof callback_params === 'undefined')){
-                 callback(callback_params)
-              }else{
-                 callback()
-              }
-          }
+            clearTimeout(timer)
+            element.append(loader)
+            if(!(typeof callback === 'undefined')){
+                if(!(typeof callback_params === 'undefined')){
+                    callback(callback_params)
+                }else{
+                    callback()
+                }
+            }
         }
     });
 }
@@ -217,7 +232,7 @@ function initialize_search(input_id){
 
 function notify(notify_type, msg) {
     var target = $('.modal:visible').length ? (notify_type == 'error' ? $('#modal-alerts') : $('#alerts'))
-                                            : $('#alerts')
+        : $('#alerts')
     var div = $('<div></div>')
 
     div.append('<button class="close" data-dismiss="alert" href="#">×</button>');
@@ -260,7 +275,7 @@ function get_error_fields(jqXHR){
     var error_fields = [];
     var json = $.parseJSON(jqXHR.responseText);
     for(var k in json){
-      var field = $('.'+k)
+        var field = $('.'+k)
         error_fields.push(field)
     }
     return error_fields
@@ -274,6 +289,23 @@ function datatable_defaults(){
     }
 }
 
+function datepicker_defaults(){
+    return {
+        dateFormat:'yy-mm-dd',
+        beforeShow: function(input, inst) {
+            var cal = inst.dpDiv;
+            var top  = $(this).offset().top + $(this).outerHeight();
+            var left = $(this).offset().left;
+            setTimeout(function() {
+                cal.css({
+                    'top' : top,
+                    'left': left
+                });
+            }, 10);
+        }
+    }
+}
+
 function document_ready_events(){
     initialize_search('site-search');
     initialize_search('service-search');
@@ -281,20 +313,7 @@ function document_ready_events(){
     initialize_search('workorder-search');
     initialize_search('property-search');
     $.each($('.datepicker'), function(idx, element){
-        $(this).datepicker({
-            dateFormat:'yy-mm-dd',
-            beforeShow: function(input, inst) {
-                var cal = inst.dpDiv;
-                var top  = $(this).offset().top + $(this).outerHeight();
-                var left = $(this).offset().left;
-                setTimeout(function() {
-                    cal.css({
-                        'top' : top,
-                        'left': left
-                    });
-                }, 10);
-            }
-        })
+        $(this).datepicker(datepicker_defaults())
     })
 }
 
@@ -303,33 +322,33 @@ $(document).ready(function(){
 })
 
 function refresh(elements, callback){
-        $.ajax({
-            url:window.location,
-            dataType:'html',
-            method: 'get',
-            cache:false,
-            success: function(data){
-                $.each(elements, function(idx, element){
-                    element.fadeTo('fast',.75)
-                    var content = $($.parseHTML(data)).find('#'+element.attr('id'))
-                    ajax_loader(element, function(){
-                        setTimeout(function(){
-                            element.html(content)
-                            element.fadeTo('fast', 1)
-                            if(!(typeof callback === 'undefined'))
-                                callback()
-                        }, 1500)
-                    })
+    $.ajax({
+        url:window.location,
+        dataType:'html',
+        method: 'get',
+        cache:false,
+        success: function(data){
+            $.each(elements, function(idx, element){
+                element.fadeTo('fast',.75)
+                var content = $($.parseHTML(data)).find('#'+element.attr('id'))
+                ajax_loader(element, function(){
+                    setTimeout(function(){
+                        element.html(content)
+                        element.fadeTo('fast', 1)
+                        if(!(typeof callback === 'undefined'))
+                            callback()
+                    }, 1500)
+                })
 
-                });
-            }
-        })
+            });
+        }
+    })
 }
 
 
 /*
-* AJAX event handlers
-*/
+ * AJAX event handlers
+ */
 $(document).on('ajax:error', function(event, jqXHR, ajaxSettings, thrownError){
     handle_ajax(event, jqXHR, 'error')
 })
@@ -529,7 +548,7 @@ function handle_new_workorder_service_link(stage, jqXHR){
     var icon = $('#new_workorder_service_link').find('i')
     var form_area = $('#workorder-service-helper-area')
     var title = $('<div><center>Add New Service To Workorder</center></div>')
-    var form = $($.parseHTML(jqXHR)).find('#form').html()
+    var form = $($.parseHTML(jqXHR, document, true)).find('#form').html()
 
     switch(stage){
         case 'error' :
@@ -585,7 +604,7 @@ function handle_edit_workorder_service_link(stage, jqXHR){
     var icon = $('#new_workorder_service_link').find('i')
     var form_area = $('#workorder-service-helper-area')
     var title = $('<div><center>Edit This Service</center></div>')
-    var form = $($.parseHTML(jqXHR)).find('#form').html()
+    var form = $($.parseHTML(jqXHR, document, true)).find('#form').html()
     switch(stage){
         case 'error' :
             notify('error', parse_json_errors(jqXHR))

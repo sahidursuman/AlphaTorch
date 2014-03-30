@@ -1,21 +1,67 @@
+- unique ||= Time.now.to_i
 .row.fields
   .col-md-12
-    %form{action:search_path, method:'get', remote:'true', role: 'search'}
-      - service_name = service ? service.name : ''
-      - unique = Time.now.to_i
-      %input.search_field.form-control{name:'term', type:'text', placeholder:'Service Name', value:"#{service_name}", autocomplete:'off', id:"service-search_#{unique}"}
-  .col-md-7
-    .service_id= f.hidden_field :service_id
-    .service_cost.input-group
-      .input-group-addon $
-      = f.text_field :cost, placeholder:'Service Cost', class:'form-control'
-  .col-md-5
-    - unless controller_name == 'events'
-      .scheduler= f.select_recurring :schedule, [], {}, class:'form-control', allow_blank: true
-  .col-md-12
-    -unless controller_name == 'workorder_services'
-      - if controller_action == 'workorders#new'
-        .remove_service= f.link_to_remove(remove_link('REMOVE SERVICE'))
-      - else
-        .remove_service= f.link_to_remove((remove_link('REMOVE SERVICE')), data:{confirm:"This will remove this service from all future events for this #{controller_name.singularize}. Refresh page BEFORE SAVING if you accidentally delete."})
-%hr
+    .row
+      .col-md-12
+        %form{action:search_path, method:'get', remote:'true', role: 'search'}
+          - service_name = service ? service.name : ''
+          %input.search_field.form-control{name:'term', type:'text', placeholder:'Service Name', value:"#{service_name}", autocomplete:'off', id:"service-search_#{unique}"}
+    .row
+      .col-md-7
+        .service_id= f.hidden_field :service_id
+        .service_cost.input-group
+          .input-group-addon $
+          = f.text_field :cost, placeholder:'Service Cost', class:'form-control'
+        .remove-service.visible-lg.visible-md.hidden-sm{style:'margin-top:17px;'}
+          -unless controller_name == 'workorder_services'
+            - if controller_action == 'workorders#new'
+              .remove_service= f.link_to_remove(remove_link('REMOVE SERVICE'))
+            - else
+              .remove_service= f.link_to_remove((remove_link('REMOVE SERVICE')), data:{confirm:"This will remove this service from all future events for this #{controller_name.singularize}. Refresh page BEFORE SAVING if you accidentally delete."})
+
+      .col-md-5
+        - unless controller_name == 'events'
+          .clear{style:'min-height:80px;'}
+            .btn-group.btn-group-sm{data:{toggle:'buttons'}, style:'margin-top:8px;', id:"service_toggle_#{unique}"}
+              %label.btn.btn-default.active
+                %input#recurring-service{type:'radio', name:'service_toggle'}Repeating
+              %label.btn.btn-default
+                %input#single-service{type:'radio', name:'service_toggle'}Single
+            .toggle_group{class:"recurring-service_#{unique}"}
+              .scheduler= f.select_recurring :schedule, [], {}, class:'form-control', allow_blank: false
+            .toggle_group{class:"single-service_#{unique}", style:'display:none'}
+              = f.text_field :single_occurrence_date, class:'form-control datepicker', id:"single_occurrence_#{unique}"
+    .row
+      .col-md-12
+        .remove-service.hidden-lg.hidden-md.visible-sm.visible-xs{style:'margin-top:0px;'}
+          -unless controller_name == 'workorder_services'
+            - if controller_action == 'workorders#new'
+              .remove_service= f.link_to_remove(remove_link('REMOVE SERVICE'))
+            - else
+              .remove_service= f.link_to_remove((remove_link('REMOVE SERVICE')), data:{confirm:"This will remove this service from all future events for this #{controller_name.singularize}. Refresh page BEFORE SAVING if you accidentally delete."})
+    %hr
+
+    :coffee
+      $(document).ready ->
+        unique = "#{unique}"
+        unique_suffix = new Date().getTime()
+        $.each $("[id*=" + unique + "]"), ->
+          id_prefix = $(this).attr("id").split(unique)[0]
+          id = id_prefix + unique_suffix
+          $(this).attr "id", id
+        $.each $("[class*=" + unique + "]"), ->
+          class_prefix = $(this).attr("class").split(unique)[0]
+          klass = class_prefix + unique_suffix
+          $(this).attr "class", "toggle_group_" + unique_suffix + " " + klass
+
+        $("#single_occurrence_" + unique_suffix).val("").datepicker datepicker_defaults()
+        $("#service_toggle_" + unique_suffix + " label.btn").on "click", ->
+          selected_button_id = $(this).children("input[type='radio']").attr("id")
+          display_element = $("div[class~='" + selected_button_id + "_" + unique_suffix + "']")
+          $(".toggle_group_" + unique_suffix + ":not([class~='" + $(display_element).attr("class") + "']").fadeOut complete: ->
+            display_element.delay(600).fadeIn()
+            display_element.find("input:first").focus()
+            if selected_button_id is "recurring-service"
+              setTimeout (->
+                $("#single_occurrence_" + unique_suffix).val ""
+              ), 500

@@ -1,7 +1,29 @@
 %h1 Editing workorder_service
 
 #form
-  = render 'form'
+  - unique= Time.now.to_i
+  - single= @workorder_service.schedule.empty?
+  - date = @workorder_service.single_occurrence_date.strftime('%Y-%m-%d') rescue nil
+  = render 'form', {unique:unique}
+  :coffee
+    $(document).ready ->
+
+      unique_suffix = "#{unique}"
+      $("#single_occurrence_" + unique_suffix).val("").datepicker datepicker_defaults()
+      $("#service_toggle_" + unique_suffix + " label.btn").on "click", ->
+        selected_button_id = $(this).children("input[type='radio']").attr("id")
+        display_element = $("div[class~='" + selected_button_id + "_" + unique_suffix + "']")
+        $(".toggle_group_" + unique_suffix + ":not([class~='" + $(display_element).attr("class") + "']").fadeOut complete: ->
+          display_element.delay(600).fadeIn()
+          display_element.find("input:first").focus()
+          if selected_button_id is "recurring-service"
+            setTimeout (->
+              $("#single_occurrence_" + unique_suffix).val ""
+            ), 500
+
+      if #{single}
+        $('#single-service').click()
+        $("[id*='single_occurrence']").val("#{date}")
 
 = link_to 'Show', workorder_workorder_service_path(@workorder)
 \|

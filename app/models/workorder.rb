@@ -1,8 +1,8 @@
 class Workorder < ActiveRecord::Base
   after_create :set_default_status
   after_initialize :set_default_status
-  after_commit :create_events, on: :create
-  after_commit :update_events, on: :update
+  #after_commit :create_events, on: :create
+  #after_commit :update_events, on: :update
   require 'model_locking'
   include ModelLocking
   include ActionView::Helpers::UrlHelper
@@ -20,7 +20,7 @@ class Workorder < ActiveRecord::Base
   scope :on_hold, ->{where(status_code: Status.get_code('Locked'))}
   scope :cancelled, ->{where(status_code: Status.get_code('Cancelled'))}
 
-  validates_associated :workorder_services
+  #validates_associated :workorder_services
   validates_presence_of :name
   validates_uniqueness_of :name
   validates_presence_of :start_date
@@ -35,45 +35,45 @@ class Workorder < ActiveRecord::Base
     end
   end
 
-  def create_events(future_only=false)
-    unique_dates = []
-
-    workorder_services.each do |ws|
-      all = ws.converted_schedule.all_occurrences
-      future = ws.converted_schedule.remaining_occurrences << Date.today
-      occurrences = future_only ? future : all
-
-      occurrences.each do |date|
-        unless unique_dates.include? date
-          unique_dates.push date
-        end
-      end
-    end
-
-    p unique_dates
-    unique_dates.each do |date|
-      event = Event.new
-      event.workorder = self
-      event.name = name
-      event.start = date
-      event.end = nil
-      event.all_day = true
-      event.save!
-
-      workorder_services.each do |ws|
-        if ws.converted_schedule.all_occurrences.include? date
-          event_service = EventService.new
-          event_service.event = event
-          event_service.service = ws.service
-          event_service.cost = ws.cost
-          event_service.save!
-        end
-      end
-
-    end
-
-    true
-  end
+  #def create_events(future_only=false)
+  #  unique_dates = []
+  #
+  #  workorder_services.each do |ws|
+  #    all = ws.converted_schedule.all_occurrences
+  #    future = ws.converted_schedule.remaining_occurrences << Date.today
+  #    occurrences = future_only ? future : all
+  #
+  #    occurrences.each do |date|
+  #      unless unique_dates.include? date
+  #        unique_dates.push date
+  #      end
+  #    end
+  #  end
+  #
+  #  p unique_dates
+  #  unique_dates.each do |date|
+  #    event = Event.new
+  #    event.workorder = self
+  #    event.name = name
+  #    event.start = date
+  #    event.end = nil
+  #    event.all_day = true
+  #    event.save!
+  #
+  #    workorder_services.each do |ws|
+  #      if ws.converted_schedule.all_occurrences.include? date
+  #        event_service = EventService.new
+  #        event_service.event = event
+  #        event_service.service = ws.service
+  #        event_service.cost = ws.cost
+  #        event_service.save!
+  #      end
+  #    end
+  #
+  #  end
+  #
+  #  true
+  #end
 
   def future_events
     events.future_events

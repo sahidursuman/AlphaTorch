@@ -1,12 +1,12 @@
 - case controller_action
   - when 'workorder_services#new'
     - form_method = :post
-    - url = "/workorders/#{@workorder.customer_property.property_id}/workorder_services"
+    - url = "/workorders/#{@workorder.id}/workorder_services"
     - submit_button_text = 'Add New Service'
     - id = 'new_workorder_service'
   - when 'workorder_services#edit'
     - form_method = :put
-    - url = "/workorders/#{@workorder.customer_property.property_id}/workorder_services/#{@workorder_service.id}"
+    - url = "/workorders/#{@workorder.id}/workorder_services/#{@workorder_service.id}"
     - submit_button_text = 'Edit This Service'
     - id = 'edit_workorder_service'
 
@@ -19,7 +19,7 @@
     .col-md-12
       .form-inputs
         - service = @workorder_service.new_record? ? nil : @workorder_service.service
-        = render 'shared/service_fields', {f:f, service:service}
+        = render 'shared/service_fields', {f:f, service:service, unique:(unique rescue nil)}
         = f.hidden_field :workorder_id, {value:@workorder.id}
   .row
     .col-md-offset-1.col-md-10

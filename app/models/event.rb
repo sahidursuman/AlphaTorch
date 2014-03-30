@@ -1,6 +1,7 @@
 class Event < ActiveRecord::Base
   after_save :update_invoice
   after_destroy :update_invoice
+  after_update :update_event_services
   require 'date_helper'
   include DateHelper
   require 'model_locking'
@@ -110,4 +111,13 @@ class Event < ActiveRecord::Base
     end
   end
 
+  def update_event_services
+    self.event_services.each do |event_service|
+      workorder_service = event_service.workorder_service
+      if workorder_service.single_occurrence?
+        workorder_service.single_occurrence_date = self.start.to_date
+        workorder_service.save
+      end
+    end
+  end
 end

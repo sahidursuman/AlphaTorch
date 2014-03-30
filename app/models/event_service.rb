@@ -4,8 +4,7 @@ class EventService < ActiveRecord::Base
   belongs_to :service
   belongs_to :event
   belongs_to :invoice
-  has_many :event_services
-  has_many :events, through: :event_services
+  belongs_to :workorder_service
 
   validates_presence_of :cost
   validates_numericality_of :cost

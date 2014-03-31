@@ -10,3 +10,9 @@ $ ->
   $(document).on 'nested:fieldAdded', ->
     console.log('field added')
     initialize_search('service-search')
+
+  options = $.extend(datatable_defaults(),
+    "sAjaxSource": "/workorders_data_tables_source",
+    "aaSorting": [[3, "asc"]]
+  )
+  $('#workorders.datatable').dataTable(options);

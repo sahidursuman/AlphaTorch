@@ -6,6 +6,7 @@ class Workorder < ActiveRecord::Base
   require 'model_locking'
   include ModelLocking
   include ActionView::Helpers::UrlHelper
+  include MoneyRails::ActionViewExtension
 
   belongs_to :status, primary_key: 'status_code', foreign_key: 'status_code'
   has_many :events, dependent: :destroy
@@ -114,11 +115,24 @@ class Workorder < ActiveRecord::Base
   end
 
   def to_data_table_row
-    [html_name, status.status]
+    [name, customer_property.property.html_full_address, customer_property.customer.html_name, next_event || 'N/A', status.status, humanized_money_with_symbol(balance_due || 0)]
   end
 
   def html_name
     link_to name, Rails.application.routes.url_helpers.workorder_path(self)
+  end
+
+  def next_event
+    event = future_events.first
+    if event
+      event.event_services.map(&:service).map(&:name).join(', ') << event.start.strftime(' on %Y-%m-%d')
+    end
+  end
+
+  def balance_due
+    if invoices
+      invoices.map(&:balance_due)
+    end
   end
 
   def change_status(status)

@@ -89,6 +89,13 @@ class WorkordersController < ApplicationController
     end
   end
 
+  def data_tables_source
+    @workorders = Workorder.all
+    respond_to do |format|
+      format.js {render json: {aaData:@workorders.map(&:to_data_table_row)}}
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_workorder

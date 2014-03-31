@@ -1,24 +1,3 @@
-- model_class = Workorder
-.page-header
-  %h1=t '.title', :default => model_class.model_name.human.pluralize.titleize
-%table.table.table-striped
-  %thead
-    %tr
-      %th= model_class.human_attribute_name(:name)
-      %th= model_class.human_attribute_name(:start_date)
-      %th= model_class.human_attribute_name(:created_at)
-      %th=t '.actions', :default => t("helpers.actions")
-  %tbody
-    - @workorders.each do |workorder|
-      %tr
-        - if workorder.has_uninvoiced_events_in_past
-          %td{style:'color:red'}= link_to "#{workorder.name} - Uninvoiced Events", workorder_path(workorder), {:style => 'color: red'}
-        - else
-          %td= link_to workorder.name, workorder_path(workorder)
-        %td= workorder.start_date
-        %td=l workorder.created_at
-        %td
-          = link_to t('.edit', :default => t("helpers.links.edit")), edit_workorder_path(workorder), :class => 'btn btn-mini'
-          = link_to t('.destroy', :default => t("helpers.links.destroy")), workorder_path(workorder), :method => :delete, data:{confirm: 'Are You Sure?'}, :class => 'btn btn-mini btn-danger'
-
-= link_to t('.new', :default => t("helpers.links.new")), new_workorder_path, :class => 'btn btn-primary'
+.row
+  .col-md-12.well
+    = render 'list'

@@ -1,5 +1,5 @@
 class WorkordersController < ApplicationController
-  before_filter :set_workorder, only: [:show, :edit, :update, :destroy]
+  before_filter :set_workorder, only: [:show, :edit, :update, :destroy, :close]
   before_filter :set_customer_property, only: [:new, :edit, :create, :update]
 
   # GET /workorders
@@ -74,6 +74,18 @@ class WorkordersController < ApplicationController
     respond_to do |format|
       format.html { redirect_to workorders_url }
       format.json { head :no_content }
+    end
+  end
+
+  def close
+    if @workorder.close
+      respond_to do |format|
+        format.json {render json: {message:'Work Order Closed.'}}
+      end
+    else
+      respond_to do |format|
+        format.json {render json: {message:'Failed To Close Work Order.'}}
+      end
     end
   end
 

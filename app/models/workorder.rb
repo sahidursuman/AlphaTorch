@@ -26,54 +26,16 @@ class Workorder < ActiveRecord::Base
   validates_presence_of :start_date
 
   def set_default_status
-    unless self.new_record?
+    unless self.new_record? || self.closed?
       if !customer_property.locked?
-        self.start_date <= Date.today ?
-            self.change_status('Active') :
-            self.change_status('Created')
+          self.start_date <= Date.today ? self.change_status('Active') : self.change_status('Created')
       end
     end
   end
 
-  #def create_events(future_only=false)
-  #  unique_dates = []
-  #
-  #  workorder_services.each do |ws|
-  #    all = ws.converted_schedule.all_occurrences
-  #    future = ws.converted_schedule.remaining_occurrences << Date.today
-  #    occurrences = future_only ? future : all
-  #
-  #    occurrences.each do |date|
-  #      unless unique_dates.include? date
-  #        unique_dates.push date
-  #      end
-  #    end
-  #  end
-  #
-  #  p unique_dates
-  #  unique_dates.each do |date|
-  #    event = Event.new
-  #    event.workorder = self
-  #    event.name = name
-  #    event.start = date
-  #    event.end = nil
-  #    event.all_day = true
-  #    event.save!
-  #
-  #    workorder_services.each do |ws|
-  #      if ws.converted_schedule.all_occurrences.include? date
-  #        event_service = EventService.new
-  #        event_service.event = event
-  #        event_service.service = ws.service
-  #        event_service.cost = ws.cost
-  #        event_service.save!
-  #      end
-  #    end
-  #
-  #  end
-  #
-  #  true
-  #end
+  def closed?
+    self.status_code == Status.get_code('Closed')
+  end
 
   def future_events
     events.future_events
@@ -115,6 +77,13 @@ class Workorder < ActiveRecord::Base
 
   def has_uninvoiced_events_in_past
     Event.not_invoiced.before_billing_cycle.where(workorder_id: self.id).count > 0
+  end
+
+  def close
+    self.destroy_future_uninvoiced_events
+    self.generate_invoice(uninvoiced_events)
+    self.status_code = Status.get_code('Closed')
+    self.save
   end
 
   def generate_invoice(invoice_events=valid_uninvoiced_billing_cycle_events)

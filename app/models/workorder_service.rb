@@ -55,11 +55,15 @@ class WorkorderService < ActiveRecord::Base
   end
 
   def get_remaining_occurrence_dates
-    dates = converted_schedule.remaining_occurrences.map(&:to_date)
-    if get_all_occurrence_dates.include? Date.today
-      dates << Date.today unless dates.include? Date.today
+    if converted_schedule.present?
+      dates = converted_schedule.remaining_occurrences.map(&:to_date)
+      if get_all_occurrence_dates.include? Date.today
+        dates << Date.today unless dates.include? Date.today
+      end
+      dates
+    else
+      []
     end
-    dates
   end
 
   def create_event(event_date)

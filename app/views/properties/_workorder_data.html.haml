@@ -1,32 +1,38 @@
 .row
   - if @workorder
-    .col-md-7{style:'height:300px; overflow-y: scroll; overflow-x: hidden;'}
+    .col-md-7{style:'height:300px;'}
+      .row{style:'margin-top:5px;'}
+        .col-md-12
+          .h4= @workorder.name
+          - unless @workorder.locked? || @workorder.closed?
+            = link_to 'Add Service',
+            new_workorder_workorder_service_path(workorder_id:@workorder.id),
+            remote:true,
+            id:'new_workorder_service_link',
+            class:'btn btn-xs btn-success'
+          = link_to 'View Invoices',
+          workorder_invoices_path(@workorder),
+          remote:true,
+          id:'workorder_invoice_link',
+          class:'btn btn-xs btn-default'
+          - unless @workorder.closed?
+            = link_to 'Close Out',
+            close_workorder_path(@workorder),
+            method: :post,
+            remote:true,
+            confirm:'Are you sure you want to close this work order?',
+            id:'workorder_close_link',
+            class:'btn btn-xs btn-default'
+      .h6
       .row
         %table.table.table-hover
-          %caption.h4
-            .row
-              .col-md-12
-                = @workorder.name + ' – Work Order Services'
-                - unless @workorder.locked?
-                  = link_to content_tag(:i, nil, {class:'glyphicon glyphicon-plus pull-right', style:'color:green;'}),
-                        new_workorder_workorder_service_path(workorder_id:@workorder.id),
-                        remote:true,
-                        id:'new_workorder_service_link'
-            .row{style:'margin-top:5px;'}
-              .col-md-12
-                %center
-                  = link_to 'View Invoices',
-                  workorder_invoices_path(@workorder)+"?_#{Time.now.to_i}",
-                  remote:true,
-                  id:'workorder_invoice_link',
-                  class:'btn btn-sm btn-success'
           %thead
             %tr
               %th.h5= 'Service Name'
               %th.h5= 'Schedule'
               %th.h5= 'Cost'
               %th
-          %tbody
+          %tbody{style:'overflow-y: scroll; overflow-x: hidden;'}
             - @workorder.workorder_services.each do |wo_service|
               %tr
                 %td.col-md-2.h6= link_to wo_service.service.name, service_path(wo_service.service)
@@ -37,7 +43,7 @@
                     = wo_service.single_occurrence_date.strftime('%A %B %d, %Y')
                 %td.col-md-1.h6= humanized_money_with_symbol(wo_service.cost)
                 %td.col-md-2
-                  - unless @workorder.locked?
+                  - unless @workorder.locked? || @workorder.closed?
                     .row
                       =link_to 'Edit', edit_workorder_workorder_service_path(@workorder, wo_service),
                       class:'btn btn-xs btn-default pull-left', remote:true, id:'edit_workorder_service_link',

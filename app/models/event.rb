@@ -16,10 +16,10 @@ class Event < ActiveRecord::Base
 
   scope :invoiced,             ->{where.not(invoice_id: nil)}
   scope :not_invoiced,         ->{where(invoice_id: nil)}
-  scope :future_events,        ->{where("start > '#{Date.today}'")}
+  scope :future_events,        ->{where("start > '#{DateTime.now}'")}
   scope :billing_cycle,        ->{where("start BETWEEN '#{DateHelper.first_day_of_month}' AND '#{DateHelper.last_day_of_month}'")}
   scope :before_billing_cycle, ->{where("start < '#{DateHelper.first_day_of_month}'")}
-  scope :past,                 ->{where("start <= '#{Date.today}'")}
+  scope :past,                 ->{where("start <= '#{DateTime.now}'")}
 
   validates_uniqueness_of :name, scope: :start
   validates_associated :event_services

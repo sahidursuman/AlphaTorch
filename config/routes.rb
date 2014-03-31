@@ -31,6 +31,7 @@ CortezLandscaping::Application.routes.draw do
     resources :workorder_services
     resources :events
     resources :invoices
+    post 'close', on: :member
   end
 
   resources :services

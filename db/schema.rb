@@ -157,8 +157,8 @@ ActiveRecord::Schema.define(:version => 20140321043500) do
   create_table "workorder_services", :force => true do |t|
     t.integer  "service_id"
     t.integer  "workorder_id"
-    t.datetime "single_occurrence_date", :null => true
-    t.text     "schedule",               :null => true
+    t.datetime "single_occurrence_date"
+    t.text     "schedule"
     t.integer  "cost"
     t.datetime "created_at",             :null => false
     t.datetime "updated_at",             :null => false

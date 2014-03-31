@@ -345,6 +345,29 @@ function refresh(elements, callback){
     })
 }
 
+function refresh_workorders(){
+    if($('#workorders').length){
+        refresh([$('#workorders')],function(){
+            $('.workorder').on('click', function(){
+                var url = $(this).data('url')
+                $('#workorder-data').load(url)
+                $('#workorder-data').attr('data-url', url)
+            })
+        })
+    }
+}
+
+function refresh_properties(){
+    if($('#properties').length){
+        refresh([$('#properties')],function(){
+            $('.property').on('click', function(){
+                var url = $(this).data('url')
+                $('#property-data').load(url)
+                $('#property-data').attr('data-url', url)
+            })
+        })
+    }
+}
 
 /*
  * AJAX event handlers
@@ -419,6 +442,9 @@ function handle_ajax(event, jqXHR, stage){
         case 'change_status_link' :
             handle_change_status_link(stage, jqXHR)
             break
+        case 'workorder_close_link' :
+            handle_workorder_close_link(stage, jqXHR)
+            break
         default :
             default_ajax_handler(stage, target)
             break
@@ -466,13 +492,8 @@ function handle_new_workorder_form_submit(stage,jqXHR){
             log('new_workorder_form_submit - ' + stage)
             $('#ajax-modal').modal('hide')
             notify('success', jqXHR.message)
-            refresh([$('#profile'),$('#workorders')], function(){
-                $('.workorder').on('click', function(){
-                    var url = $(this).data('url')
-                    $('#workorder-data').load(url)
-                    $('#workorder-data').attr('data-url', url)
-                })
-            })
+            refresh([$('#profile')])
+            refresh_workorders()
             break;
         case 'complete' :
             log('new_workorder_form_submit - ' + stage)
@@ -503,13 +524,8 @@ function handle_edit_property_form_submit(stage,jqXHR){
             log('edit_property_form_submit - ' + stage)
             $('#ajax-modal').modal('hide')
             notify('success', jqXHR.message)
-            refresh([$('#profile'), $('#workorders')], function(){
-                $('.workorder').on('click', function(){
-                    var url = $(this).data('url')
-                    $('#workorder-data').load(url)
-                    $('#workorder-data').attr('data-url', url)
-                })
-            })
+            refresh([$('#profile')])
+            refresh_workorders()
             break;
         case 'complete' :
             log('edit_property_form_submit - ' + stage)
@@ -528,15 +544,8 @@ function handle_new_property_form_submit(stage, jqXHR){
             if($('#properties.datatable').length)
                 $('#properties.datatable').dataTable().fnReloadAjax()
             else
-                refresh([$('#profile'), $('#properties')], function(){
-                    $('.property').on('click', function(){
-                        url = $(this).data('url')
-                        $('#property-details').load(url)
-                        log(url)
-                        $('#property-details').attr('data-url', url)
-                    })
-                    $('.modal').modal('hide')
-                })
+                refresh([$('#profile')])
+                refresh_properties()
             break;
         case 'complete' :
             log('new_property_form_submit - ' + stage)
@@ -763,14 +772,8 @@ function handle_edit_customer_form_submit(stage,jqXHR){
             log('edit_customer_form_submit - ' + stage)
             $('#ajax-modal').modal('hide')
             notify('success', jqXHR.message)
-            refresh([$('#profile'), $('#properties')], function(){
-                $('.property').on('click', function(){
-                    url = $(this).data('url')
-                    $('#property-data').load(url)
-                    log(url)
-                    $('#property-data').attr('data-url', url)
-                })
-            })
+            refresh([$('#profile')])
+            refresh_properties()
             break;
         case 'complete' :
             log('edit_customer_form_submit - ' + stage)
@@ -800,28 +803,27 @@ function handle_change_status_link(stage, jqXHR){
         case 'success' :
             log('change_status_link - ' + stage)
             refresh([$('#profile')])
-            if($('#properties').length){
-                refresh([$('#properties')],function(){
-                    $('.property').on('click', function(){
-                        var url = $(this).data('url')
-                        $('#property-data').load(url)
-                        $('#property-data').attr('data-url', url)
-                    })
-                })
-            }
-            if($('#workorders').length){
-                refresh([$('#properties')],function(){
-                    $('.workorder').on('click', function(){
-                        var url = $(this).data('url')
-                        $('#workorder-data').load(url)
-                        $('#workorder-data').attr('data-url', url)
-                    })
-                })
-            }
-
+            refresh_properties()
+            refresh_workorders()
             break;
         case 'complete' :
             log('change_status_link - ' + stage)
             break;
+    }
+}
+
+function handle_workorder_close_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_property_link - ' + stage)
+            refresh([$('#profile')])
+            refresh_workorders()
+            $('#workorder-data').load( $('#workorder-data').data('url'))
+            break;
+        case 'complete' :
+            log('new_property_link - ' + stage)
     }
 }

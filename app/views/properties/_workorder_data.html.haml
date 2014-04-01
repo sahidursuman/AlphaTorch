@@ -1,6 +1,6 @@
 .row
   - if @workorder
-    .col-md-7{style:'height:300px;'}
+    .col-md-7{style:'height:300px; overflow-y: scroll; overflow-x: hidden;'}
       .row{style:'margin-top:5px;'}
         .col-md-12
           .h4= @workorder.name
@@ -32,7 +32,7 @@
               %th.h5= 'Schedule'
               %th.h5= 'Cost'
               %th
-          %tbody{style:'overflow-y: scroll; overflow-x: hidden;'}
+          %tbody
             - @workorder.workorder_services.each do |wo_service|
               %tr
                 %td.col-md-2.h6= link_to wo_service.service.name, service_path(wo_service.service)

@@ -65,6 +65,9 @@
                   %th.h5= 'Received From'
                   %th.h5= 'Amount'
                   %th.h5= 'Payment Method'
+                  %th.h5= 'Check Number'
+                  %th.h5= 'Routing Number'
+                  %th.h5= 'Processing Code'
 
               %tbody
                 - @invoice.payment_details.order('payment_date asc').each do |payment|

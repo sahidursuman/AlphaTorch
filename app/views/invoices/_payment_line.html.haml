@@ -3,3 +3,18 @@
   %td.h6= payment.name
   %td.h6= humanized_money_with_symbol(payment.amount)
   %td.h6= payment.payment_method
+  %td.h6
+    - if payment.check_number.present?
+      = payment.check_number
+    - else
+      –
+  %td.h6
+    - if payment.check_routing.present?
+      = payment.check_routing
+    - else
+      –
+  %td.h6
+    - if payment.cc_processing_code.present?
+      = payment.cc_processing_code
+    - else
+      –

@@ -1,7 +1,6 @@
 = nested_form_for @workorder, remote:true, :html => { :class => 'form-vertical', :'data-type' => :json} do |f|
   = f.hidden_field :customer_property_id, value: @customer_property.id
-
-  .row
+  .row{style:'height: 350px; overflow-y:scroll; overflow-x:hidden;'}
     %fieldset.col-md-6
       %legend.h4 Work Order Information
       .col-md-12.workorder-name

@@ -19,6 +19,10 @@ class EventsController < ApplicationController
 
   # GET /events/1/edit
   def edit
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   # POST /events
@@ -29,7 +33,7 @@ class EventsController < ApplicationController
     respond_to do |format|
       if @event.save
         format.html { redirect_to @event, notice: 'Event was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @event }
+        format.json { render json: {message:'Event was successfully created.'}, status: :created, location: @event }
       else
         format.html { render action: 'new' }
         format.json { render json: @event.errors, status: :unprocessable_entity }
@@ -43,7 +47,7 @@ class EventsController < ApplicationController
     respond_to do |format|
       if @event.update_attributes(event_params)
         format.html { redirect_to @event, notice: 'Event was successfully updated.' }
-        format.json { head :no_content }
+        format.json { render json: {message:'Event was successfully updated.'}, status: :created, location: @event }
       else
         format.html { render action: 'edit' }
         format.json { render json: @event.errors, status: :unprocessable_entity }
@@ -57,7 +61,7 @@ class EventsController < ApplicationController
     @event.destroy
     respond_to do |format|
       format.html { redirect_to events_url }
-      format.json { head :no_content }
+      format.json { render json: {message:'Event was deleted.'} }
     end
   end
 
@@ -99,6 +103,6 @@ class EventsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def event_params
-      params.require(:event).permit(:status_code, :workorder_id, :name, :cost, :start, :end, :all_day, event_services_attributes:[:id, :service_id, :cost, :_destroy])
+      params.require(:event).permit(:status_code, :workorder_id, :name, :cost, :start, :end, :all_day, event_services_attributes:[:id, :event_id, :service_id, :cost, :_destroy])
     end
 end

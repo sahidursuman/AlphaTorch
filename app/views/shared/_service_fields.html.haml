@@ -12,12 +12,8 @@
         .service_cost.input-group
           .input-group-addon $
           = f.text_field :cost, placeholder:'Service Cost', class:'form-control'
-        .remove-service.visible-lg.visible-md.hidden-sm{style:'margin-top:17px;'}
-          -unless controller_name == 'workorder_services'
-            - if controller_action == 'workorders#new'
-              .remove_service= f.link_to_remove(remove_link('REMOVE SERVICE'))
-            - else
-              .remove_service= f.link_to_remove((remove_link('REMOVE SERVICE')), data:{confirm:"This will remove this service from all future events for this #{controller_name.singularize}. Refresh page BEFORE SAVING if you accidentally delete."})
+        .remove-service{style:'margin-top:17px;'}
+          = f.link_to_remove(remove_link('REMOVE SERVICE')) unless controller_name == 'workorder_services'
 
       .col-md-5
         - unless controller_name == 'events'
@@ -31,14 +27,7 @@
               .scheduler= f.select_recurring :schedule, [], {}, class:'form-control', allow_blank: false
             .toggle_group{class:"single-service_#{unique}", style:'display:none'}
               = f.text_field :single_occurrence_date, class:'form-control datepicker', id:"single_occurrence_#{unique}"
-    .row
-      .col-md-12
-        .remove-service.hidden-lg.hidden-md.visible-sm.visible-xs{style:'margin-top:0px;'}
-          -unless controller_name == 'workorder_services'
-            - if controller_action == 'workorders#new'
-              .remove_service= f.link_to_remove(remove_link('REMOVE SERVICE'))
-            - else
-              .remove_service= f.link_to_remove((remove_link('REMOVE SERVICE')), data:{confirm:"This will remove this service from all future events for this #{controller_name.singularize}. Refresh page BEFORE SAVING if you accidentally delete."})
+
     %hr
 
     :coffee

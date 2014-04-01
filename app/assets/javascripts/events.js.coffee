@@ -10,6 +10,10 @@ getCalendarHeaderHeight = ->
 
 $ ->
 
+  $(document).on 'nested:fieldAdded', ->
+    console.log('field added')
+    initialize_search('service-search')
+
   $("#calendar").fullCalendar({
     header:
       left: 'title'
@@ -47,7 +51,7 @@ $ ->
         success: (data, status, jqXHR) ->
           content = $(data).find('.content')
           element.popover({
-            placement:'right'
+            placement:'bottom'
             trigger:'click'
             animation:true
             delay:

@@ -34,7 +34,7 @@ $ ->
 
   # Validate form dynamically as user inputs information before submitting
   $ ->
-    $("[id*=_customer]").validate
+    $("#new_customer, #edit_customer").validate
       rules:
         'customer[first_name]':
           required: true
@@ -66,14 +66,11 @@ $ ->
         'customer[primary_phone]':
           required: "* Phone required"
 
-    errorPlacement: (error, element) ->
-      if element.parent().is(".input-append")
-        error.appendTo element.parents(".controls:first")
-      else
-        error.insertAfter element
-      return
-
-  return
+      errorPlacement: (error, element) ->
+        if element.parent().is(".input-append")
+          error.appendTo element.parents(".controls:first")
+        else
+          error.insertAfter element
 
 
 

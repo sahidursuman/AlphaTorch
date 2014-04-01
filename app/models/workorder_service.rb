@@ -1,6 +1,7 @@
 class WorkorderService < ActiveRecord::Base
   after_create :create_events
   after_update :update_events
+  after_destroy :delete_event_services
   include IceCube
   require 'date_helper'
   include DateHelper
@@ -99,10 +100,17 @@ class WorkorderService < ActiveRecord::Base
     event_service.event_id = event.id
     event_service.service_id = self.service_id
     event_service.cost = self.cost
-
+    p "EVENT ID = #{event.id}"
+    p "CHECKING IF EVENT SERVICE FOR #{service.name} EXISTS IN EVENT ALREADY"
     if EventService.where(event_id:event.id, service_id:self.service_id).empty?
-      EventService.create!(event_service.attributes)
+      unless event_service.workorder_service_id.nil?
+        p "EVENT SERVICE NOT FOUND FOR EVENT #{event.id} - #{service.name}"
+        EventService.create!(event_service.attributes)
+      end
+    else
+      p "EVENT SERVICE FOUND FOR EVENT #{event.id} - #{service.name}"
     end
+    p '*******************************'
 
   end
 
@@ -175,4 +183,9 @@ class WorkorderService < ActiveRecord::Base
     DateHelper.last_day_of_month(billing_cycle_start.year, billing_cycle_start.month)
   end
 
+  def delete_event_services
+    if self.single_occurrence? && self.event_services
+      self.event_services.each(&:destroy)
+    end
+  end
 end

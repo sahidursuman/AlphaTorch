@@ -1,26 +1,22 @@
-= simple_nested_form_for @event, :html => { :class => 'form-vertical' } do |f|
-  = f.error_notification
-  .row
-    .span6
-      .row
-        .event_workorder
-          = f.input :workorder_id, collection: Workorder.all, value_method: :id, label_method: :name
-      .row
-        .event_name.input-prepend
-          .add-on Name
-          = f.text_field :name, placeholder: 'Name for event'
-      .row
-        .start.input-prepend
-          .add-on Date
-          = f.text_field :start, placeholder:'Date for event'
-  .row
-    .span12
-      %h5.row.page-header{style:'margin-top:30px;'} Event Services
-      .row
+- case controller_action
+  - when 'events#edit'
+    - id = 'edit_event'
+  -when 'events#new'
+    - id = 'new_event'
+
+= nested_form_for @event, remote:true, :html => {id:id, :class => 'form-vertical', :'data-type' => :json} do |f|
+  = f.hidden_field :workorder_id, value: @event.workorder_id
+  = f.hidden_field :start, value: @event.start
+  .row{style:'height: 350px; overflow-y:scroll; overflow-x:hidden;'}
+    %fieldset.col-md-6
+      %legend.h4 Event Information
+      .col-md-12.event-name
+        = f.text_field :name, placeholder: 'Event Name', class:'form-control'
+      .col-md-12
+        = f.submit 'Update Event', class:'btn btn-md btn-success'
+    %fieldset.col-md-6
+      %legend.h4 Services
+      .col-md-12
         = f.fields_for :event_services do |es|
-          = render 'shared/service_fields', {f:es}
-    = f.link_to_add 'Add A New Service', :event_services
-  .row
-    .form-actions
-      = f.button :submit, :class => 'btn-primary'
-      = link_to t('.cancel', :default => t("helpers.links.cancel")), events_path, :class => 'btn'
+          = render partial: 'shared/service_fields', locals:{f:es, service:es.object.service}
+        = f.link_to_add 'Add A New Service', :event_services, class:'btn btn-sm btn-default'

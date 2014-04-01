@@ -451,6 +451,15 @@ function handle_ajax(event, jqXHR, stage){
         case 'workorder_close_link' :
             handle_workorder_close_link(stage, jqXHR)
             break
+        case 'edit_event_link' :
+            handle_edit_event_link(stage, jqXHR)
+            break
+        case 'edit_event' :
+            handle_edit_event_form_submit(stage, jqXHR)
+            break
+        case 'delete_event_link' :
+            handle_delete_event_link(stage, jqXHR)
+            break
         default :
             default_ajax_handler(stage, target)
             break
@@ -832,5 +841,58 @@ function handle_workorder_close_link(stage, jqXHR){
             break;
         case 'complete' :
             log('new_property_link - ' + stage)
+    }
+}
+
+function handle_edit_event_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_event_link - ' + stage)
+            break;
+        case 'complete' :
+            log('edit_event_link - ' + stage)
+            if ($('.popover').length){
+                $('.popover').remove()
+            }
+    }
+}
+
+function handle_edit_event_form_submit(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_event_form_submit - ' + stage)
+            notify('success', jqXHR.message)
+            break;
+        case 'complete' :
+            log('edit_event_form_submit - ' + stage)
+            $('#ajax-modal').modal('hide')
+            if($('#calendar').length){
+                $('#calendar').fullCalendar('refetchEvents')
+            }
+    }
+}
+
+function handle_delete_event_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('delete_event_link - ' + stage)
+            $('.popover').remove()
+            notify('success', jqXHR.message)
+            if($('#calendar').length){
+                $('#calendar').fullCalendar('refetchEvents')
+            }
+            break;
+        case 'complete' :
+            alert($('#calendar').length)
+            log('delete_event_link - ' + stage)
     }
 }

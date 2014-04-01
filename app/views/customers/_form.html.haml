@@ -9,6 +9,7 @@
     - url = "/customers/#{@customer.id}"
     - submit_button_text = 'Update This Customer'
     - id = 'edit_customer'
+    = javascript_include_tag 'customers'
 
 = form_for @customer_form, method: form_method, url: url, remote:true, html:{id: id, :'data-type' => :json} do |f|
   .row

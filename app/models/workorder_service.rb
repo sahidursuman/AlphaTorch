@@ -29,7 +29,7 @@ class WorkorderService < ActiveRecord::Base
         [self.single_occurrence_date.to_date + 5.hours]
 
     process_occurrence_dates(occurrence_dates)
-    destroy_invalid_events
+    #destroy_invalid_events
   end
 
   def process_occurrence_dates(occurrence_dates)

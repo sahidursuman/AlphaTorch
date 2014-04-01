@@ -13,6 +13,6 @@ $ ->
 
   options = $.extend(datatable_defaults(),
     "sAjaxSource": "/workorders_data_tables_source",
-    "aaSorting": [[3, "asc"]]
+    "aaSorting": [[5, "asc"]]
   )
   $('#workorders.datatable').dataTable(options);

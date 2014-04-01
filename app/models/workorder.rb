@@ -142,7 +142,7 @@ class Workorder < ActiveRecord::Base
       case status
         when 'Locked'
           events.not_invoiced.map(&:lock)
-        when 'Active'
+        when 'Active', 'Created'
           events.not_invoiced.map(&:unlock)
       end
     end

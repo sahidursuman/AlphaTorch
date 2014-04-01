@@ -75,7 +75,7 @@ class Customer < ActiveRecord::Base
     unless status_code == Status.get_code('Locked')
       self.status_code = Status.get_code('Locked')
       self.save
-      current_customer_properties.each(&:set_on_hold)
+      current_customer_properties.each{|cp| cp.change_status('Locked')}
     end
   end
 
@@ -83,7 +83,7 @@ class Customer < ActiveRecord::Base
     unless status_code == Status.get_code('Active')
       self.status_code = Status.get_code('Active')
       self.save
-      current_customer_properties.each(&:remove_hold)
+      current_customer_properties.each{|cp| cp.change_status('Active')}
     end
   end
 

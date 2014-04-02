@@ -77,6 +77,13 @@ class Event < ActiveRecord::Base
     self.invoice_id != nil
   end
 
+  def update_attributes(params)
+    if params[:all_day] == true
+      params[:start] = params[:start].to_datetime.midnight
+    end
+    super(params)
+  end
+
   def self.invoice_destroyed(invoice_id)
     if Invoice.where(id: invoice_id).empty?
       events = where(invoice_id: invoice_id)

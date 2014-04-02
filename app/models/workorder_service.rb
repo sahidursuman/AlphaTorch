@@ -11,14 +11,13 @@ class WorkorderService < ActiveRecord::Base
 
   serialize :schedule, Hash
 
-  #validates_presence_of :schedule, unless: ->(ws) {ws.single_occurrence_date.present?}
   validates_presence_of :cost
   validates_numericality_of :cost
 
   def create_events
     occurrence_dates = self.recurring? ?
        get_requested_occurrences(false) :
-       [self.single_occurrence_date.to_date + 5.hours]
+       [self.single_occurrence_date.to_datetime.midnight]
 
     process_occurrence_dates(occurrence_dates)
   end
@@ -26,10 +25,10 @@ class WorkorderService < ActiveRecord::Base
   def update_events
     occurrence_dates = self.recurring? ?
         get_requested_occurrences(true) :
-        [self.single_occurrence_date.to_date + 5.hours]
+        [self.single_occurrence_date.to_datetime.midnight]
 
     process_occurrence_dates(occurrence_dates)
-    #destroy_invalid_events
+    destroy_invalid_events unless self.single_occurrence?
   end
 
   def process_occurrence_dates(occurrence_dates)
@@ -81,39 +80,30 @@ class WorkorderService < ActiveRecord::Base
   def create_event_service(event)
     #because this is a single occurrence, it can by definition only belong
     #to one event. this will delete all associated event services, unless
-    #the event service belongs to the current associated event. if an event
-    #gets destroyed, then a flag is set to ensure that a new event service is
-    #created in its place.
+    #the event service belongs to the current associated event.
     if self.single_occurrence?
-      should_create_event_service = self.event_services.present? ? false : true
       self.event_services.each do |event_service|
         unless event_service.event == event
           evnt = event_service.event
-          p 'EVENT SERVICE MOVED...DESTROYING DUPLICATE'
           event_service.destroy
           evnt.reload
-          p 'EVENT RELOADED'
           if evnt.event_services.empty?
-            'NO SERVICES...DESTROYING EVENT'
             evnt.destroy
-          else
-            p 'EVENT STILL HAS SERVICES'
           end
-          should_create_event_service = true
         end
       end
-    else
-      should_create_event_service = true
     end
 
-    if should_create_event_service
-      event_service = EventService.new
-      event_service.workorder_service_id = self.id
-      event_service.event_id = event.id
-      event_service.service_id = self.service.id
-      event_service.cost = self.cost
-      EventService.where(event_service.attributes).first_or_create!
+    event_service = EventService.new
+    event_service.workorder_service_id = self.id
+    event_service.event_id = event.id
+    event_service.service_id = self.service_id
+    event_service.cost = self.cost
+
+    if EventService.where(event_id:event.id, service_id:self.service_id).empty?
+      EventService.create!(event_service.attributes)
     end
+
   end
 
   def single_occurrence?
@@ -130,8 +120,11 @@ class WorkorderService < ActiveRecord::Base
 
   def destroy_invalid_events
     remaining_dates = future_events.map(&:start).map(&:to_date)
+    p "REMAINING DATES = #{remaining_dates.sort}"
     valid_dates = get_remaining_occurrence_dates
+    p "VALID DATES = #{valid_dates.sort}"
     to_destroy = remaining_dates - valid_dates
+    p "TO DESTROY = #{to_destroy}"
     to_destroy.each do |event_date|
       event = Event.where("workorder_id = #{self.workorder_id} AND start::date = '#{event_date}'").first
       if event.present?

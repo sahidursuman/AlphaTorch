@@ -1,8 +1,6 @@
 class Workorder < ActiveRecord::Base
   after_create :set_default_status
   after_initialize :set_default_status
-  #after_commit :create_events, on: :create
-  #after_commit :update_events, on: :update
   require 'model_locking'
   include ModelLocking
   include ActionView::Helpers::UrlHelper

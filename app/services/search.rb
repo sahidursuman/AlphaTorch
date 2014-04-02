@@ -22,8 +22,8 @@ class Search
     service_basic    = Service.select('*, 1 as Basic').where("name ILIKE ?", @query).to_sql
     service_advanced = Service.select('*, 0 as Basic').where("name ILIKE ?", @a_query).to_sql
 
-    customer_basic    = Customer.select('*, 1 as Basic').where("first_name || ' ' || middle_initial || ' ' || last_name ILIKE ?", @query).to_sql
-    customer_advanced = Customer.select('*, 0 as Basic').where("first_name || ' ' || middle_initial || ' ' || last_name ILIKE ?", @a_query).to_sql
+    customer_basic    = Customer.select('*, 1 as Basic').where("first_name ILIKE ? OR middle_initial ILIKE ? OR last_name ILIKE ?", @query, @query, @query).to_sql
+    customer_advanced = Customer.select('*, 0 as Basic').where("first_name ILIKE ? OR middle_initial ILIKE ? OR last_name ILIKE ?", @a_query, @a_query, @a_query).to_sql
 
     property_basic    = Property.select('properties.*, states.name, 1 as Basic').joins(:state).where("street_address_1 ILIKE ? OR street_address_2 ILIKE ? OR city ILIKE ? OR states.name ILIKE ? OR postal_code ILIKE ?", @query,@query,@query,@query,@query).to_sql
     property_advanced = Property.select('properties.*, states.name, 0 as Basic').joins(:state).where("street_address_1 ILIKE ? OR street_address_2 ILIKE ? OR city ILIKE ? OR states.name ILIKE ? OR postal_code ILIKE ?", @a_query,@a_query,@a_query,@a_query,@a_query,).to_sql
@@ -57,7 +57,7 @@ class Search
            UNION
            SELECT * FROM advanced
            ORDER BY Basic DESC
-           LIMIT(25);
+           LIMIT 25;
           "
     klass.find_by_sql(sql)
   end

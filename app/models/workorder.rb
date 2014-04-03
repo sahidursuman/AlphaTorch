@@ -154,7 +154,7 @@ class Workorder < ActiveRecord::Base
 
   def self.create_all_events
     p "#{Time.now} - Generating scheduled events for billing cycle..."
-    ModelLocking.not_locked(self).each(&:create_events)
+    ModelLocking.not_locked(self).map(&:workorder_services).each(&:create_events)
     p "#{Time.now} - Complete!"
   end
 

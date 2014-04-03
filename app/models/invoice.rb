@@ -77,6 +77,10 @@ class Invoice < ActiveRecord::Base
 
   end
 
+  def self.destroy_orphaned
+    orphaned.each(&:destroy)
+  end
+
 
   private
 
@@ -88,10 +92,6 @@ class Invoice < ActiveRecord::Base
   def set_created
     self.status_code = Status.get_code('Created')
     self.save
-  end
-
-  def self.destroy_orphaned
-    orphaned.map(&:destroy)
   end
 
 end

@@ -27,3 +27,8 @@ every '00 00 4 * *' do
   runner "Workorder.create_all_events",   environment: :development
   #runner "Workorder.generate_all_events",   environment: :production
 end
+
+every 1.months do
+  runner "Invoice.destroy_orphaned", environment: :development
+  #runner "Invoice.orphaned.map(&:destroy)", environment: :production
+end

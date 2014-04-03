@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140321043500) do
+ActiveRecord::Schema.define(:version => 20140403160653) do
 
   create_table "countries", :force => true do |t|
     t.string   "name"
@@ -110,6 +110,7 @@ ActiveRecord::Schema.define(:version => 20140321043500) do
     t.string   "postal_code"
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false
+    t.text     "map_data"
   end
 
   add_index "properties", ["street_address_1", "street_address_2", "city", "state_id"], :name => "unique_address", :unique => true

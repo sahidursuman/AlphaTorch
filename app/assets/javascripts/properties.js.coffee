@@ -39,7 +39,8 @@ $ ->
     $('#workorder-data').attr('data-url', url)
 
   $('#new_property').on 'ajax:success', ->
-    ajax_loader($('#map-canvas'),fetch_map_data)
+    ajax_loader($('#map-canvas'), fetch_map_data)
+
 
   $(window).on 'resize', ->
     adjustDivHeight()
@@ -61,85 +62,41 @@ fetch_map_data = ->
 
   # Validate form dynamically as user inputs information before submitting
   $ ->
-    $("#new_property, #edit_property").validate
-      rules:
-        'property[first_name]':
-          required: true
-          minlength: 2
+    if $("#new_property, #edit_property")
+      $("#new_property, #edit_property").validate
+        rules:
+          'property[first_name]':
+            required: true
+            minlength: 2
 
-        'property[last_name]':
-          required: true
-          minlength: 2
+          'property[last_name]':
+            required: true
+            minlength: 2
 
-        'property[email]':
-          required: false
-          email: true
+          'property[email]':
+            required: false
+            email: true
 
-        'property[primary_phone]':
-          required: true
+          'property[primary_phone]':
+            required: true
 
-      messages:
-        'property[first_name]':
-          required: "* Enter customer's first name"
-          minlength: "* {0} characters required"
+        messages:
+          'property[first_name]':
+            required: "* Enter customer's first name"
+            minlength: "* {0} characters required"
 
-        'property[last_name]':
-          required: "* Enter customer's last name"
-          minlength: "* {0} characters required"
+          'property[last_name]':
+            required: "* Enter customer's last name"
+            minlength: "* {0} characters required"
 
-        'property[email]':
-          minlength: "* Please enter a valid email address"
+          'property[email]':
+            minlength: "* Please enter a valid email address"
 
-        'property[primary_phone]':
-          required: "* Phone required"
+          'property[primary_phone]':
+            required: "* Phone required"
 
-      errorPlacement: (error, element) ->
-        if element.parent().is(".input-append")
-          error.appendTo element.parents(".controls:first")
-        else
-          error.insertAfter element
-
-
-
-
-  $ ->
-    $("#edit_property").validate
-      rules:
-        'property[first_name]':
-          required: true
-          minlength: 2
-
-        'property[last_name]':
-          required: true
-          minlength: 2
-
-        'property[email]':
-          required: false
-          email: true
-
-        'property[primary_phone]':
-          required: true
-
-      messages:
-        'property[first_name]':
-          required: "* Enter customer's first name"
-          minlength: "* {0} characters required"
-
-        'property[last_name]':
-          required: "* Enter customer's last name"
-          minlength: "* {0} characters required"
-
-        'property[email]':
-          minlength: "* Please enter a valid email address"
-
-        'property[primary_phone]':
-          required: "* Phone required"
-
-    errorPlacement: (error, element) ->
-      if element.parent().is(".input-append")
-        error.appendTo element.parents(".controls:first")
-      else
-        error.insertAfter element
-      return
-
-  return
+        errorPlacement: (error, element) ->
+          if element.parent().is(".input-append")
+            error.appendTo element.parents(".controls:first")
+          else
+            error.insertAfter element

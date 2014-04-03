@@ -1,4 +1,5 @@
 class Property < ActiveRecord::Base
+  before_save :get_map_coordinates
   require 'net/http'
   include ActionView::Helpers::UrlHelper
   include MoneyRails::ActionViewExtension
@@ -85,19 +86,23 @@ class Property < ActiveRecord::Base
   end
 
   def self.generate_map_data
-    lat_long_arr = []
-    all.map do |property|
-      parsed_url = URI.parse("https://maps.googleapis.com/maps/api/geocode/json?address=#{property.full_address}&sensor=true")
-      http = Net::HTTP.new(parsed_url.host, parsed_url.port)
-      http.use_ssl = true
-      request = Net::HTTP::Get.new(parsed_url.request_uri)
-      response = http.request(request)
-      json = JSON.parse(response.body)
-      json['results'].each do |key|
-        lat_long_arr << [key['geometry']['location']['lat'], key['geometry']['location']['lng']]
-      end
-      lat_long_arr
+    select(:map_data).map do |property|
+      JSON::parse property.map_data
     end
+  end
+
+  def get_map_coordinates
+    lat_long_arr = []
+    parsed_url = URI.parse("https://maps.googleapis.com/maps/api/geocode/json?address=#{full_address}&sensor=true")
+    http = Net::HTTP.new(parsed_url.host, parsed_url.port)
+    http.use_ssl = true
+    request = Net::HTTP::Get.new(parsed_url.request_uri)
+    response = http.request(request)
+    json = JSON.parse(response.body)
+    json['results'].each do |key|
+      lat_long_arr << [key['geometry']['location']['lat'], key['geometry']['location']['lng']]
+    end
+    self.map_data = lat_long_arr.to_json
   end
 
 end

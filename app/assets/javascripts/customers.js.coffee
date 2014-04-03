@@ -35,43 +35,44 @@ $ ->
 
   # Validate form dynamically as user inputs information before submitting
   $ ->
-    $("#new_customer, #edit_customer").validate
-      rules:
-        'customer[first_name]':
-          required: true
-          minlength: 2
+    if $("#new_customer, #edit_customer").length
+      $("#new_customer, #edit_customer").validate
+        rules:
+          'customer[first_name]':
+            required: true
+            minlength: 2
 
-        'customer[last_name]':
-          required: true
-          minlength: 2
+          'customer[last_name]':
+            required: true
+            minlength: 2
 
-        'customer[email]':
-          required: false
-          email: true
+          'customer[email]':
+            required: false
+            email: true
 
-        'customer[primary_phone]':
-          required: true
+          'customer[primary_phone]':
+            required: true
 
-      messages:
-        'customer[first_name]':
-          required: "* Enter customer's first name"
-          minlength: "* {0} characters required"
+        messages:
+          'customer[first_name]':
+            required: "* Enter customer's first name"
+            minlength: "* {0} characters required"
 
-        'customer[last_name]':
-          required: "* Enter customer's last name"
-          minlength: "* {0} characters required"
+          'customer[last_name]':
+            required: "* Enter customer's last name"
+            minlength: "* {0} characters required"
 
-        'customer[email]':
-          minlength: "* Please enter a valid email address"
+          'customer[email]':
+            minlength: "* Please enter a valid email address"
 
-        'customer[primary_phone]':
-          required: "* Phone required"
+          'customer[primary_phone]':
+            required: "* Phone required"
 
-      errorPlacement: (error, element) ->
-        if element.parent().is(".input-append")
-          error.appendTo element.parents(".controls:first")
-        else
-          error.insertAfter element
+        errorPlacement: (error, element) ->
+          if element.parent().is(".input-append")
+            error.appendTo element.parents(".controls:first")
+          else
+            error.insertAfter element
 
 
 

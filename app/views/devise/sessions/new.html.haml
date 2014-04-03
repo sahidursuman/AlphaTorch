@@ -7,10 +7,10 @@
         = form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => {:class => 'form-vertical' }) do |f|
           .row
             .col-md-12
-              = f.text_field :email, :required => true, class:'form-control', placeholder:'Email', autocomplete:'off'
+              = f.text_field :email, :required => true, class:'form-control', placeholder:'Email', autocomplete:'off', value:'admin@email.com'
           .row
             .col-md-12
-              = f.password_field :password, :required => true, class:'form-control', placeholder:'Password'
+              = f.password_field :password, :required => true, class:'form-control', placeholder:'Password', value:'password'
           = f.submit 'Sign In', :class => 'btn btn-sm btn-success'
     %hr
     .row

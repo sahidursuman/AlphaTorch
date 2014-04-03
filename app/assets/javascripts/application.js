@@ -22,6 +22,9 @@
 //= require dataTables/jquery.dataTables
 //= require dataTables/jquery.dataTables.bootstrap3
 //= require jquery_nested_form
+//= require jquery.maskedinput
+//= require jquery.validate
+//= require jquery.validate.additional-methods
 //= require_tree ./components
 
 months = {
@@ -365,7 +368,7 @@ function refresh_workorders(){
 
 function refresh_properties(){
     if($('#properties').length){
-        refresh([$('#properties')],function(){
+        refresh([$('#properties:not("table")')],function(){
             $('.property').on('click', function(){
                 var url = $(this).data('url')
                 $('#property-data').load(url)
@@ -562,6 +565,8 @@ function handle_new_property_form_submit(stage, jqXHR){
             $('#new_property input:not([type="submit"])').each(function(){
                 $(this).val('')
             })
+            $('#ajax-modal').modal('hide')
+            refresh_properties()
             break;
         case 'complete' :
             log('new_property_form_submit - ' + stage)

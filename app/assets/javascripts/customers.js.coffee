@@ -73,6 +73,3 @@ $ ->
             error.appendTo element.parents(".controls:first")
           else
             error.insertAfter element
-
-
-

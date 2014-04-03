@@ -27,6 +27,8 @@ end
 gem 'strong_parameters'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
+gem 'masked_input-rails'
+gem 'jquery-validation-rails'
 gem 'less-rails-bootstrap'
 gem 'devise'
 gem 'haml-rails'

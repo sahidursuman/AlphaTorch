@@ -11,21 +11,17 @@
   %li
     %a#new_payment_detail_link{href: "#{new_payment_detail_path}", data:{remote:true}}
       %span.glyphicon.glyphicon-usd
-  %li.dropdown
-    %a.dropdown-toggle{"data-toggle" => "dropdown", href: "#"}
-      Morgan Watson
-      %b.caret
-    %ul.dropdown-menu
-      %li
-        %a{href: "#"} Help
-      %li.divider
-      - if user_signed_in?
-        %li= link_to 'Logout', destroy_user_session_path, :method=>'delete'
-      - else
-        %li= link_to 'Login', new_user_session_path
-      - if user_signed_in?
-        %li= link_to 'Edit account', edit_user_registration_path
-      - else
-        %li= link_to 'Sign up', new_user_registration_path
-      - if user_signed_in?
-        %li= link_to 'Users', users_path
+    %li.dropdown
+      %a.dropdown-toggle{"data-toggle" => "dropdown", href: "#"}
+        = current_user.email
+        %b.caret
+      %ul.dropdown-menu
+        %li
+          %a{href: "#"} Help
+        %li.divider
+        - if user_signed_in?
+          %li= link_to 'Logout', destroy_user_session_path, :method=>'delete'
+        - else
+          %li= link_to 'Login', new_user_session_path
+        - if user_signed_in?
+          %li= link_to 'Edit account', edit_user_registration_path

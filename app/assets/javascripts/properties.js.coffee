@@ -61,7 +61,7 @@ fetch_map_data = ->
 
   # Validate form dynamically as user inputs information before submitting
   $ ->
-    $("[id*=_property]").validate
+    $("#new_property, #edit_property").validate
       rules:
         'property[first_name]':
           required: true
@@ -93,14 +93,12 @@ fetch_map_data = ->
         'property[primary_phone]':
           required: "* Phone required"
 
-    errorPlacement: (error, element) ->
-      if element.parent().is(".input-append")
-        error.appendTo element.parents(".controls:first")
-      else
-        error.insertAfter element
-      return
+      errorPlacement: (error, element) ->
+        if element.parent().is(".input-append")
+          error.appendTo element.parents(".controls:first")
+        else
+          error.insertAfter element
 
-  return
 
 
 

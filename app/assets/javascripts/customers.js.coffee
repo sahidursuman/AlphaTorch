@@ -10,7 +10,7 @@ $ ->
 
   #toggle show/hide for new or existing property based on toggle selection
   $("#property-toggle label.btn").on "click", ->
-    selected = $(this).children("input[type=\"radio\"]").attr("id")
+    selected = $(this).children("input[type='radio']").attr("id")
     display_element = $("div[class~='" + selected + "']")
     $("#property-information .toggle-group:not([class~='" + selected + "'])").fadeOut
       complete: ->
@@ -24,6 +24,7 @@ $ ->
               input.val('')
             , 500
             )
+  $("#property-toggle label.btn:first").trigger 'click'
 
   $('.property').on 'click', ->
     url = $(this).data('url')

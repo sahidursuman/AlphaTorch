@@ -556,11 +556,12 @@ function handle_new_property_form_submit(stage, jqXHR){
         case 'success' :
             log('new_property_form_submit - ' + stage)
             notify('success', jqXHR.message)
-            if($('#properties.datatable').length)
+            if($('#properties.datatable').length){
                 $('#properties.datatable').dataTable().fnReloadAjax()
-            else
-                refresh([$('#profile')])
-                refresh_properties()
+            }
+            $('#new_property input:not([type="submit"])').each(function(){
+                $(this).val('')
+            })
             break;
         case 'complete' :
             log('new_property_form_submit - ' + stage)

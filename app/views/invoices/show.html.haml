@@ -3,11 +3,11 @@
     - if !@invoice.new_record?
       .row
         #header.col-md-12
-          .col-md-4
+          .col-md-4.pull-left
             = image_tag 'cortez_logo.png', size: '75x75'
           .col-md-4.h3
             #invoice_paid= 'PAID' unless @invoice.unpaid?
-          .col-md-4.h4
+          .col-md-4.h4.pull-right
             = "Invoice# #{@invoice.id}"
             .row
               .col-md-12.noprint
@@ -23,16 +23,22 @@
     .row
       .col-md-3.pull-left
         .h5= @customer.name
-        .h5= @property.street_address_1
-        - if @property.street_address_2
-          .h5= @property.street_address_2
-        .h5= "#{@property.city}, #{@property.state.short_name} #{@property.postal_code}"
+        .h5= @customer.customer_address.street_address_1
+        .h5= @customer.customer_address.street_address_2
+        .h5= "#{@customer.customer_address.city}, #{@customer.customer_address.state.short_name} #{@customer.customer_address.postal_code}"
         - if @customer.primary_phone
           .h5= @customer.primary_phone
         - elsif @customer.secondary_phone
           .h5= @customer.secondary_phone
         - if @customer.email
           .h5= @customer.email
+      .col-md-3.col-md-offset-1.pull-left{style:'margin-left:100px;'}
+        .h5
+          %b Service Address
+        .h5= @property.street_address_1
+        - if @property.street_address_2
+          .h5= @property.street_address_2
+        .h5= "#{@property.city}, #{@property.state.short_name} #{@property.postal_code}"
       .col-md-3.pull-right
         .h5= "Created: #{(@invoice.invoice_date.strftime('%m/%d/%Y') rescue Date.today.strftime('%m/%d/%Y'))}"
         .h5= "Due By: #{(@invoice.due_date.strftime('%m/%d/%Y') rescue (Date.today+1.month).strftime('%m/%d/%Y'))}"

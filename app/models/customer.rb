@@ -5,7 +5,7 @@ class Customer < ActiveRecord::Base
   include ModelLocking
 
   belongs_to :status, primary_key: 'status_code', foreign_key: 'status_code'
-  has_many :customer_addresses
+  has_one  :customer_address
   has_many :customer_properties
   has_many :properties, through: :customer_properties
 

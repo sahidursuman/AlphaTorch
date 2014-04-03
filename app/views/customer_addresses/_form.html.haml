@@ -1,14 +1,25 @@
-= simple_form_for(@customer_address) do |f|
-  = f.error_notification
+- case controller_action
+  - when 'customer_addresses#new'
+    - submit_text = 'Save Billing Address'
+    - id = 'new_billing_address'
+  - when 'customer_addresses#edit'
+    - submit_text = 'Update Billing Address'
+    - id = 'edit_billing_address'
 
+= simple_form_for([:customer, @customer_address], html:{id:id, data:{type: :json, remote:true}}) do |f|
   .form-inputs
-    = f.input :street_address_1
-    = f.input :street_address_2
-    = f.input :city
-    = f.association :state
-    = f.input :postal_code
-    = f.association :customer
-    = f.input :description
+    = f.hidden_field :customer_id, value:@customer.id
+    .row
+      .col-md-12.street_address_1
+        = f.text_field :street_address_1, placeholder: 'Enter the property\'s address...', class:'form-control', autocomplete:'off'
+      .col-md-5.street_address_2
+        = f.text_field :street_address_2, placeholder:'Apt., PO Box, etc..', class:'form-control', autocomplete:'off'
+      .col-md-8.city
+        = f.text_field :city, :required => false, placeholder:'City', class:'form-control', autocomplete:'off'
+      .col-md-4
+        = f.collection_select :state_id, State.all, :id, :short_name, {}, class:'form-control', autocomplete:'off'
+      .col-md-6.postal_code
+        = f.text_field :postal_code, :required => false, placeholder:'Postal Code', id:'postal-code', class:'form-control', autocomplete:'off'
 
   .form-actions
-    = f.button :submit
+    = f.submit "#{submit_text}", class:'btn btn-lg btn-success'

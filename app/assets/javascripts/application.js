@@ -463,6 +463,18 @@ function handle_ajax(event, jqXHR, stage){
         case 'delete_event_link' :
             handle_delete_event_link(stage, jqXHR)
             break
+        case 'new_billing_address_link' :
+            handle_new_billing_address_link(stage, jqXHR)
+            break
+        case 'edit_billing_address_link' :
+            handle_edit_billing_address_link(stage, jqXHR)
+            break
+        case 'new_billing_address' :
+            handle_new_billing_address_form_submit(stage, jqXHR)
+            break
+        case 'edit_billing_address' :
+            handle_edit_billing_address_form_submit(stage, jqXHR)
+            break
         default :
             default_ajax_handler(stage, target)
             break
@@ -900,5 +912,67 @@ function handle_delete_event_link(stage, jqXHR){
         case 'complete' :
             alert($('#calendar').length)
             log('delete_event_link - ' + stage)
+    }
+}
+
+function handle_new_billing_address_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_billing_address_link - ' + stage)
+            break;
+        case 'complete' :
+            log('new_billing_address_link - ' + stage)
+            break;
+    }
+}
+
+function handle_edit_billing_address_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_billing_address_link - ' + stage)
+            break;
+        case 'complete' :
+            log('edit_billing_address_link - ' + stage)
+            break;
+    }
+}
+
+function handle_new_billing_address_form_submit(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_billing_address_form_submit - ' + stage)
+            notify('success', jqXHR.message)
+            $('#ajax-modal').modal('hide')
+            refresh([$('#profile')])
+            break;
+        case 'complete' :
+            log('new_billing_address_form_submit - ' + stage)
+            break;
+    }
+}
+
+function handle_edit_billing_address_form_submit(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_billing_address_form_submit - ' + stage)
+            notify('success', jqXHR.message)
+            $('#ajax-modal').modal('hide')
+            refresh([$('#profile')])
+            break;
+        case 'complete' :
+            log('edit_billing_address_form_submit - ' + stage)
+            break;
     }
 }

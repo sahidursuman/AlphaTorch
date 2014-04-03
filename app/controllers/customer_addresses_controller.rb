@@ -1,4 +1,5 @@
 class CustomerAddressesController < ApplicationController
+  before_filter :set_customer
   before_filter :set_customer_address, only: [:show, :edit, :update, :destroy]
 
   # GET /customer_addresses
@@ -15,10 +16,16 @@ class CustomerAddressesController < ApplicationController
   # GET /customer_addresses/new
   def new
     @customer_address = CustomerAddress.new
+    respond_to do |format|
+      format.js
+    end
   end
 
   # GET /customer_addresses/1/edit
   def edit
+    respond_to do |format|
+      format.js
+    end
   end
 
   # POST /customer_addresses
@@ -29,7 +36,7 @@ class CustomerAddressesController < ApplicationController
     respond_to do |format|
       if @customer_address.save
         format.html { redirect_to @customer_address, notice: 'Customer address was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @customer_address }
+        format.json { render json:{message:'Billing Address Successfully Added!'}, status: :created }
       else
         format.html { render action: 'new' }
         format.json { render json: @customer_address.errors, status: :unprocessable_entity }
@@ -41,9 +48,9 @@ class CustomerAddressesController < ApplicationController
   # PATCH/PUT /customer_addresses/1.json
   def update
     respond_to do |format|
-      if @customer_address.update(customer_address_params)
+      if @customer_address.update_attributes(customer_address_params)
         format.html { redirect_to @customer_address, notice: 'Customer address was successfully updated.' }
-        format.json { head :no_content }
+        format.json { render json:{message:'Billing Address Successfully Updated!'} }
       else
         format.html { render action: 'edit' }
         format.json { render json: @customer_address.errors, status: :unprocessable_entity }
@@ -64,7 +71,11 @@ class CustomerAddressesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_customer_address
-      @customer_address = CustomerAddress.find(params[:id])
+      @customer_address = @customer.customer_address
+    end
+
+    def set_customer
+      @customer = Customer.find(params[:customer_id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

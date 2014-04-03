@@ -1,4 +1,5 @@
 class CustomerProperty < ActiveRecord::Base
+  after_create :create_billing_address
   belongs_to :customer
   belongs_to :property
   has_many :workorders
@@ -32,5 +33,12 @@ class CustomerProperty < ActiveRecord::Base
     end
   end
 
+  def create_billing_address
+    if self.owner == true && !self.customer.customer_address
+      attr = self.property.attributes.except('map_data', 'created_at', 'updated_at')
+      attr.merge!({customer_id:self.customer_id})
+      CustomerAddress.create(attr)
+    end
+  end
 
 end

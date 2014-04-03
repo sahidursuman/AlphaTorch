@@ -1,19 +1,45 @@
 .row
   .col-md-6
     .pull-left.h3{style:'margin-top: 0px;'}
-      Customer Information
+      = @customer.name
+    .pull-left.h5{style:'margin: 0px;'}
+      = "Invoice Amount Due: #{humanized_money_with_symbol(@customer.balance_due)}"
   .col-md-6
     - unless @customer.locked?
       .pull-right{style:'margin-left: 10px;'}
         = link_to 'Delete', customer_path(@customer), class:'btn btn-xs btn-danger', method: :delete, confirm: 'Are You Sure?'
-      .pull-right
+      .pull-right{style:'margin-left: 10px;'}
         = link_to 'Edit', edit_customer_path(@customer), class:'btn btn-xs btn-default', remote:true, id:'edit_customer_link'
+    .pull-right
+      = change_status_link(Customer, @customer.id, %w(Active Locked), @customer.status.status)
 %hr
 .row
   .col-md-6{style:'border-right: 1px solid black'}
     .row
       .col-md-12
-        .h4= @customer.name
+        .h6
+          %b
+            Billing Address:
+        .h4
+          - if @customer.customer_address
+            = @customer.customer_address.full_address.html_safe
+          - else
+            No billing address on file
+        .h6
+          - if @customer.customer_address
+            = link_to 'Edit Billing Address',
+            edit_customer_customer_address_path(customer_id:@customer.id),
+            remote:true,
+            id:'edit_billing_address_link'
+          - else
+            = link_to 'Add Billing Address',
+            new_customer_customer_address_path(customer_id:@customer.id),
+            remote:true,
+            id:'new_billing_address_link'
+    .row{style:'margin-top:15px;'}
+      .col-md-12
+        .h6= link_to 'Back To Customers', customers_path, class:'btn btn-sm btn-default'
+  .col-md-6
     .row
       .col-md-12
         .h6
@@ -33,21 +59,3 @@
           %b
             Secondary Phone:
           = @customer.secondary_phone.blank? ? 'N/A' : @customer.secondary_phone
-    .row
-      .col-md-12
-        .h6= link_to 'Back To Customers', customers_path, class:'btn btn-sm btn-default'
-
-  .col-md-6
-    .row
-      .col-md-12
-        .h4
-          %b
-            Status:
-          = change_status_link(Customer, @customer.id, %w(Active Locked), @customer.status.status)
-
-
-      .col-md-12
-        .h4
-          %b
-            Invoice Amount Due:
-          = humanized_money_with_symbol(@customer.balance_due)

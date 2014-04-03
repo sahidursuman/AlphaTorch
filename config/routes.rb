@@ -6,13 +6,13 @@ CortezLandscaping::Application.routes.draw do
 
   resources :properties
 
-  resources :customer_addresses
-
   resources :states
 
   resources :countries
 
-  resources :customers
+  resources :customers do
+    resources :customer_addresses
+  end
 
   resources :statuses
 

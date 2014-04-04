@@ -1,19 +1,66 @@
 .row
   - if @property
-    .col-md-12{style:'height:300px; overflow-y: scroll; overflow-x: hidden;'}
+    .col-md-3{style:'border-right: 1px solid black'}
       .row
-        %table.table.table-hover
-          .col-md-3
-            .h4
-              Property Details
-          .col-md-9
-            .h4
-              Workorder Events
+        .col-md-12
+          .h4
+            Property Details
+      %hr
 
+      .row
+        .col-md-12
+          .h5
+            = @property.html_full_address
+      .row
+        .col-md-12
+          .h5
+            Active Workorders:
+            = @property.workorders.active.count
+      .row
+        .col-md-12
+          .h5{style: 'margin-bottom: 110px'}
+            Total Amount Due:
+            = humanized_money_with_symbol(@property.balance_due)
+
+    - if @property.workorders.count > 0
+
+      .col-md-9
+        .row
+          .col-md-12
+            .h4
+              Services
+        %hr
+
+        .h6
+        .row{style:'height:220px; overflow-y: scroll; overflow-x: hidden;'}
+          %table.table.table-hover
+            %thead
+              %tr
+                %th.h5= 'Workorder Name'
+                %th.h5= 'Service Name'
+                %th.h5= 'Cost'
+                %th.h5= 'Schedule'
+            %tbody
+              - @property.workorder_services.each do |workorder_service|
+                %tr
+                  %td.col-md-2.h6= workorder_service.workorder.name
+                  %td.col-md-2.h6= link_to workorder_service.service.name, service_path(workorder_service.service)
+                  %td.col-md-1.h6= humanized_money_with_symbol(workorder_service.cost)
+                  %td.col-md-9.h6
+                    - if workorder_service.schedule.present?
+                      = workorder_service.converted_schedule.to_s
+                    - else
+                      = workorder_service.single_occurrence_date.strftime('%A %B %d, %Y')
+    - else
+      %center.col-md-9
+        .h4
+          No workorders at this time.
+        .h6{style: 'color: red'}
+          Click the Property address to add a Workorder from its profile.
   - else
     .row
       %center.col-md-12
         .h4
           Click on a property above to view details.
         .h6
-          (It's time.....click a property please)
+          (It's happening!)

@@ -65,6 +65,12 @@ class Property < ActiveRecord::Base
     end
   end
 
+  def workorder_services
+    if workorders
+      workorders.map(&:workorder_services).compact.flatten
+    end
+  end
+
   def invoices
     workorders.map(&:invoices).compact.flatten if workorders
   end

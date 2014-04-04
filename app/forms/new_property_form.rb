@@ -13,11 +13,11 @@ class NewPropertyForm
   attr :customer_id,:new_first_name,:new_middle_initial,:new_last_name,:new_email,:new_primary_phone,:new_secondary_phone
 
   validates_presence_of :street_address_1, :city, :state_id, :postal_code
-  validate  :unique_email, :unique_primary_phone, unless: lambda { |x|
-    x.customer_id.present? || x.customer_property.customer_id.present? || !x.customer.new_record?
-  }
 
   validates_presence_of :first_name, :last_name, unless: lambda { |x|
+    x.customer_id.present? || x.customer_property.customer_id.present? || !x.customer.new_record?
+  }
+  validate  :unique_email, :unique_primary_phone, unless: lambda { |x|
     x.customer_id.present? || x.customer_property.customer_id.present? || !x.customer.new_record?
   }
 

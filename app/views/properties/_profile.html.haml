@@ -3,10 +3,11 @@
     .pull-left.h3{style:'margin-top: 0px;'}
       Property Information
   .col-md-6
-    .pull-right{style:'margin-left: 10px;'}
-      = link_to 'Delete', property_path(@property), class:'btn btn-xs btn-danger', method: :delete, confirm: 'Are You Sure?'
-    .pull-right
-      = link_to 'Edit', edit_property_path(@property), class:'btn btn-xs btn-default', remote:true, id:'edit_property_link'
+    - unless @customer_property.locked?
+      .pull-right{style:'margin-left: 10px;'}
+        = link_to 'Delete', property_path(@property), class:'btn btn-xs btn-danger', method: :delete, confirm: 'Are You Sure?'
+      .pull-right
+        = link_to 'Edit', edit_property_path(@property), class:'btn btn-xs btn-default', remote:true, id:'edit_property_link'
 %hr
 .row
   .col-md-5
@@ -20,7 +21,15 @@
     .row{style:'margin-top:5px;'}
       .col-md-12
         %u.h6= 'Current Owner'
-        .h6= @property.current_customer_property ? link_to("#{@property.current_owner_name}", customer_path(@property.current_customer_property.customer)) : 'N/A'
+        .h6
+          - if @property.current_customer_property
+            - if @customer_property.locked?
+              - display_name = "#{@property.current_owner_name} – Locked"
+            - else
+              - display_name = @property.current_owner_name
+            = link_to(display_name, customer_path(@property.current_customer_property.customer))
+          - else
+            N/A
     .row{style:'margin-top:15px;'}
       .col-md-12
         = link_to 'Back To Properties', properties_path, class:'btn btn-sm btn-default'

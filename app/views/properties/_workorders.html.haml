@@ -2,7 +2,7 @@
   %caption
     .h4
       Workorders
-      - if @property.current_customer_property
+      - if @property.current_customer_property && !@customer_property.locked?
         = link_to content_tag(:i, nil, {class:'glyphicon glyphicon-plus pull-right', style:'color:green;'}),
         new_workorder_path(customer_property_id: @property.current_customer_property),
         remote:true,

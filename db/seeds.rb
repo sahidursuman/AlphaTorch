@@ -1,7 +1,3 @@
-User.create!([
-  {email:'admin@email.com', password:'password'}#dummy login remove for production
-])
-
 Status.create([
     {status_code:1000 , status:'Created'                      },
     {status_code:1001 , status:'Open'                         },

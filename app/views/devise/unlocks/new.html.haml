@@ -1,0 +1,21 @@
+.row
+  .col-md-4.col-md-offset-4.well
+    .row
+      .col-md-10.col-md-offset-1
+        %center.h4
+          Resend Unlock Instructions
+        = form_for(resource, :as => resource_name, :url => unlock_path(resource_name), :html => {:class => 'form-vertical'}) do |f|
+          .row
+            .col-md-12
+              = devise_error_messages!
+            .col-md-12
+              = f.text_field :email, :required => true, class:'form-control', placeholder:'Email', autocomplete:'off'
+          = f.submit 'Resend', :class => 'btn btn-sm btn-success'
+    %hr
+    .row
+      .col-md-10.col-md-offset-1
+        = link_to "Sign In",
+        new_session_path(resource_name),
+        class:'btn btn-xs btn-default'
+
+        = render "devise/shared/links"

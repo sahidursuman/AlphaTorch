@@ -4,10 +4,12 @@
       .col-md-10.col-md-offset-1
         %center.h4
           Sign In
-        = form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => {:class => 'form-vertical' }) do |f|
+        = form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => {:class => 'form-vertical'}) do |f|
           .row
+            .col-md-12.h6
+              = flash[:alert]
             .col-md-12
-              = f.text_field :email, :required => true, class:'form-control', placeholder:'Email', autocomplete:'off', value:'admin@email.com'
+              = f.text_field :email, :required => true, class:'form-control', placeholder:'Email', autocomplete:'off', value:'mrgnwatson@gmail.com'
           .row
             .col-md-12
               = f.password_field :password, :required => true, class:'form-control', placeholder:'Password', value:'password'

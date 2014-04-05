@@ -1,6 +1,6 @@
 CortezLandscaping::Application.routes.draw do
 
-  devise_for :users
+  devise_for :users, controllers: {sessions:'sessions', confirmations:'confirmations'}
 
   resources :customer_properties
 

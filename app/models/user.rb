@@ -8,4 +8,16 @@ class User < ActiveRecord::Base
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me
   # attr_accessible :title, :body
+
+  def admin_confirmed?
+    self.admin_confirmed
+  end
+
+  def admin_confirm(requesting_user=current_user)
+    if requesting_user.admin_confirmed?
+      self.admin_confirmed = true
+      save!
+    end
+  end
+
 end

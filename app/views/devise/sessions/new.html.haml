@@ -9,10 +9,10 @@
             .col-md-12.h6
               = flash[:alert]
             .col-md-12
-              = f.text_field :email, :required => true, class:'form-control', placeholder:'Email', autocomplete:'off', value:'mrgnwatson@gmail.com'
+              = f.text_field :email, :required => true, class:'form-control', placeholder:'Email', autocomplete:'off'
           .row
             .col-md-12
-              = f.password_field :password, :required => true, class:'form-control', placeholder:'Password', value:'password'
+              = f.password_field :password, :required => true, class:'form-control', placeholder:'Password'
           = f.submit 'Sign In', :class => 'btn btn-sm btn-success'
     %hr
     .row

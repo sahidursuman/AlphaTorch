@@ -9,13 +9,13 @@
             .col-md-12
               = devise_error_messages!
             .col-md-12
-              = f.text_field :email, :required => true, class:'form-control', placeholder:'Email', autocomplete:'off', value:'mrgnwatson@gmail.com'
+              = f.text_field :email, :required => true, class:'form-control', placeholder:'Email', autocomplete:'off'
           .row
             .col-md-12
-              = f.password_field :password, :required => true, class:'form-control', placeholder:'Password', value:'password'
+              = f.password_field :password, :required => true, class:'form-control', placeholder:'Password'
           .row
             .col-md-12
-              = f.password_field :password_confirmation, :required => true, class:'form-control', placeholder:'Confirm', value:'password'
+              = f.password_field :password_confirmation, :required => true, class:'form-control', placeholder:'Confirm'
           = f.submit 'Sign up', :class => 'btn btn-sm btn-success'
     %hr
     .row

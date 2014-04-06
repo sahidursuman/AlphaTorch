@@ -1,10 +1,16 @@
-= simple_form_for(@state) do |f|
-  = f.error_notification
+- case controller_action
+  - when 'states#edit'
+    - id = 'edit_state'
+  - when 'states#new'
+    - id = 'new_state'
 
-  .form-inputs
-    = f.association :country
-    = f.input :name
-    = f.input :short_name
+= form_for(@state, remote:true, html:{id:id, data:{type:'json'}}) do |f|
+  .row
+    .col-md-4
+      %fieldset
+        = f.collection_select :country_id, Country.all, :id, :name, {}, class:'form-control'
+        = f.text_field :name, class:'form-control', placeholder:'State Name'
+        = f.text_field :short_name, class:'form-control', placeholder:'Abbreviation'
 
-  .form-actions
-    = f.button :submit
+      .form-actions
+        = f.submit 'Submit', class:'btn btn-md btn-success'

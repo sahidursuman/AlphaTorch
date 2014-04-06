@@ -1,9 +1,15 @@
-= simple_form_for(@service) do |f|
-  = f.error_notification
+- case controller_action
+  - when 'services#edit'
+    - id = 'edit_service'
+  - when 'services#new'
+    - id = 'new_service'
 
-  .form-inputs
-    = f.input :name
-    = f.input :base_cost
+= form_for(@service, remote:true, html:{id:id, data:{type:'json'}}) do |f|
+  .row
+    .col-md-4
+      %fieldset
+        = f.text_field :name, class:'form-control', placeholder:'Service Name'
+        = f.text_field :base_cost, class:'form-control', placeholder:'Default Cost'
 
-  .form-actions
-    = f.button :submit
+      .form-actions
+        = f.submit 'Submit', class:'btn btn-md btn-success'

@@ -2,6 +2,14 @@ CortezLandscaping::Application.routes.draw do
 
   devise_for :users, controllers: {sessions:'sessions', confirmations:'confirmations'}
 
+  get 'admin' => 'administrative#index'
+  get 'login_requests' => 'administrative#login_requests'
+  get 'system_users' => 'administrative#system_users'
+  post 'approve_login_request' => 'administrative#confirm_user'
+  delete 'deny_login_request' => 'administrative#deny_user'
+  post 'revoke_login' => 'administrative#revoke_login'
+  delete 'destroy_user' => 'administrative#deny_user'
+
   resources :customer_properties
 
   resources :properties
@@ -36,6 +44,10 @@ CortezLandscaping::Application.routes.draw do
 
   resources :services
 
+  get 'services_data_tables_source' => 'services#data_tables_source'
+  get 'states_data_tables_source' => 'states#data_tables_source'
+  get 'unconfirmed_users_data_tables_source' => 'administrative#data_tables_source_unconfirmed'
+  get 'confirmed_users_data_tables_source' => 'administrative#data_tables_source_confirmed'
   get 'properties_data_tables_source' => 'properties#data_tables_source'
   get 'properties_refresh_profile' => 'properties#refresh_profile'
   get 'properties_refresh_workorders' => 'properties#refresh_workorders'

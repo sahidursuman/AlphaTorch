@@ -1,21 +1,13 @@
-%h1 Listing services
+#table_data{style:'margin-top:20px;'}
+  %table#services.table.datatable
+    %thead
+      %tr
+        %th.h5 Name
+        %th.h5 Base cost
+        %th.h5
+        %th.h5
+    %tbody
 
-%table
-  %tr
-    %th Name
-    %th Base cost
-    %th
-    %th
-    %th
+  %br
 
-  - @services.each do |service|
-    %tr
-      %td= service.name
-      %td= service.base_cost
-      %td= link_to 'Show', service
-      %td= link_to 'Edit', edit_service_path(service)
-      %td= link_to 'Destroy', service, :method => :delete, :data => { :confirm => 'Are you sure?' }
-
-%br
-
-= link_to 'New Service', new_service_path
+  = link_to 'New Service', new_service_path, id:'new_service_link'

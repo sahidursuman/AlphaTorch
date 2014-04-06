@@ -1,0 +1,10 @@
+.row.well
+  #sidebar.col-md-3
+    .btn-group-vertical
+    = link_to 'Landscapers', '#',                   remote:true, class:'btn btn-default btn-lg btn-block', id:'admin_landscapers_link'
+    = link_to 'Services',       services_path,      remote:true, class:'btn btn-default btn-lg btn-block', id:'admin_services_link'
+    = link_to 'States',         states_path,        remote:true, class:'btn btn-default btn-lg btn-block', id:'admin_states_link'
+    = link_to 'Authorized Users',   system_users_path,  remote:true, class:'btn btn-default btn-lg btn-block', id:'admin_users_link'
+    = link_to 'Login Requests', login_requests_path,remote:true, class:'btn btn-default btn-lg btn-block', id:'admin_login_requests_link'
+  .col-md-9
+    #admin_content_area

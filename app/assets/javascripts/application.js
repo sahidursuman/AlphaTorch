@@ -288,7 +288,10 @@ function datatable_defaults(){
     return {
         "sPaginationType": "bootstrap",
         "iDisplayLength": 5,
-        "aLengthMenu": [[5,10,15,20,25,-1],[5,10,15,20,25,"All"]]
+        "aLengthMenu": [[5,10,15,20,25,-1],[5,10,15,20,25,"All"]],
+        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull){
+            $(nRow).addClass('h6')
+        }
     }
 }
 
@@ -474,6 +477,64 @@ function handle_ajax(event, jqXHR, stage){
             break
         case 'edit_billing_address' :
             handle_edit_billing_address_form_submit(stage, jqXHR)
+            break
+        //admin area ajax requests
+        case 'admin_landscapers_link' :
+            handle_admin_landscapers_link(stage, jqXHR)
+            break
+        case 'admin_services_link' :
+            handle_admin_services_link(stage, jqXHR)
+            break
+        case 'new_service_link' :
+            handle_new_services_link(stage, jqXHR)
+            break
+        case 'edit_service_link' :
+            handle_edit_services_link(stage, jqXHR)
+            break
+        case 'edit_service' :
+            handle_edit_service_form_submit(stage, jqXHR)
+            break
+        case 'new_service' :
+            handle_new_service_form_submit(stage, jqXHR)
+            break
+        case 'destroy_service_link' :
+            handle_destroy_services_link(stage, jqXHR)
+            break
+        case 'admin_login_requests_link' :
+            handle_admin_login_requests_link(stage, jqXHR)
+            break
+        case 'admin_states_link' :
+            handle_admin_states_link(stage, jqXHR)
+            break
+        case 'edit_state_link' :
+            handle_edit_state_link(stage, jqXHR)
+            break
+        case 'edit_state' :
+            handle_edit_state_form_submit(stage, jqXHR)
+            break
+        case 'new_state' :
+            handle_new_state_form_submit(stage, jqXHR)
+            break
+        case 'destroy_state_link' :
+            handle_destroy_state_link(stage, jqXHR)
+            break
+        case 'admin_countries_link' :
+            handle_admin_countries_link(stage, jqXHR)
+            break
+        case 'admin_users_link' :
+            handle_admin_users_link(stage, jqXHR)
+            break
+        case 'approve_login_link' :
+            handle_approve_login_link(stage, jqXHR)
+            break
+        case 'deny_login_link' :
+            handle_deny_login_link(stage, jqXHR)
+            break
+        case 'revoke_login_link' :
+            handle_revoke_login_link(stage, jqXHR)
+            break
+        case 'destroy_user_link' :
+            handle_destroy_user_link(stage, jqXHR)
             break
         default :
             default_ajax_handler(stage, target)
@@ -973,6 +1034,327 @@ function handle_edit_billing_address_form_submit(stage, jqXHR){
             break;
         case 'complete' :
             log('edit_billing_address_form_submit - ' + stage)
+            break;
+    }
+}
+
+//ADMIN AREA FUNCTIONS
+function set_content(jqXHR, options){
+    content = $($.parseHTML(jqXHR, document, true)).find('#content')
+    $('#admin_content_area').html('')
+    $('#admin_content_area').html(content)
+    if($('.datatable').length){
+        $('.datatable').dataTable(options)
+        $.each($('#admin_content_area a:not([href="#"])'), function(){
+            $(this).attr('data-remote', true)
+        })
+    }
+}
+
+function handle_admin_landscapers_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('admin_landscapers_link - ' + stage)
+            set_content(jqXHR)
+            break;
+        case 'complete' :
+            log('admin_landscapers_link - ' + stage)
+            break;
+    }
+}
+
+function handle_admin_services_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('admin_services_link - ' + stage)
+            var options = $.extend(datatable_defaults(),{
+                "sAjaxSource": "/services_data_tables_source"
+            })
+            set_content(jqXHR, options)
+            break;
+        case 'complete' :
+            log('admin_services_link - ' + stage)
+            break;
+    }
+}
+
+function handle_admin_login_requests_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('admin_login_requests_link - ' + stage)
+            var options = $.extend(datatable_defaults(),{
+                "sAjaxSource": "/unconfirmed_users_data_tables_source"
+            })
+            set_content(jqXHR, options)
+            break;
+        case 'complete' :
+            log('admin_login_requests_link - ' + stage)
+            break;
+    }
+}
+
+function handle_admin_states_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('admin_states_link - ' + stage)
+            var options = $.extend(datatable_defaults(),{
+                "sAjaxSource": "/states_data_tables_source"
+            })
+            set_content(jqXHR, options)
+            break;
+        case 'complete' :
+            log('admin_states_link - ' + stage)
+            break;
+    }
+}
+
+function handle_admin_countries_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('admin_countries_link - ' + stage)
+            set_content(jqXHR)
+            break;
+        case 'complete' :
+            log('admin_countries_link - ' + stage)
+            break;
+    }
+}
+
+function handle_admin_users_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('admin_users_link - ' + stage)
+            var options = $.extend(datatable_defaults(),{
+                "sAjaxSource": "/confirmed_users_data_tables_source"
+            })
+            set_content(jqXHR, options)
+            break;
+        case 'complete' :
+            log('admin_users_link - ' + stage)
+            break;
+    }
+}
+
+function handle_new_services_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_services_link - ' + stage)
+            break;
+        case 'complete' :
+            log('new_services_link - ' + stage)
+            break;
+    }
+}
+
+function handle_new_service_form_submit(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_service_form_submit - ' + stage)
+            $('#ajax-modal').modal('hide')
+            notify('success', jqXHR.message)
+            $('.datatable').dataTable().fnReloadAjax()
+            break;
+        case 'complete' :
+            log('new_service_form_submit - ' + stage)
+            break;
+    }
+}
+
+function handle_edit_services_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_services_link - ' + stage)
+            break;
+        case 'complete' :
+            log('edit_services_link - ' + stage)
+            break;
+    }
+}
+
+function handle_edit_service_form_submit(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_service_form_submit - ' + stage)
+            $('#ajax-modal').modal('hide')
+            notify('success', jqXHR.message)
+            $('.datatable').dataTable().fnReloadAjax()
+            break;
+        case 'complete' :
+            log('edit_service_form_submit - ' + stage)
+            break;
+    }
+}
+
+function handle_destroy_services_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            break
+        case 'success' :
+            log('destroy_services_link - ' + stage)
+            break;
+        case 'complete' :
+            log('destroy_services_link - ' + stage)
+            var json = $.parseJSON(jqXHR.responseText)
+            notify('success', json.message)
+            $('.datatable').dataTable().fnReloadAjax()
+            break;
+    }
+}
+
+function handle_edit_state_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_services_link - ' + stage)
+            break;
+        case 'complete' :
+            log('edit_services_link - ' + stage)
+            break;
+    }
+}
+
+function handle_edit_state_form_submit(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_state_form_submit - ' + stage)
+            $('#ajax-modal').modal('hide')
+            notify('success', jqXHR.message)
+            $('.datatable').dataTable().fnReloadAjax()
+            break;
+        case 'complete' :
+            log('edit_state_form_submit - ' + stage)
+            break;
+    }
+}
+
+function handle_new_state_form_submit(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_state_form_submit - ' + stage)
+            $('#ajax-modal').modal('hide')
+            notify('success', jqXHR.message)
+            $('.datatable').dataTable().fnReloadAjax()
+            break;
+        case 'complete' :
+            log('new_state_form_submit - ' + stage)
+            break;
+    }
+}
+
+function handle_destroy_state_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            break
+        case 'success' :
+            log('destroy_state_link - ' + stage)
+            break;
+        case 'complete' :
+            log('destroy_state_link - ' + stage)
+            var json = $.parseJSON(jqXHR.responseText)
+            notify('success', json.message)
+            $('.datatable').dataTable().fnReloadAjax()
+            break;
+    }
+}
+
+function handle_approve_login_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            break
+        case 'success' :
+            log('approve_login_link - ' + stage)
+            break;
+        case 'complete' :
+            log('approve_login_link - ' + stage)
+            var json = $.parseJSON(jqXHR.responseText)
+            notify('success', json.message)
+            $('.datatable').dataTable().fnReloadAjax()
+            break;
+    }
+}
+
+function handle_deny_login_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            break
+        case 'success' :
+            log('deny_login_link - ' + stage)
+            break;
+        case 'complete' :
+            log('deny_login_link - ' + stage)
+            var json = $.parseJSON(jqXHR.responseText)
+            notify('success', json.message)
+            $('.datatable').dataTable().fnReloadAjax()
+            break;
+    }
+}
+
+function handle_revoke_login_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            break
+        case 'success' :
+            log('revoke_login_link - ' + stage)
+            break;
+        case 'complete' :
+            log('revoke_login_link - ' + stage)
+            var json = $.parseJSON(jqXHR.responseText)
+            notify('success', json.message)
+            $('.datatable').dataTable().fnReloadAjax()
+            break;
+    }
+}
+
+function handle_destroy_user_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            break
+        case 'success' :
+            log('destroy_user_link - ' + stage)
+            break;
+        case 'complete' :
+            log('destroy_user_link - ' + stage)
+            var json = $.parseJSON(jqXHR.responseText)
+            notify('success', json.message)
+            $('.datatable').dataTable().fnReloadAjax()
             break;
     }
 }

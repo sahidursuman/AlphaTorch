@@ -17,7 +17,7 @@
         %b.caret
       %ul.dropdown-menu
         %li
-          %a{href: "#"} Help
+          %a{href: "#{admin_path}"} Administration
         %li.divider
         - if user_signed_in?
           %li= link_to 'Logout', destroy_user_session_path, :method=>'delete'

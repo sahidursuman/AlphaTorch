@@ -29,7 +29,7 @@ class StatesController < ApplicationController
     respond_to do |format|
       if @state.save
         format.html { redirect_to @state, notice: 'State was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @state }
+        format.json { render json:{message:'State was successfully created.'}, status: :created, location: @state }
       else
         format.html { render action: 'new' }
         format.json { render json: @state.errors, status: :unprocessable_entity }
@@ -41,9 +41,9 @@ class StatesController < ApplicationController
   # PATCH/PUT /states/1.json
   def update
     respond_to do |format|
-      if @state.update(state_params)
+      if @state.update_attributes(state_params)
         format.html { redirect_to @state, notice: 'State was successfully updated.' }
-        format.json { head :no_content }
+        format.json { render json:{message:'State was successfully updated.'} }
       else
         format.html { render action: 'edit' }
         format.json { render json: @state.errors, status: :unprocessable_entity }
@@ -58,6 +58,14 @@ class StatesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to states_url }
       format.json { head :no_content }
+      format.js   { render json:{message:'State has been deleted.', status: :ok}}
+    end
+  end
+
+  def data_tables_source
+    @states = State.all
+    respond_to do |format|
+      format.js {render json: {aaData:@states.map(&:to_data_table_row)}}
     end
   end
 

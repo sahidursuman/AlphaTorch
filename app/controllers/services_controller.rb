@@ -15,10 +15,18 @@ class ServicesController < ApplicationController
   # GET /services/new
   def new
     @service = Service.new
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   # GET /services/1/edit
   def edit
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   # POST /services
@@ -29,7 +37,7 @@ class ServicesController < ApplicationController
     respond_to do |format|
       if @service.save
         format.html { redirect_to @service, notice: 'Service was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @service }
+        format.json { render json:{message:'Service was successfully created.'}, status: :created, location: @service }
       else
         format.html { render action: 'new' }
         format.json { render json: @service.errors, status: :unprocessable_entity }
@@ -41,9 +49,9 @@ class ServicesController < ApplicationController
   # PATCH/PUT /services/1.json
   def update
     respond_to do |format|
-      if @service.update(service_params)
+      if @service.update_attributes(service_params)
         format.html { redirect_to @service, notice: 'Service was successfully updated.' }
-        format.json { head :no_content }
+        format.json { render json:{message:'Service was successfully updated.'}}
       else
         format.html { render action: 'edit' }
         format.json { render json: @service.errors, status: :unprocessable_entity }
@@ -57,7 +65,15 @@ class ServicesController < ApplicationController
     @service.destroy
     respond_to do |format|
       format.html { redirect_to services_url }
-      format.json { head :no_content }
+      format.json { render json:{message:'Service has been deleted.'} }
+      format.js   { render json:{message:'Service has been deleted.', status: :ok}}
+    end
+  end
+
+  def data_tables_source
+    @services = Service.all
+    respond_to do |format|
+      format.js {render json: {aaData:@services.map(&:to_data_table_row)}}
     end
   end
 

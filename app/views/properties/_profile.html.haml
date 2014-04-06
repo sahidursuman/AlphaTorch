@@ -3,7 +3,7 @@
     .pull-left.h3{style:'margin-top: 0px;'}
       Property Information
   .col-md-6
-    - unless @customer_property.locked?
+    - unless @customer_property && @customer_property.locked?
       .pull-right{style:'margin-left: 10px;'}
         = link_to 'Delete', property_path(@property), class:'btn btn-xs btn-danger', method: :delete, confirm: 'Are You Sure?'
       .pull-right

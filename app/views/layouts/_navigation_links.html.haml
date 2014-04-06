@@ -4,13 +4,16 @@
       %span.glyphicon.glyphicon-home
   %li
     %a#workorders-link{href: "#{workorders_path}"}
-      %span.glyphicon.glyphicon-list-alt
+      %span.glyphicon.glyphicon-tasks
   %li
     %a#people-link{href: "#{customers_path}"}
       %span.glyphicon.glyphicon-user
   %li
     %a#new_payment_detail_link{href: "#{new_payment_detail_path}", data:{remote:true}}
       %span.glyphicon.glyphicon-usd
+  %li
+    %a#events_link{href: "#{events_path}"}
+      %span.glyphicon.glyphicon-calendar
     %li.dropdown
       %a.dropdown-toggle{"data-toggle" => "dropdown", href: "#"}
         = current_user.email

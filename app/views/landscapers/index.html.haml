@@ -1,0 +1,15 @@
+#table_data{style:'margin-top:20px;'}
+  %table#landscapers.table.datatable
+    %thead
+      %tr
+        %th.h5 Name
+        %th.h5 Phone
+        %th.h5 Email
+        %th.h5 Status
+        %th.h5 Rating (1-10)
+        %th.h5
+        %th.h5
+    %tbody
+
+  .row{style:'margin-top: 25px'}
+  = link_to 'New Landscaper', new_landscaper_path, remote:true, id:'new_landscaper_link'

@@ -1,5 +1,8 @@
 CortezLandscaping::Application.routes.draw do
 
+  resources :landscapers
+
+
   devise_for :users, controllers: {sessions:'sessions', confirmations:'confirmations'}
 
   get 'admin' => 'administrative#index'
@@ -57,6 +60,8 @@ CortezLandscaping::Application.routes.draw do
   get 'customers_data_tables_source' => 'customers#data_tables_source'
   get 'customers_refresh_profile' => 'customers#refresh_profile'
   get 'customers_refresh_properties' => 'customers#refresh_properties'
+
+  get 'landscapers_data_tables_source' => 'landscapers#data_tables_source'
 
   get 'refresh_profile' => 'properties#refresh_profile'
 

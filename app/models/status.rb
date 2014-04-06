@@ -4,6 +4,7 @@ class Status < ActiveRecord::Base
   has_many :workorders
   has_many :customers
   has_many :customer_properties
+  has_many :landscapers
 
   def self.statuses
     statuses = {}

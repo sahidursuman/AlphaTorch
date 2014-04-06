@@ -386,3 +386,13 @@ CustomerProperty.create(
 
 )
 
+Landscaper.create(
+    [
+        {first_name: 'Thomas', last_name: 'Aguilar', primary_phone: '(713) 438-1839', secondary_phone: '', email: 'taguilar@yahoo.com', rating: ''},
+        {first_name: 'Marcelino', last_name: 'Cortez', primary_phone: '(713) 238-1831', secondary_phone: '', email: 'mcortez@gmail.com', rating: ''},
+        {first_name: 'Carlos', last_name: 'Guiteraz', primary_phone: '(281) 283-1342', secondary_phone: '', email: 'cguitee@gmail.com', rating: ''},
+        {first_name: 'Mark', last_name: 'Acosta', primary_phone: '(713) 823-1824', secondary_phone: '', email: 'macsta332@yahoo.com', rating: ''},
+        {first_name: 'Sam', last_name: 'Read', primary_phone: '(832) 293-2912', secondary_phone: '', email: 'sammyready@gmail.com', rating: ''},
+        {first_name: 'Ramon ', last_name: 'Costello', primary_phone: '(713) 822-1333', secondary_phone: '', email: 'rcostello090933@yahoo.com', rating: ''}
+    ]
+)

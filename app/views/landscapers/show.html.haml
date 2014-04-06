@@ -1,0 +1,33 @@
+%p#notice= notice
+
+%p
+  %b First name:
+  = @landscaper.first_name
+%p
+  %b Middle initial:
+  = @landscaper.middle_initial
+%p
+  %b Last name:
+  = @landscaper.last_name
+%p
+  %b Primary phone:
+  = @landscaper.primary_phone
+%p
+  %b Secondary phone:
+  = @landscaper.secondary_phone
+%p
+  %b Email:
+  = @landscaper.email
+%p
+  %b Rating:
+  = @landscaper.rating
+%p
+  %b Description:
+  = @landscaper.description
+%p
+  %b Status:
+  = @landscaper.status
+
+= link_to 'Edit', edit_landscaper_path(@landscaper)
+\|
+= link_to 'Back', landscapers_path

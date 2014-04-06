@@ -322,11 +322,13 @@ function document_ready_events(){
         $(this).datepicker(datepicker_defaults())
     })
     // Masked inputs on form fields
+    $.mask.definitions['~'] = '[A-Za-z.]';
+    $.mask.definitions['^'] = '[0]';
     $('#primary-phone').mask('(999) 999-9999')
     $('#secondary-phone').mask('(999) 999-9999')
-    $.mask.definitions['~'] = '[A-Za-z.]';
     $('#middle-initial').mask('?~~~', {placeholder:' '})
     $('#postal-code').mask('99999? -9999')
+    $('#rating').mask('9?^', {placeholder: ' '})
 }
 
 $(document).ready(function(){
@@ -538,6 +540,21 @@ function handle_ajax(event, jqXHR, stage){
             break
         case 'destroy_user_link' :
             handle_destroy_user_link(stage, jqXHR)
+            break
+        case 'new_landscaper_link' :
+            handle_new_landscaper_link(stage, jqXHR)
+            break
+        case 'new_landscaper' :
+            handle_new_landscaper_form_submit(stage, jqXHR)
+            break
+        case 'edit_landscaper_link' :
+            handle_edit_landscaper_link(stage, jqXHR)
+            break
+        case 'edit_landscaper' :
+            handle_edit_landscaper_form_submit(stage, jqXHR)
+            break
+        case 'destroy_landscaper_link' :
+            handle_destroy_landscapers_link(stage, jqXHR)
             break
         default :
             default_ajax_handler(stage, target)
@@ -849,7 +866,7 @@ function handle_new_customer_form_submit(stage, jqXHR){
             notify('error', parse_json_errors(jqXHR))
             break
         case 'success' :
-            log('edit_workorder_service_form_submit - ' + stage)
+            log('new_customer_form_submit - ' + stage)
             notify('success', jqXHR.message)
             $('#customers.datatable').dataTable().fnReloadAjax()
             $('#new_customer input:not([type="submit"])').each(function(){
@@ -857,7 +874,7 @@ function handle_new_customer_form_submit(stage, jqXHR){
             })
             break;
         case 'complete' :
-            log('edit_workorder_service_form_submit - ' + stage)
+            log('new_customer_form_submit - ' + stage)
             $('#workorder-data').load( $('#workorder-data').data('url'))
             break;
     }
@@ -920,6 +937,7 @@ function handle_change_status_link(stage, jqXHR){
             refresh([$('#profile')])
             refresh_properties()
             refresh_workorders()
+            $('.datatable').dataTable().fnReloadAjax()
             break;
         case 'complete' :
             log('change_status_link - ' + stage)
@@ -1078,7 +1096,11 @@ function handle_admin_landscapers_link(stage, jqXHR){
             break
         case 'success' :
             log('admin_landscapers_link - ' + stage)
-            set_content(jqXHR)
+            var options = $.extend(datatable_defaults(),{
+                "sAjaxSource": "/landscapers_data_tables_source",
+                "aaSorting": [[4, "desc"]]
+            })
+            set_content(jqXHR, options)
             break;
         case 'complete' :
             log('admin_landscapers_link - ' + stage)
@@ -1378,3 +1400,89 @@ function handle_destroy_user_link(stage, jqXHR){
             break;
     }
 }
+
+function handle_new_landscaper_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_landscaper_link - ' + stage)
+            break;
+        case 'complete' :
+            log('new_landscaper_link - ' + stage)
+            document_ready_events()
+            break;
+    }
+}
+
+function handle_new_landscaper_form_submit(stage,jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('new_landscaper_form_submit - ' + stage)
+            $('#ajax-modal').modal('hide')
+            notify('success', jqXHR.message)
+            if($('#landscapers.datatable').length){
+                $('#landscapers.datatable').dataTable().fnReloadAjax()
+            }
+            $('#new_landscaper input:not([type="submit"])').each(function(){
+                $(this).val('')
+            })
+            break;
+        case 'complete' :
+            log('new_landscaper_form_submit - ' + stage)
+            break;
+    }
+}
+
+function handle_edit_landscaper_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_landscaper_link - ' + stage)
+            break;
+        case 'complete' :
+            log('edit_landscaper_link - ' + stage)
+            document_ready_events()
+            break;
+    }
+}
+
+function handle_edit_landscaper_form_submit(stage,jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_landscaper_form_submit - ' + stage)
+            $('#ajax-modal').modal('hide')
+            notify('success', jqXHR.message)
+            $('.datatable').dataTable().fnReloadAjax()
+            break;
+        case 'complete' :
+            log('edit_landscaper_form_submit - ' + stage)
+            break;
+    }
+}
+
+function handle_destroy_landscapers_link(stage,jqXHR){
+    switch(stage){
+        case 'error' :
+            break
+        case 'success' :
+            log('destroy_landscapers_link - ' + stage)
+            break;
+        case 'complete' :
+            log('destroy_landscapers_link - ' + stage)
+            var json = $.parseJSON(jqXHR.responseText)
+            notify('success', json.message)
+            $('.datatable').dataTable().fnReloadAjax()
+            break;
+    }
+}
+

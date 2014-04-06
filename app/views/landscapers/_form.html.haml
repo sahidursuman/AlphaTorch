@@ -1,0 +1,28 @@
+- case controller_action
+  - when 'landscapers#new'
+    - submit_button_text = 'New Landscaper'
+    - id = 'new_landscaper'
+  - when 'landscapers#edit'
+    - submit_button_text = 'Update Landscaper'
+    - id = 'edit_landscaper'
+
+= form_for(@landscaper, remote:true, html:{id:id, data:{type:'json'}}) do |f|
+  .row
+    %fieldset#landscaper-information.col-md-6
+      %legend.h4 Landscaper Information
+      .col-md-8.first_name
+        = f.text_field :first_name, placeholder:'First Name', class:'form-control', autocomplete:'off'
+      .col-md-4.middle_initial
+        = f.text_field :middle_initial, placeholder:'Initial', class:'form-control', id:'middle-initial', autocomplete:'off'
+      .col-md-10.last_name
+        = f.text_field :last_name, placeholder:'Last Name', class:'form-control', autocomplete:'off'
+      .col-md-12.email
+        = f.text_field :email, placeholder: 'Email', class:'form-control', autocomplete:'off'
+      .col-md-6.primary_phone
+        = f.text_field :primary_phone, placeholder:'Primary Phone', class:'form-control', id:'primary-phone', autocomplete:'off'
+      .col-md-6.secondary_phone
+        = f.text_field :secondary_phone, placeholder:'Alternate Phone', class:'form-control', id:'secondary-phone', autocomplete:'off'
+      .col-md-3.rating
+        = f.text_field :rating, placeholder:'Rating', class:'form-control', id:'rating', autocomplete:'off'
+      .col-md-12
+        = f.submit submit_button_text, class:'btn btn-md btn-success'

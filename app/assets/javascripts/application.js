@@ -421,6 +421,9 @@ function handle_ajax(event, jqXHR, stage){
         case 'new_workorder_service' :
             handle_new_workorder_service_form_submit(stage, jqXHR)
             break
+        case 'delete_workorder_service_link' :
+            handle_delete_workorder_service_link(stage, jqXHR)
+            break
         case 'edit_workorder_service_link' :
             handle_edit_workorder_service_link(stage, jqXHR)
             break
@@ -698,6 +701,23 @@ function handle_new_workorder_service_form_submit(stage, jqXHR){
             break;
         case 'complete' :
             log('new_workorder_service_form_submit - ' + stage)
+            $('#workorder-data').load( $('#workorder-data').data('url'))
+            break;
+    }
+}
+
+function handle_delete_workorder_service_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            //notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('delete_workorder_service_link - ' + stage)
+            break;
+        case 'complete' :
+            log('delete_workorder_service_link - ' + stage)
+            var json = $.parseJSON(jqXHR.responseText)
+            notify('success', json.message)
             $('#workorder-data').load( $('#workorder-data').data('url'))
             break;
     }

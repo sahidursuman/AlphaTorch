@@ -58,6 +58,7 @@ class WorkorderServicesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to workorder_workorder_services_url }
       format.json { head :no_content }
+      format.js   { render json: {message: 'Work Order Service Has Been Deleted!'}, status: :ok }
     end
   end
 

@@ -15,6 +15,24 @@ class WorkorderService < ActiveRecord::Base
   validates_presence_of :cost
   validates_numericality_of :cost
 
+  def cost_dollars
+    if self.cost
+      if self.cost.is_a?(Integer)
+        return self.cost / 100.00
+      elsif self.cost.is_a?(String)
+        return ''
+      end
+    else
+      return nil
+    end
+  end
+
+  def cost_dollars=(amount)
+    self.cost = (Float(amount) * 100).to_i
+  rescue
+    self.cost = amount
+  end
+
   def create_events
     occurrence_dates = self.recurring? ?
        get_requested_occurrences(false) :
@@ -99,7 +117,7 @@ class WorkorderService < ActiveRecord::Base
     event_service.workorder_service_id = self.id
     event_service.event_id = event.id
     event_service.service_id = self.service_id
-    event_service.cost = self.cost
+    event_service.cost_dollars = self.cost_dollars
     p "EVENT ID = #{event.id}"
     p "CHECKING IF EVENT SERVICE FOR #{service.name} EXISTS IN EVENT ALREADY"
     if EventService.where(event_id:event.id, service_id:self.service_id).empty?

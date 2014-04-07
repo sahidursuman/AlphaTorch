@@ -27,20 +27,20 @@ Status.create([
 
 Service.create(
     [
-        {name: 'Mow Lawn',      base_cost: 10},
-        {name: 'Trim Hedges',   base_cost: 15},
-        {name: 'Pull Weeds',    base_cost: 10},
-        {name: 'Plant Flowers', base_cost: 30},
-        {name: 'Pruning', base_cost: 30},
-        {name: 'Paving', base_cost: 40},
-        {name: 'Install Irrigation System', base_cost: 150},
-        {name: 'General Maintenance', base_cost: 40},
-        {name: 'Mulching', base_cost: 40},
-        {name: 'Sodding', base_cost: 40},
-        {name: 'Gutter Cleaning', base_cost: 40},
-        {name: 'Leaf Cleanup', base_cost: 40},
-        {name: 'Tilling', base_cost: 40},
-        {name: 'Plant Removal',  base_cost: 150}
+        {name: 'Mow Lawn',      base_cost_dollars: 9.99},
+        {name: 'Trim Hedges',   base_cost_dollars: 14.99},
+        {name: 'Pull Weeds',    base_cost_dollars: 9.99},
+        {name: 'Plant Flowers', base_cost_dollars: 29.99},
+        {name: 'Pruning', base_cost_dollars: 29.99},
+        {name: 'Paving', base_cost_dollars: 39.99},
+        {name: 'Install Irrigation System', base_cost_dollars: 149.99},
+        {name: 'General Maintenance', base_cost_dollars: 39.99},
+        {name: 'Mulching', base_cost_dollars: 39.99},
+        {name: 'Sodding', base_cost_dollars: 39.99},
+        {name: 'Gutter Cleaning', base_cost_dollars: 39.99},
+        {name: 'Leaf Cleanup', base_cost_dollars: 39.99},
+        {name: 'Tilling', base_cost_dollars: 39.99},
+        {name: 'Plant Removal',  base_cost_dollars: 149.99}
     ]
 )
 

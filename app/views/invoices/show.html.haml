@@ -42,7 +42,7 @@
       .col-md-3.pull-right
         .h5= "Created: #{(@invoice.invoice_date.strftime('%m/%d/%Y') rescue Date.today.strftime('%m/%d/%Y'))}"
         .h5= "Due By: #{(@invoice.due_date.strftime('%m/%d/%Y') rescue (Date.today+1.month).strftime('%m/%d/%Y'))}"
-        .h5= "Total: #{humanized_money_with_symbol(@invoice.invoice_amount)}"
+        .h5= "Total: #{humanized_money_with_symbol(@invoice.invoice_amount_dollars)}"
         .h5= "Balance: #{humanized_money_with_symbol(@invoice.balance_due)}"
 
     %hr

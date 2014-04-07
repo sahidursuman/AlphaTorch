@@ -92,6 +92,6 @@ class PaymentDetailsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def payment_detail_params
-      params.require(:payment_detail).permit(:payment_date, :cc_processing_code, :check_name, :check_number, :check_routing, :cc_name, :cc_type, :cash_name, :cash_subtotal, :check_subtotal, :cc_subtotal, :invoice_id)
+      params.require(:payment_detail).permit(:payment_date, :cc_processing_code, :check_name, :check_number, :check_routing, :cc_name, :cc_type, :cash_name, :cash_subtotal, :check_subtotal, :cc_subtotal, :cash_subtotal_dollars, :check_subtotal_dollars, :cc_subtotal_dollars, :invoice_id)
     end
 end

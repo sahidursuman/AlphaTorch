@@ -18,8 +18,62 @@ class PaymentDetail < ActiveRecord::Base
 
   CC_TYPES = %w(Visa Mastercard American\ Express Discover)
 
+  def cash_subtotal_dollars
+    if self.cash_subtotal
+      if self.cash_subtotal.is_a?(Integer)
+        return self.cash_subtotal / 100.00
+      elsif self.cash_subtotal.is_a?(String)
+        return ''
+      end
+    else
+      return nil
+    end
+  end
+
+  def cash_subtotal_dollars=(amount)
+    self.cash_subtotal = (Float(amount) * 100).to_i
+  rescue
+    self.cash_subtotal = amount
+  end
+
+  def check_subtotal_dollars
+    if self.check_subtotal
+      if self.check_subtotal.is_a?(Integer)
+        return self.check_subtotal / 100.00
+      elsif self.check_subtotal.is_a?(String)
+        return ''
+      end
+    else
+      return nil
+    end
+  end
+
+  def check_subtotal_dollars=(amount)
+    self.check_subtotal = (Float(amount) * 100).to_i
+  rescue
+    self.check_subtotal = amount
+  end
+
+  def cc_subtotal_dollars
+    if self.cc_subtotal
+      if self.cc_subtotal.is_a?(Integer)
+        return self.cc_subtotal / 100.00
+      elsif self.cc_subtotal.is_a?(String)
+        return ''
+      end
+    else
+      return nil
+    end
+  end
+
+  def cc_subtotal_dollars=(amount)
+    self.cc_subtotal = (Float(amount) * 100).to_i
+  rescue
+    self.cc_subtotal = amount
+  end
+
   def amount
-    cash_subtotal.to_i + check_subtotal.to_i + cc_subtotal.to_i
+    cash_subtotal_dollars.to_f + check_subtotal_dollars.to_f + cc_subtotal_dollars.to_f
   end
 
   def payment_method
@@ -93,7 +147,7 @@ class PaymentDetail < ActiveRecord::Base
   end
 
   def payment_less_than_amount_due
-    if (cc_subtotal || check_subtotal || cash_subtotal).to_i > invoice.balance_due
+    if (cc_subtotal_dollars || check_subtotal_dollars || cash_subtotal_dollars).to_i > invoice.balance_due
       errors.add(:payment_amount, "cannot be greater than the amount due - $#{invoice.balance_due}")
     end
   end

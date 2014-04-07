@@ -38,7 +38,7 @@
               .col-md-8
                 .input-group
                   .input-group-addon $
-                  = f.text_field :cash_subtotal, placeholder:'Cash Amount', class:'form-control', autocomplete:'off'
+                  = f.text_field :cash_subtotal_dollars, placeholder:'Cash Amount', class:'form-control', autocomplete:'off'
       .row
         .check-payment.toggle-group{style:'display:none'}
           .col-md-12
@@ -49,7 +49,7 @@
               .col-md-6
                 .input-group
                   .input-group-addon $
-                  = f.text_field :check_subtotal, placeholder:'Check Amount', class:'form-control', autocomplete:'off'
+                  = f.text_field :check_subtotal_dollars, placeholder:'Check Amount', class:'form-control', autocomplete:'off'
               .col-md-6
                 = f.text_field :check_number, placeholder:'Check Number', class:'form-control', autocomplete:'off'
             .row
@@ -65,7 +65,7 @@
               .col-md-6
                 .input-group
                   .input-group-addon $
-                  = f.text_field :cc_subtotal, placeholder:'Amount', class:'form-control', autocomplete:'off'
+                  = f.text_field :cc_subtotal_dollars, placeholder:'Amount', class:'form-control', autocomplete:'off'
               .col-md-6
                 = f.select :cc_type, PaymentDetail::CC_TYPES, {}, class:'form-control'
             .row

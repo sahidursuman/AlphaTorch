@@ -9,6 +9,24 @@ class EventService < ActiveRecord::Base
   validates_presence_of :cost
   validates_numericality_of :cost
 
+  def cost_dollars
+    if self.cost
+      if self.cost.is_a?(Integer)
+        return self.cost / 100.00
+      elsif self.cost.is_a?(String)
+        return ''
+      end
+    else
+      return nil
+    end
+  end
+
+  def cost_dollars=(amount)
+    self.cost = (Float(amount) * 100).to_i
+  rescue
+    self.cost = amount
+  end
+
   private
 
   def update_invoice

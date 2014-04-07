@@ -20,7 +20,7 @@
                   - event_services = event.event_services
                   %td.h6= event.start.strftime('%m/%d/%Y')
                   %td.h6= event_services.map(&:service).flatten.map(&:name).flatten.join(', ')
-                  %td.h6= humanized_money_with_symbol(event_services.map(&:cost).sum)
+                  %td.h6= humanized_money_with_symbol(event_services.map(&:cost_dollars).sum)
                   %td
                     = content_tag(:i, nil, class:'glyphicon glyphicon-plus add-line-item', style:'color:green')
                     .event_id{style:'display:none'}= event.id
@@ -66,7 +66,7 @@
           .col-md-3.pull-right
             .h5= "Created: #{(@invoice.invoice_date.strftime('%m/%d/%Y') rescue Date.today.strftime('%m/%d/%Y'))}"
             .h5= "Due By: #{(@invoice.due_date.strftime('%m/%d/%Y') rescue (Date.today+1.month).strftime('%m/%d/%Y'))}"
-            .h5= "Total: #{humanized_money_with_symbol(@invoice.invoice_amount)}"
+            .h5= "Total: #{humanized_money_with_symbol(@invoice.invoice_amount_dollars)}"
             .h5= "Balance: #{humanized_money_with_symbol(@invoice.balance_due)}"
 
         %hr

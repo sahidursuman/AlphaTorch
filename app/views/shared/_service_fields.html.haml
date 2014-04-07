@@ -11,7 +11,7 @@
         .service_id= f.hidden_field :service_id
         .service_cost.input-group
           .input-group-addon $
-          = f.text_field :cost, placeholder:'Service Cost', class:'form-control'
+          = f.text_field :cost_dollars, placeholder:'Service Cost', class:'form-control'
         .remove-service{style:'margin-top:17px;'}
           = f.link_to_remove(remove_link('REMOVE SERVICE')) unless controller_name == 'workorder_services'
 

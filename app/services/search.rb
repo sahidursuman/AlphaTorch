@@ -99,7 +99,7 @@ class ServiceSearchResult < SearchResult
     @result = {
         value:     service.name,
         id:        service.id,
-        cost:      service.base_cost,
+        cost:      service.base_cost_dollars,
         icon:     'glyphicon glyphicon-wrench',
         category: 'Services',
         url:       "/services/#{service.id}"

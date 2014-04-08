@@ -1,4 +1,12 @@
-= nested_form_for @workorder, remote:true, :html => { :class => 'form-vertical', :'data-type' => :json} do |f|
+-case controller_action
+  -when 'workorders#new'
+    -id='new_workorder'
+    -submit_text='Create Work Order'
+  -when 'workorders#edit'
+    -id='edit_workorder'
+    -submit_text='Update Work Order'
+
+= nested_form_for @workorder, remote:true, :html => {id:id, :class => 'form-vertical', :'data-type' => :json} do |f|
   = f.hidden_field :customer_property_id, value: @customer_property.id
   .row{style:'height: 350px; overflow-y:scroll; overflow-x:hidden;'}
     %fieldset.col-md-6
@@ -8,7 +16,7 @@
       .col-md-6.workorder-start
         = f.text_field :start_date, placeholder:'Start Date', class:'form-control datepicker', autocomplete:'off'
       .col-md-12
-        = f.submit 'Create Work Order', class:'btn btn-md btn-success'
+        = f.submit submit_text, class:'btn btn-md btn-success'
     %fieldset.col-md-6
       %legend.h4 Services
       .col-md-12

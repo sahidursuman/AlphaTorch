@@ -6,4 +6,5 @@
       .event_id{style:'display:none'}= event.id
   %td.h6= event.start.strftime('%m/%d/%Y')
   %td.h6= event_services.map(&:service).flatten.map(&:name).flatten.join(', ')
+  %td.h6= event.comment
   %td.h6= humanized_money_with_symbol(event_services.map(&:cost_dollars).sum)

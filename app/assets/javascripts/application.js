@@ -416,6 +416,12 @@ function handle_ajax(event, jqXHR, stage){
         case 'new_workorder' :
             handle_new_workorder_form_submit(stage, jqXHR)
             break
+        case 'edit_workorder_link' :
+            handle_edit_workorder_link(stage, jqXHR)
+            break
+        case 'edit_workorder' :
+            handle_edit_workorder_form_submit(stage, jqXHR)
+            break
         case 'edit_property_link' :
             handle_edit_property_link(stage, jqXHR)
             break
@@ -1501,3 +1507,34 @@ function handle_destroy_landscapers_link(stage,jqXHR){
     }
 }
 
+function handle_edit_workorder_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            break
+        case 'success' :
+            log('edit_workorder_link - ' + stage)
+            break;
+        case 'complete' :
+            log('edit_workorder_link - ' + stage)
+            break;
+    }
+}
+
+function handle_edit_workorder_form_submit(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_workorder_service_form_submit - ' + stage)
+            $('#ajax-modal').modal('hide')
+            notify('success', jqXHR.message)
+            refresh([$('#profile')])
+            refresh_workorders()
+            break;
+        case 'complete' :
+            log('edit_workorder_service_form_submit - ' + stage)
+            $('#workorder-data').load( $('#workorder-data').data('url'))
+            break;
+    }
+}

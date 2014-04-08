@@ -13,6 +13,7 @@
         %tr
           %th.h5='Name'
           %th.h5='Status'
+          %th.h5
       %tbody
         - unless @property.workorders.empty?
           - @property.workorders.each do |workorder|
@@ -20,6 +21,10 @@
               %td.h6
                 %a= workorder.name
               %td.h6= workorder.status.status
+              %td.h6= link_to 'Edit',
+              edit_workorder_path(id:workorder.id, customer_property_id:workorder.customer_property.id),
+              id:'edit_workorder_link',
+              remote:true
         - else
           %tr.h5
             %td{colspan:2}

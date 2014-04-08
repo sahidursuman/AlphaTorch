@@ -75,7 +75,12 @@ class CustomerAddressesController < ApplicationController
     end
 
     def set_customer
-      @customer = Customer.find(params[:customer_id])
+      if params["customer_address"].present?
+        return @customer = Customer.find(customer_address_params[:customer_id])
+      else
+        return @customer = Customer.find(params[:customer_id])
+      end
+
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

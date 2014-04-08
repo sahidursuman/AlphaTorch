@@ -12,6 +12,8 @@
       %legend.h4 Event Information
       .col-md-12.event-name
         = f.text_field :name, placeholder: 'Event Name', class:'form-control'
+      .col-md-12.event-name
+        = f.text_area :comment, placeholder: 'Comments', class:'form-control', rows:'4'
       .col-md-12
         = f.submit 'Update Event', class:'btn btn-md btn-success'
     %fieldset.col-md-6

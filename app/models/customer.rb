@@ -6,7 +6,7 @@ class Customer < ActiveRecord::Base
 
   belongs_to :status, primary_key: 'status_code', foreign_key: 'status_code'
   has_one  :customer_address
-  has_many :customer_properties
+  has_many :customer_properties, dependent: :destroy
   has_many :properties, through: :customer_properties
 
   def to_data_table_row

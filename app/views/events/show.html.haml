@@ -3,7 +3,8 @@
 
   .h6= Status.get_status(@event.status_code).upcase
   .h6= @event.workorder.customer_property.property.html_full_address
-  .h6= @event.start.strftime('%m/%d/%Y')
+  .h6= @event.comment
+
 
   - if @event.event_services.any?
     %hr

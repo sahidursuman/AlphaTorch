@@ -2,7 +2,7 @@ class CustomerProperty < ActiveRecord::Base
   after_create :create_billing_address
   belongs_to :customer
   belongs_to :property
-  has_many :workorders
+  has_many :workorders, dependent: :destroy
   require 'model_locking'
   include ModelLocking
 

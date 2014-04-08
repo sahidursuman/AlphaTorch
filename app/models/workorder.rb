@@ -1,6 +1,7 @@
 class Workorder < ActiveRecord::Base
   after_create :set_default_status
   after_initialize :set_default_status
+  after_update :update_events
   require 'model_locking'
   include ModelLocking
   include ActionView::Helpers::UrlHelper
@@ -158,4 +159,14 @@ class Workorder < ActiveRecord::Base
     p "#{Time.now} - Complete!"
   end
 
+  private
+
+  def update_events
+    self.events.all.each do |event|
+      unless event.name == self.name
+        event.name = self.name
+        event.save
+      end
+    end
+  end
 end

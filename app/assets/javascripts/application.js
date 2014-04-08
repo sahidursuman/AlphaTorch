@@ -327,7 +327,7 @@ function document_ready_events(){
     $('#primary-phone').mask('(999) 999-9999')
     $('#secondary-phone').mask('(999) 999-9999')
     $('#middle-initial').mask('?~~~', {placeholder:' '})
-    $('#postal-code').mask('99999? -9999')
+    $('#postal-code').mask('99999?-9999')
     $('#rating').mask('9?^', {placeholder: ' '})
 }
 

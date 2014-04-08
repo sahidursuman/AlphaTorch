@@ -312,6 +312,13 @@ function datepicker_defaults(){
     }
 }
 
+function rating_defaults(){
+    return {
+        starCaptions: {1: "Awful", 2: "Poor", 3: "Ok", 4: "Good", 5: "Great"},
+        starCaptionClasses: {1: "text-danger", 2: "text-warning", 3: "text-info", 4: "text-primary", 5: "text-success"}
+    }
+}
+
 function document_ready_events(){
     initialize_search('site-search');
     initialize_search('service-search');
@@ -329,6 +336,7 @@ function document_ready_events(){
     $('#middle-initial').mask('?~~~', {placeholder:' '})
     $('#postal-code').mask('99999?-9999')
     $('#rating').mask('9?^', {placeholder: ' '})
+    $('.rating').rating(rating_defaults())
 }
 
 $(document).ready(function(){
@@ -1098,7 +1106,13 @@ function handle_admin_landscapers_link(stage, jqXHR){
             log('admin_landscapers_link - ' + stage)
             var options = $.extend(datatable_defaults(),{
                 "sAjaxSource": "/landscapers_data_tables_source",
-                "aaSorting": [[4, "desc"]]
+                "aaSorting": [[4, "desc"]],
+                "fnInitComplete": function(oSettings, json){
+                    $('.rating').rating(rating_defaults())
+                },
+                "fnDrawCallback": function(oSettings){
+                    $('.rating').rating(rating_defaults())
+                }
             })
             set_content(jqXHR, options)
             break;
@@ -1463,6 +1477,7 @@ function handle_edit_landscaper_form_submit(stage,jqXHR){
             $('#ajax-modal').modal('hide')
             notify('success', jqXHR.message)
             $('.datatable').dataTable().fnReloadAjax()
+            $('.rating').rating(rating_defaults())
             break;
         case 'complete' :
             log('edit_landscaper_form_submit - ' + stage)

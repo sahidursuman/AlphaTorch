@@ -22,7 +22,9 @@
         = f.text_field :primary_phone, placeholder:'Primary Phone', class:'form-control', id:'primary-phone', autocomplete:'off'
       .col-md-6.secondary_phone
         = f.text_field :secondary_phone, placeholder:'Alternate Phone', class:'form-control', id:'secondary-phone', autocomplete:'off'
-      .col-md-3.rating
-        = f.text_field :rating, placeholder:'Rating', class:'form-control', id:'rating', autocomplete:'off'
+      .col-md-6.status
+        = f.collection_select :status_code, Status.where(status:['Active','Inactive']), :status_code, :status, {}, class:'form-control'
+      .col-md-12
+        = f.text_field :rating, placeholder:'Rating', class:'form-control rating', id:'rating', autocomplete:'off', data:{size:'xs'}
       .col-md-12
         = f.submit submit_button_text, class:'btn btn-md btn-success'

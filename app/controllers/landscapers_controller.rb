@@ -77,7 +77,7 @@ class LandscapersController < ApplicationController
   end
 
   def data_tables_source
-    @landscapers = Landscaper.all
+    @landscapers = Landscaper.order('rating desc').all
     respond_to do |format|
       format.js {render json: {aaData:@landscapers.map(&:to_data_table_row)}}
     end

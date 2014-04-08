@@ -30,7 +30,9 @@ class Landscaper < ActiveRecord::Base
   end
 
   def rate
-    self.rating.blank? ? '-' : self.rating.to_s
+    <<-HTML
+    <input class='rating' data-size='xs' data-readonly='true' data-show-clear="false" data-show-caption='false' value="#{self.rating}"/>
+    HTML
   end
 
   def email_address

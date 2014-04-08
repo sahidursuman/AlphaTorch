@@ -6,12 +6,16 @@ $ ->
 
   options = $.extend(datatable_defaults(),
     "sAjaxSource": "/landscapers_data_tables_source",
-    "aaSorting": [[5, "asc"]]
+    "aaSorting": [[4, "desc"]],
+    "fnInitComplete": (oSettings, json)->
+      $('.rating').rating(rating_defaults())
+    ,
+    "fnDrawCallback": (oSettings)->
+      $('.rating').rating(rating_defaults())
   )
   $('#landscapers.datatable').dataTable(options);
 
   $('.datatable th').addClass('h4')
-
   # Validate form dynamically as user inputs information before submitting
   $ ->
     if $("#new_landscaper, #edit_landscaper").length

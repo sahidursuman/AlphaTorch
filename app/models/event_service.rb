@@ -22,7 +22,7 @@ class EventService < ActiveRecord::Base
   end
 
   def cost_dollars=(amount)
-    self.cost = (Float(amount) * 100).to_i
+    self.cost = (Float(amount) * 100.00).ceil
   rescue
     self.cost = amount
   end

@@ -31,7 +31,7 @@ class PaymentDetail < ActiveRecord::Base
   end
 
   def cash_subtotal_dollars=(amount)
-    self.cash_subtotal = (Float(amount) * 100).to_i
+    self.cash_subtotal = (Float(amount) * 100.00).ceil
   rescue
     self.cash_subtotal = amount
   end

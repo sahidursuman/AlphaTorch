@@ -728,6 +728,7 @@ function handle_new_workorder_service_form_submit(stage, jqXHR){
         case 'success' :
             log('new_workorder_service_form_submit - ' + stage)
             notify('success', jqXHR.message)
+            refresh([$('#profile')])
             $('.cancel').click()
             break;
         case 'complete' :
@@ -750,6 +751,7 @@ function handle_delete_workorder_service_link(stage, jqXHR){
             var json = $.parseJSON(jqXHR.responseText)
             notify('success', json.message)
             $('#workorder-data').load( $('#workorder-data').data('url'))
+            refresh([$('#profile')])
             break;
     }
 }

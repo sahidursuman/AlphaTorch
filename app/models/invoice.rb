@@ -6,8 +6,9 @@ class Invoice < ActiveRecord::Base
 
   scope :past_due, ->{where("due_date < '#{Date.today}' AND (status_code != '#{Status.get_code('Paid')}' OR status_code != '#{Status.get_code('Processing')}')")}
   scope :orphaned, ->{
-    select { |i| i.events.size == 0 }
+    select { |i| i.empty? }
   }
+  scope :not_orphaned, -> {select { |i| !i.empty? }}
 
   def invoice_amount_dollars
     if self.invoice_amount

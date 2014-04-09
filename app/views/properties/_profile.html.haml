@@ -45,7 +45,7 @@
             %li.h4
               %u='Services'
             - if @property.services
-              - @property.services.each do |service|
+              - @property.services.uniq.each do |service|
                 %li.h6= service.name
             - else
               %li.h6= 'None'

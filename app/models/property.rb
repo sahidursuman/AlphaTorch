@@ -53,7 +53,7 @@ class Property < ActiveRecord::Base
 
   def html_services
     unless services.nil? || services.try(:empty?)
-      services.map(&:name).join('<br/>').html_safe
+      services.uniq.map(&:name).join('<br/>').html_safe
     else
       'No Services'
     end

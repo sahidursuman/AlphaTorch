@@ -21,7 +21,7 @@ class Service < ActiveRecord::Base
   end
 
   def base_cost_dollars=(amount)
-    self.base_cost = (Float(amount) * 100).to_i
+    self.base_cost = (Float(amount) * 100.00).ceil
   rescue
     self.base_cost = amount
   end

@@ -1,7 +1,7 @@
 class Workorder < ActiveRecord::Base
   after_create :set_default_status
   after_initialize :set_default_status
-  after_update :update_events
+  after_commit :update_workorder_services, on: :update
   require 'model_locking'
   include ModelLocking
   include ActionView::Helpers::UrlHelper
@@ -161,12 +161,7 @@ class Workorder < ActiveRecord::Base
 
   private
 
-  def update_events
-    self.events.all.each do |event|
-      unless event.name == self.name
-        event.name = self.name
-        event.save
-      end
-    end
+  def update_workorder_services
+    self.workorder_services.each(&:update_events)
   end
 end

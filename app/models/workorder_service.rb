@@ -28,7 +28,7 @@ class WorkorderService < ActiveRecord::Base
   end
 
   def cost_dollars=(amount)
-    self.cost = (Float(amount) * 100).to_i
+    self.cost = (Float(amount) * 100.00).ceil
   rescue
     self.cost = amount
   end
@@ -121,7 +121,7 @@ class WorkorderService < ActiveRecord::Base
     p "EVENT ID = #{event.id}"
     p "CHECKING IF EVENT SERVICE FOR #{service.name} EXISTS IN EVENT ALREADY"
     if EventService.where(event_id:event.id, service_id:self.service_id).empty?
-      unless event_service.workorder_service_id.nil?
+      unless event_service.workorder_service_id.nil? || event.invoiced?
         p "EVENT SERVICE NOT FOUND FOR EVENT #{event.id} - #{service.name}"
         EventService.create!(event_service.attributes)
       end
@@ -130,6 +130,17 @@ class WorkorderService < ActiveRecord::Base
     end
     p '*******************************'
 
+    #if a repeating workorder service's service is changed, then a extra event service
+    #for the previous service will still exist. this will go throught the event services
+    #and check for service ids that do not match the service id of the associated workorder
+    #service
+    event.event_services.each do |event_service|
+      sid = event_service.service_id
+      ws_sid = event_service.workorder_service.service.id
+      if ws_sid != sid
+        event_service.destroy
+      end
+    end
   end
 
   def single_occurrence?
@@ -202,8 +213,20 @@ class WorkorderService < ActiveRecord::Base
   end
 
   def delete_event_services
-    if self.single_occurrence? && self.event_services
-      self.event_services.each(&:destroy)
+    if self.event_services
+      if self.single_occurrence?
+        self.event_services.each(&:destroy)
+      else
+        self.event_services.each do |event_service|
+          if event_service.event.start > DateTime.now
+            if event_service.event.event_services.count == 0
+              event_service.event.destroy
+            else
+              event_service.destroy
+            end
+          end
+        end
+      end
     end
   end
 end

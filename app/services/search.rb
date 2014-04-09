@@ -138,7 +138,7 @@ class InvoiceSearchResult < SearchResult
         id:        invoice.id,
         icon:     'glyphicon glyphicon-usd',
         category: 'Invoices',
-        url:       "/invoices/#{invoice.id}"
+        url:       "/invoices/#{invoice.id}?workorder_id=#{invoice.workorder.id}"
     }
   end
 end

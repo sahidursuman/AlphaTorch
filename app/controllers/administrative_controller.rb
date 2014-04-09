@@ -50,7 +50,10 @@ class AdministrativeController < ApplicationController
   def data_tables_source_confirmed
     @users = User.confirmed
     respond_to do |format|
-      format.js {render json: {aaData:@users.map(&:to_data_table_row_confirmed)}}
+      user_data = @users.map do |user|
+        user.to_data_table_row_confirmed(current_user)
+      end
+      format.js {render json: {aaData:user_data}}
     end
   end
 

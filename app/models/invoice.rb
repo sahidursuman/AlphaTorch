@@ -5,7 +5,9 @@ class Invoice < ActiveRecord::Base
   has_many :workorders, through: :events
 
   scope :past_due, ->{where("due_date < '#{Date.today}' AND (status_code != '#{Status.get_code('Paid')}' OR status_code != '#{Status.get_code('Processing')}')")}
-  scope :orphaned, ->{where(status_code: 1000, invoice_date: nil, due_date: nil, invoice_amount: 0)}
+  scope :orphaned, ->{
+    select { |i| i.events.size == 0 }
+  }
 
   def invoice_amount_dollars
     if self.invoice_amount
@@ -93,6 +95,14 @@ class Invoice < ActiveRecord::Base
       set_created
     end
 
+  end
+
+  def workorder
+    workorders.uniq.first
+  end
+
+  def empty?
+    events.empty?
   end
 
   def self.destroy_orphaned

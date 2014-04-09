@@ -35,10 +35,7 @@
       .col-md-3.col-md-offset-1.pull-left{style:'margin-left:100px;'}
         .h5
           %b Service Address
-        .h5= @property.street_address_1
-        - if @property.street_address_2
-          .h5= @property.street_address_2
-        .h5= "#{@property.city}, #{@property.state.short_name} #{@property.postal_code}"
+        .h5= @property.html_full_address
       .col-md-3.pull-right
         .h5= "Created: #{(@invoice.invoice_date.strftime('%m/%d/%Y') rescue Date.today.strftime('%m/%d/%Y'))}"
         .h5= "Due By: #{(@invoice.due_date.strftime('%m/%d/%Y') rescue (Date.today+1.month).strftime('%m/%d/%Y'))}"

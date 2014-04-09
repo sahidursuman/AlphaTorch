@@ -61,26 +61,34 @@ class User < ActiveRecord::Base
     data:{:confirm => "DENY #{self.email}?"}
   end
 
-  def to_data_table_row_confirmed
-    [mail_to(self.email), self.confirmed_at.strftime('%Y-%m-%d'), revoke_link, destroy_link]
+  def to_data_table_row_confirmed(current_user)
+    [mail_to(self.email), self.confirmed_at.strftime('%Y-%m-%d'), revoke_link(current_user), destroy_link(current_user)]
   end
 
-  def revoke_link
-    link_to 'Revoke',
-            Rails.application.routes.url_helpers.revoke_login_path(user_id:self.id),
-            remote:true,
-            id:'revoke_login_link',
-            method: :post,
-            data:{:confirm => "REVOKE ACCESS FOR #{self.email}?"}
+  def revoke_link(current_user)
+    unless self == current_user
+      link_to 'Revoke',
+              Rails.application.routes.url_helpers.revoke_login_path(user_id:self.id),
+              remote:true,
+              id:'revoke_login_link',
+              method: :post,
+              data:{:confirm => "REVOKE ACCESS FOR #{self.email}?"}
+    else
+      '-'
+    end
   end
 
-  def destroy_link
-    link_to 'Delete',
-            Rails.application.routes.url_helpers.destroy_user_path(user_id:self.id),
-            remote:true,
-            method: :delete,
-            id:'destroy_user_link',
-            data:{:confirm => "DELETE #{self.email}?"}
+  def destroy_link(current_user)
+    unless self == current_user
+      link_to 'Delete',
+              Rails.application.routes.url_helpers.destroy_user_path(user_id:self.id),
+              remote:true,
+              method: :delete,
+              id:'destroy_user_link',
+              data:{:confirm => "DELETE #{self.email}?"}
+    else
+      '-'
+    end
   end
 
 end

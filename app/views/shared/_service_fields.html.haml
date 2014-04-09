@@ -17,16 +17,17 @@
 
       .col-md-5
         - unless controller_name == 'events'
-          .clear{style:'min-height:80px;'}
-            .btn-group.btn-group-sm{data:{toggle:'buttons'}, style:'margin-top:8px;', id:"service_toggle_#{unique}"}
-              %label.btn.btn-default.active
-                %input#recurring-service{type:'radio', name:'service_toggle'}Repeating
-              %label.btn.btn-default
-                %input#single-service{type:'radio', name:'service_toggle'}Single
-            .toggle_group{class:"recurring-service_#{unique}"}
-              .scheduler= f.select_recurring :schedule, [], {}, class:'form-control', allow_blank: false
-            .toggle_group{class:"single-service_#{unique}", style:'display:none'}
-              = f.text_field :single_occurrence_date, class:'form-control datepicker', id:"single_occurrence_#{unique}"
+          .scheduler= f.select_recurring :schedule, [], {}, class:'form-control', allow_blank: false
+          /.clear{style:'min-height:80px;'}
+          /  .btn-group.btn-group-sm{data:{toggle:'buttons'}, style:'margin-top:8px;', id:"service_toggle_#{unique}"}
+          /    %label.btn.btn-default.active
+          /      %input#recurring-service{type:'radio', name:'service_toggle'}Repeating
+          /    %label.btn.btn-default
+          /      %input#single-service{type:'radio', name:'service_toggle'}Single
+          /  .toggle_group{class:"recurring-service_#{unique}"}
+          /    .scheduler= f.select_recurring :schedule, [], {}, class:'form-control', allow_blank: false
+          /  .toggle_group{class:"single-service_#{unique}", style:'display:none'}
+          /    = f.text_field :single_occurrence_date, class:'form-control datepicker', id:"single_occurrence_#{unique}"
 
     %hr
 

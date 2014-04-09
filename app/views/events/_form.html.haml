@@ -1,24 +1,37 @@
 - case controller_action
   - when 'events#edit'
     - id = 'edit_event'
+    -submit_text = 'Update Event'
   -when 'events#new'
     - id = 'new_event'
+    -submit_text = 'Create Event'
 
 = nested_form_for @event, remote:true, :html => {id:id, :class => 'form-vertical', :'data-type' => :json} do |f|
-  = f.hidden_field :workorder_id, value: @event.workorder_id
-  = f.hidden_field :start, value: @event.start
   .row{style:'height: 350px; overflow-y:scroll; overflow-x:hidden;'}
     %fieldset.col-md-6
       %legend.h4 Event Information
+      .col-md-12
+        -if controller_action == 'events#edit'
+          = f.hidden_field :workorder_id, value: @event.workorder_id
+          = f.hidden_field :start, value: @event.start
+        -if controller_action == 'events#new'
+          %input.search_field.form-control{name:'term', type:'text', placeholder:'Associated Workorder', autocomplete:'off', id:"workorder-search"}
+          = f.hidden_field :workorder_id, id:'workorder-id'
+          = f.hidden_field :start, value: @event.start
+          = f.hidden_field :all_day, value: @event.all_day
       .col-md-12.event-name
-        = f.text_field :name, placeholder: 'Event Name', class:'form-control'
+        = f.hidden_field :name, placeholder: 'Event Name', class:'form-control'
       .col-md-12.event-name
         = f.text_area :comment, placeholder: 'Comments', class:'form-control', rows:'4'
       .col-md-12
-        = f.submit 'Update Event', class:'btn btn-md btn-success'
+        = f.submit submit_text, class:'btn btn-md btn-success'
     %fieldset.col-md-6
       %legend.h4 Services
       .col-md-12
         = f.fields_for :event_services do |es|
           = render partial: 'shared/service_fields', locals:{f:es, service:es.object.service}
         = f.link_to_add 'Add A New Service', :event_services, class:'btn btn-sm btn-default'
+:coffee
+  initialize_search('workorder-search')
+  $('input[name="term"]').on 'blur', ->
+    $('input[name="event[name]"]').val($(this).val())

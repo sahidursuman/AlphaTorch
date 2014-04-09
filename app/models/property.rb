@@ -81,7 +81,7 @@ class Property < ActiveRecord::Base
 
   def balance_due
     unless unpaid_invoices.nil? || unpaid_invoices.compact.empty?
-      unpaid_invoices.map(&:balance_due).sum
+      unpaid_invoices.compact.map(&:balance_due).sum
     else
       0
     end

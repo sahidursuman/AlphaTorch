@@ -98,3 +98,9 @@ $ ->
       complete: ->
         $('#calendar').fullCalendar('refetchEvents')
     })
+
+  $('td.fc-day').on 'click', ->
+    $.ajax({
+      url:"/events/new?start=#{$(this).data('date')}"
+      dataType:'script'
+    })

@@ -1,6 +1,5 @@
 class Event < ActiveRecord::Base
   after_destroy :update_invoice
-  after_update  :update_event_services
   require 'date_helper'
   include DateHelper
   require 'model_locking'
@@ -115,29 +114,5 @@ class Event < ActiveRecord::Base
     if self.invoice
       self.invoice.update_total
     end
-  end
-
-  def update_event_services
-    self.event_services.each do |event_service|
-      workorder_service = event_service.workorder_service
-      if workorder_service.nil?
-        workorder_service = WorkorderService.new
-        workorder_service.workorder_id = self.workorder_id
-        workorder_service.service_id = event_service.service_id
-        workorder_service.single_occurrence_date = self.start.to_date
-        workorder_service.cost = event_service.cost
-        #we destroy this event_service because it is ONLY used to create the
-        #associated workorder_service. it has no workorder_service_id.
-        #when workorder_services are saved/updated, they will create the event services needed.
-        event_service.destroy
-      end
-
-      if workorder_service.single_occurrence?
-        #if single occurrence we want to save so that the single occurrence date matches the event date
-        workorder_service.single_occurrence_date = self.start.to_date
-        workorder_service.save
-      end
-    end
-
   end
 end

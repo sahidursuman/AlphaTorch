@@ -14,7 +14,14 @@ class EventsController < ApplicationController
 
   # GET /events/new
   def new
-    @event = Event.new
+    @event = Event.new(all_day:true)
+    if params[:start]
+      @event.start = params[:start]
+    end
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   # GET /events/1/edit

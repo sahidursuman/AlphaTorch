@@ -482,6 +482,9 @@ function handle_ajax(event, jqXHR, stage){
         case 'edit_event' :
             handle_edit_event_form_submit(stage, jqXHR)
             break
+        case 'new_event' :
+            handle_new_event_form_submit(stage, jqXHR)
+            break
         case 'delete_event_link' :
             handle_delete_event_link(stage, jqXHR)
             break
@@ -733,7 +736,8 @@ function handle_new_workorder_service_form_submit(stage, jqXHR){
             break;
         case 'complete' :
             log('new_workorder_service_form_submit - ' + stage)
-            $('#workorder-data').load( $('#workorder-data').data('url'))
+            if (jqXHR.statusText == 'Created')
+                $('#workorder-data').load( $('#workorder-data').data('url'))
             break;
     }
 }
@@ -994,6 +998,24 @@ function handle_edit_event_link(stage, jqXHR){
 }
 
 function handle_edit_event_form_submit(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_event_form_submit - ' + stage)
+            notify('success', jqXHR.message)
+            break;
+        case 'complete' :
+            log('edit_event_form_submit - ' + stage)
+            $('#ajax-modal').modal('hide')
+            if($('#calendar').length){
+                $('#calendar').fullCalendar('refetchEvents')
+            }
+    }
+}
+
+function handle_new_event_form_submit(stage, jqXHR){
     switch(stage){
         case 'error' :
             notify('error', parse_json_errors(jqXHR))

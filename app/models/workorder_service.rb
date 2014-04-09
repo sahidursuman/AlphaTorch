@@ -11,7 +11,7 @@ class WorkorderService < ActiveRecord::Base
   has_many :event_services
 
   serialize :schedule, Hash
-
+  validates_presence_of :schedule
   validates_presence_of :cost
   validates_numericality_of :cost
 
@@ -129,18 +129,6 @@ class WorkorderService < ActiveRecord::Base
       p "EVENT SERVICE FOUND FOR EVENT #{event.id} - #{service.name}"
     end
     p '*******************************'
-
-    #if a repeating workorder service's service is changed, then a extra event service
-    #for the previous service will still exist. this will go throught the event services
-    #and check for service ids that do not match the service id of the associated workorder
-    #service
-    event.event_services.each do |event_service|
-      sid = event_service.service_id
-      ws_sid = event_service.workorder_service.service.id
-      if ws_sid != sid
-        event_service.destroy
-      end
-    end
   end
 
   def single_occurrence?
@@ -165,18 +153,7 @@ class WorkorderService < ActiveRecord::Base
     to_destroy.each do |event_date|
       event = Event.where("workorder_id = #{self.workorder_id} AND start::date = '#{event_date}'").first
       if event.present?
-        should_destroy_event = true
-        event.event_services.each do |event_service|
-          if event_service.workorder_service_id == self.id
-            event_service.destroy
-          else
-            should_destroy_event = false
-          end
-        end
-
-        if should_destroy_event
-          event.destroy
-        end
+        event.destroy
       end
     end
   end

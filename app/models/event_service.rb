@@ -1,6 +1,6 @@
 class EventService < ActiveRecord::Base
   after_commit :update_invoice
-  after_commit :destroy_workorder_service, on: :destroy
+  after_commit :destroy_empty_event, on: :destroy
   belongs_to :service
   belongs_to :event
   belongs_to :invoice
@@ -36,9 +36,9 @@ class EventService < ActiveRecord::Base
     end
   end
 
-  def destroy_workorder_service
-    if self.workorder_service && self.workorder_service.single_occurrence?
-      self.workorder_service.destroy
+  def destroy_empty_event
+    if self.event.event_services.empty?
+      self.event.destroy
     end
   end
 end

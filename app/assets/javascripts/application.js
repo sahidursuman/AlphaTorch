@@ -1026,9 +1026,11 @@ function handle_new_event_form_submit(stage, jqXHR){
             break;
         case 'complete' :
             log('edit_event_form_submit - ' + stage)
-            $('#ajax-modal').modal('hide')
-            if($('#calendar').length){
-                $('#calendar').fullCalendar('refetchEvents')
+            if (jqXHR.statusText == 'Created'){
+                $('#ajax-modal').modal('hide')
+                if($('#calendar').length){
+                    $('#calendar').fullCalendar('refetchEvents')
+                }
             }
     }
 }

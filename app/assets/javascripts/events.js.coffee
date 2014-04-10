@@ -35,6 +35,11 @@ $ ->
       updateEvent(event, dayDelta, minuteDelta, revertFunc, jsEvent, ui, view)
     eventResize: (event, dayDelta, minuteDelta, revertFunc, jsEvent, ui, view)->
       updateEvent(event, dayDelta, minuteDelta, revertFunc, jsEvent, ui, view)
+    eventRender: (event, element) ->
+      element.bind 'dblclick', ()->
+        triggerEventEdit(event)
+    eventAfterAllRender: ->
+      allowCreateEvent()
   });
 
   #set default height of sidebar
@@ -99,8 +104,15 @@ $ ->
         $('#calendar').fullCalendar('refetchEvents')
     })
 
-  $('td.fc-day').on 'click', ->
+  allowCreateEvent = ->
+    $('td.fc-day').on 'dblclick', ->
+      $.ajax({
+        url:"/events/new?start=#{$(this).data('date')}"
+        dataType:'script'
+      })
+
+  triggerEventEdit = (event)->
     $.ajax({
-      url:"/events/new?start=#{$(this).data('date')}"
+      url:"events/#{event.id}/edit"
       dataType:'script'
     })

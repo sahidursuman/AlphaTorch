@@ -16,7 +16,7 @@ class EventsController < ApplicationController
   def new
     @event = Event.new(all_day:true)
     if params[:start]
-      @event.start = params[:start]
+      @event.start = params[:start].to_datetime.midnight + 5.hours
     end
     respond_to do |format|
       format.html

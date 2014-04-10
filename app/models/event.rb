@@ -19,6 +19,8 @@ class Event < ActiveRecord::Base
   scope :before_billing_cycle, ->{where("start < '#{DateHelper.first_day_of_month}'")}
   scope :past,                 ->{where("start <= '#{DateTime.now}'")}
 
+  validates_presence_of :name
+  validates_presence_of :start
   validates_uniqueness_of :name, scope: :start
   validates_associated :event_services
 

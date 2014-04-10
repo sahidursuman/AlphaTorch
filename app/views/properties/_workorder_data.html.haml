@@ -35,7 +35,7 @@
           %tbody
             - @workorder.workorder_services.each do |wo_service|
               %tr
-                %td.col-md-2.h6= link_to wo_service.service.name, service_path(wo_service.service)
+                %td.col-md-2.h6= wo_service.service.name
                 %td.col-md-4.h6
                   - if wo_service.schedule.present?
                     = wo_service.converted_schedule.to_s

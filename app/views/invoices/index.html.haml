@@ -2,7 +2,7 @@
   %caption.h4
     %center
       Invoices
-      - unless @workorder.locked?
+      - unless @workorder.locked? || !@workorder.uninvoiced_events.past.present?
         = link_to content_tag(:i, nil, {class:'glyphicon glyphicon-plus pull-right', style:'color:green'}), new_invoice_path(workorder_id:@workorder.id), target:'_blank'
   %thead
     %tr

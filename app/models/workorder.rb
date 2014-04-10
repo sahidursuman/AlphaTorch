@@ -1,7 +1,7 @@
 class Workorder < ActiveRecord::Base
   after_create :set_default_status
   after_initialize :set_default_status
-  after_commit :update_workorder_services, on: :update
+  after_commit :update_workorder_services, :update_events, on: :update
   require 'model_locking'
   include ModelLocking
   include ActionView::Helpers::UrlHelper
@@ -80,10 +80,10 @@ class Workorder < ActiveRecord::Base
   end
 
   def close
-    self.destroy_future_uninvoiced_events
-    self.generate_invoice(uninvoiced_events)
+    self.generate_invoice(uninvoiced_events.past)
     self.status_code = Status.get_code('Closed')
     self.save
+    self.destroy_future_uninvoiced_events
   end
 
   def generate_invoice(invoice_events=valid_uninvoiced_billing_cycle_events)
@@ -163,5 +163,9 @@ class Workorder < ActiveRecord::Base
 
   def update_workorder_services
     self.workorder_services.each(&:update_events)
+  end
+
+  def update_events
+    self.events.each {|e| e.name = self.name; e.save}
   end
 end

@@ -21,7 +21,7 @@ class CustomerProperty < ActiveRecord::Base
     unless status_code == Status.get_code('Locked')
       self.status_code = Status.get_code('Locked')
       self.save
-      workorders.each{|w| w.change_status('Locked')}
+      workorders.each{|w| w.change_status('Locked') unless w.closed?}
     end
   end
 

@@ -93,23 +93,18 @@ class Customer < ActiveRecord::Base
     end.join('<br/><br/>'.html_safe)
   end
 
-  def property_changed(property)
-    p 'RUNNING PROPERTY CHANGED'
-    property_attr = property.attributes.except('id', 'map_data', 'created_at', 'updated_at')
+  def property_changed(property_attr, new_property_attr={})
+    property_attr = property_attr.except('id', 'map_data', 'created_at', 'updated_at')
     ca_attr = self.customer_address.attributes.except('id', 'customer_id', 'description', 'created_at', 'updated_at')
+    p "PROPERTY ATTR#{property_attr}"
+    p "CA ATTR#{ca_attr}"
+    p "NEW P ATR #{new_property_attr}"
     if property_attr == ca_attr
-      p 'PROPERTY MATCHES'
+      p "DESTROYING OLD BILLING ADDRESS"
       customer_address.destroy
-    else
-      p 'PROPERTY DOESNT MATCH'
-      p property_attr
-      p ca_attr
-    end
-    self.reload
-    if customer_address.nil?
-      cp = self.customer_properties.where(owner:true).first
-      if cp.present?
-        property_attr = cp.attributes.except('map_data', 'created_at', 'updated_at')
+      if new_property_attr.present?
+        p "MAKING NEW BILLING ADDRESS"
+        property_attr = new_property_attr.except('id', 'map_data', 'created_at', 'updated_at')
         property_attr.merge!({customer_id:self.id})
         CustomerAddress.create(property_attr)
       end

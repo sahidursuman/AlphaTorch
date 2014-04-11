@@ -500,6 +500,9 @@ function handle_ajax(event, jqXHR, stage){
         case 'edit_billing_address' :
             handle_edit_billing_address_form_submit(stage, jqXHR)
             break
+        case 'delete_billing_address_link' :
+            handle_delete_billing_address_link(stage, jqXHR)
+            break
         case 'remove_ownership_link' :
             handle_remove_ownership_link(stage, jqXHR)
             break
@@ -1085,6 +1088,25 @@ function handle_edit_billing_address_link(stage, jqXHR){
     }
 }
 
+function handle_delete_billing_address_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            //notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('delete_billing_address_link - ' + stage)
+            break;
+        case 'complete' :
+            log('delete_billing_address_link - ' + stage)
+            if(jqXHR.statusText == 'Accepted'){
+                var json = $.parseJSON(jqXHR.responseText)
+                notify('success', json.message)
+                refresh([$('#profile')])
+            }
+            break;
+    }
+}
+
 function handle_new_billing_address_form_submit(stage, jqXHR){
     switch(stage){
         case 'error' :
@@ -1129,7 +1151,6 @@ function handle_remove_ownership_link(stage, jqXHR){
             break;
         case 'complete' :
             log('remove_ownership_link - ' + stage)
-            log(jqXHR)
             if(jqXHR.statusText == 'Accepted'){
                 var json = $.parseJSON(jqXHR.responseText)
                 notify('success', json.message)

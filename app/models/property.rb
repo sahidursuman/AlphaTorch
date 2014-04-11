@@ -1,5 +1,6 @@
 class Property < ActiveRecord::Base
-  #before_save :get_map_coordinates
+  before_save :get_map_coordinates
+  before_update :update_billing_address
   after_destroy :remove_customer_address
   require 'net/http'
   include ActionView::Helpers::UrlHelper
@@ -117,6 +118,18 @@ class Property < ActiveRecord::Base
     customer_address = CustomerAddress.where(property_attr).first
     if customer_address.present?
       customer_address.destroy
+    end
+  end
+
+  def update_billing_address
+    if self.current_customer_property
+      property = Property.new
+      property.street_address_1 = self.street_address_1_was
+      property.street_address_2 = self.street_address_2_was
+      property.city = self.city_was
+      property.state_id = self.state_id_was
+      property.postal_code = self.postal_code_was
+      self.current_customer_property.customer.property_changed(property.attributes, self.attributes)
     end
   end
 end

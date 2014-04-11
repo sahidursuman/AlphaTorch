@@ -29,10 +29,17 @@
             No billing address on file
         .h6
           - if @customer.customer_address
-            = link_to 'Edit Billing Address',
+            = link_to 'Edit',
             edit_customer_customer_address_path(customer_id:@customer.id),
             remote:true,
             id:'edit_billing_address_link'
+            |
+            = link_to 'Remove',
+            customer_customer_address_path(customer_id:@customer.id),
+            remote:true,
+            method: :delete,
+            id:'delete_billing_address_link',
+            data:{confirm:'Are You Sure You Want To Remove This Billing Address?'}
           - else
             = link_to 'Add Billing Address',
             new_customer_customer_address_path(customer_id:@customer.id),

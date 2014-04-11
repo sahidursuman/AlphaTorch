@@ -65,7 +65,7 @@ class CustomerPropertiesController < ApplicationController
     @customer_property.owner = false
     respond_to do |format|
       if @customer_property.save
-        @customer_property.customer.property_changed(@customer_property.property)
+        @customer_property.customer.property_changed(@customer_property.property.attributes)
         format.js {render json:{message:'Ownership Removed'}, status: :accepted}
       else
         format.js {render json:{message:'Ownership Not Removed'}, status: :unprocessable_entity}

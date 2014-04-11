@@ -65,6 +65,7 @@ class CustomerAddressesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to customer_addresses_url }
       format.json { head :no_content }
+      format.js   { render json:{message:'Billing Address Was Successfully Removed'}, status: :accepted}
     end
   end
 

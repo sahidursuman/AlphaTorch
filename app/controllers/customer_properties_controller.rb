@@ -1,5 +1,5 @@
 class CustomerPropertiesController < ApplicationController
-  before_filter :set_customer_property, only: [:show, :edit, :update, :destroy]
+  before_filter :set_customer_property, only: [:show, :edit, :update, :destroy, :remove_ownership]
 
   # GET /customer_properties
   # GET /customer_properties.json
@@ -58,6 +58,18 @@ class CustomerPropertiesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to customer_properties_url }
       format.json { head :no_content }
+    end
+  end
+
+  def remove_ownership
+    @customer_property.owner = false
+    respond_to do |format|
+      if @customer_property.save
+        @customer_property.customer.property_changed(@customer_property.property)
+        format.js {render json:{message:'Ownership Removed'}, status: :accepted}
+      else
+        format.js {render json:{message:'Ownership Not Removed'}, status: :unprocessable_entity}
+      end
     end
   end
 

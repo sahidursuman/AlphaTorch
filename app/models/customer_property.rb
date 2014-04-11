@@ -35,7 +35,7 @@ class CustomerProperty < ActiveRecord::Base
 
   def create_billing_address
     if self.owner == true && !self.customer.customer_address
-      attr = self.property.attributes.except('map_data', 'created_at', 'updated_at')
+      attr = self.property.attributes.except('id', 'map_data', 'created_at', 'updated_at')
       attr.merge!({customer_id:self.customer_id})
       CustomerAddress.create(attr)
     end

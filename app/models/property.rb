@@ -1,10 +1,11 @@
 class Property < ActiveRecord::Base
-  before_save :get_map_coordinates
+  #before_save :get_map_coordinates
+  after_destroy :remove_customer_address
   require 'net/http'
   include ActionView::Helpers::UrlHelper
   include MoneyRails::ActionViewExtension
   belongs_to :state
-  has_many :customer_properties
+  has_many :customer_properties, dependent: :destroy
   has_many :customers, through: :customer_properties
 
   def to_data_table_row
@@ -111,4 +112,11 @@ class Property < ActiveRecord::Base
     self.map_data = lat_long_arr.to_json
   end
 
+  def remove_customer_address
+    property_attr = self.attributes.except('map_data', 'created_at', 'updated_at')
+    customer_address = CustomerAddress.where(property_attr).first
+    if customer_address.present?
+      customer_address.destroy
+    end
+  end
 end

@@ -5,6 +5,15 @@
         .col-md-12
           .h4
             Property Details
+      .row
+        .col-md-12
+          = link_to 'No Longer Owner?',
+          remove_ownership_path(id:@property.current_customer_property.id),
+          method: :post,
+          remote:true,
+          id:'remove_ownership_link',
+          class:'btn btn-xs btn-default',
+          data:{confirm:"Are you sure #{@property.current_customer_property.customer.name} is no longer the current owner of #{@property.street_address_1}"}
       %hr
 
       .row

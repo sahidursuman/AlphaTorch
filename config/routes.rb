@@ -14,6 +14,7 @@ CortezLandscaping::Application.routes.draw do
   delete 'destroy_user' => 'administrative#deny_user'
 
   resources :customer_properties
+  post 'remove_ownership' => 'customer_properties#remove_ownership'
 
   resources :properties
 

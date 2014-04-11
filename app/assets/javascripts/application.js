@@ -500,6 +500,9 @@ function handle_ajax(event, jqXHR, stage){
         case 'edit_billing_address' :
             handle_edit_billing_address_form_submit(stage, jqXHR)
             break
+        case 'remove_ownership_link' :
+            handle_remove_ownership_link(stage, jqXHR)
+            break
         //admin area ajax requests
         case 'admin_landscapers_link' :
             handle_admin_landscapers_link(stage, jqXHR)
@@ -1112,6 +1115,27 @@ function handle_edit_billing_address_form_submit(stage, jqXHR){
             break;
         case 'complete' :
             log('edit_billing_address_form_submit - ' + stage)
+            break;
+    }
+}
+
+function handle_remove_ownership_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            //notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('remove_ownership_link - ' + stage)
+            break;
+        case 'complete' :
+            log('remove_ownership_link - ' + stage)
+            log(jqXHR)
+            if(jqXHR.statusText == 'Accepted'){
+                var json = $.parseJSON(jqXHR.responseText)
+                notify('success', json.message)
+                refresh([$('#profile'), $('#properties')])
+                $('#property-data').html('<div class="row"><center class="col-md-12"><div class="h4">Click on a property above to view details.</div><div class="h6">(It\'s happening!)</div></center></div>')
+            }
             break;
     }
 }

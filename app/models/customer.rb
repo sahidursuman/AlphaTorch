@@ -93,4 +93,27 @@ class Customer < ActiveRecord::Base
     end.join('<br/><br/>'.html_safe)
   end
 
+  def property_changed(property)
+    p 'RUNNING PROPERTY CHANGED'
+    property_attr = property.attributes.except('id', 'map_data', 'created_at', 'updated_at')
+    ca_attr = self.customer_address.attributes.except('id', 'customer_id', 'description', 'created_at', 'updated_at')
+    if property_attr == ca_attr
+      p 'PROPERTY MATCHES'
+      customer_address.destroy
+    else
+      p 'PROPERTY DOESNT MATCH'
+      p property_attr
+      p ca_attr
+    end
+    self.reload
+    if customer_address.nil?
+      cp = self.customer_properties.where(owner:true).first
+      if cp.present?
+        property_attr = cp.attributes.except('map_data', 'created_at', 'updated_at')
+        property_attr.merge!({customer_id:self.id})
+        CustomerAddress.create(property_attr)
+      end
+    end
+  end
+
 end

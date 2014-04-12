@@ -2,7 +2,7 @@ $ ->
 
   options = $.extend(datatable_defaults(),
     "sAjaxSource": "/customers_data_tables_source",
-    "aaSorting": [[5, "asc"]]
+    "aaSorting": [[5, "desc"]]
   )
   $('#customers.datatable').dataTable(options);
 

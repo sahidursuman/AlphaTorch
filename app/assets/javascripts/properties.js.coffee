@@ -8,7 +8,7 @@ $ ->
 
   options = $.extend(datatable_defaults(),
     "sAjaxSource": "/properties_data_tables_source",
-    "aaSorting": [[3, "asc"]]
+    "aaSorting": [[3, "desc"]]
   )
   $('#properties.datatable').dataTable(options);
 

@@ -58,4 +58,9 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def easter_egg
+    respond_to do |format|
+      format.js
+    end
+  end
 end

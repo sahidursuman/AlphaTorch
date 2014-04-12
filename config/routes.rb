@@ -78,5 +78,8 @@ CortezLandscaping::Application.routes.draw do
   get 'ajax_loader' => 'application#ajax_loader'
 
   get 'change_status' => 'application#change_status'
+
+  get 'easter_egg' => 'application#easter_egg'
+
   root :to => "home#index"
 end

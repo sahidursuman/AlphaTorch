@@ -337,6 +337,13 @@ function document_ready_events(){
     $('#postal-code').mask('99999?-9999')
     $('#rating').mask('9?^', {placeholder: ' '})
     $('.rating').rating(rating_defaults())
+
+    $('nav.navbar.navbar-fixed-top.navbar-default').on('dblclick', function(){
+        $.ajax({
+            url:'/easter_egg',
+            dataType:'script'
+        })
+    });
 }
 
 $(document).ready(function(){

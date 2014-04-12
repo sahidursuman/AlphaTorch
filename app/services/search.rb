@@ -28,8 +28,8 @@ class Search
     property_basic    = Property.select('properties.*, states.name, 1 as Basic').joins(:state).where("street_address_1 ILIKE ? OR street_address_2 ILIKE ? OR city ILIKE ? OR states.name ILIKE ? OR postal_code ILIKE ?", @query,@query,@query,@query,@query).to_sql
     property_advanced = Property.select('properties.*, states.name, 0 as Basic').joins(:state).where("street_address_1 ILIKE ? OR street_address_2 ILIKE ? OR city ILIKE ? OR states.name ILIKE ? OR postal_code ILIKE ?", @a_query,@a_query,@a_query,@a_query,@a_query,).to_sql
 
-    invoice_basic     = Invoice.joins(:status, :events).select('invoices.*, statuses.status, 1 as Basic').where("(invoices.id::text ILIKE ? OR statuses.status ILIKE ?) AND events.id::text ILIKE ?", @query, @query, @query).to_sql
-    invoice_advanced  = Invoice.joins(:status, :events).select('invoices.*, statuses.status, 0 as Basic').where("(invoices.id::text ILIKE ? OR statuses.status ILIKE ?) AND events.id::text ILIKE ?", @a_query, @a_query, @a_query).to_sql
+    invoice_basic     = Invoice.joins(:status, :events).select('invoices.*, statuses.status, 1 as Basic').where("(invoices.id::text ILIKE ? OR statuses.status ILIKE ?) AND events.id IS NOT NULL", @query, @query).to_sql
+    invoice_advanced  = Invoice.joins(:status, :events).select('invoices.*, statuses.status, 0 as Basic').where("(invoices.id::text ILIKE ? OR statuses.status ILIKE ?) AND events.id IS NOT NULL", @a_query, @a_query).to_sql
 
     workorder = query(Workorder, workorder_basic, workorder_advanced)
     service = query(Service, service_basic, service_advanced)

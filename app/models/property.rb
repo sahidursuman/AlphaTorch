@@ -10,7 +10,7 @@ class Property < ActiveRecord::Base
   has_many :customers, through: :customer_properties
 
   def to_data_table_row
-    [html_full_address, html_owner, html_services, humanized_money_with_symbol(balance_due || 0)]
+    [html_full_address, html_owner, html_services, humanized_money_with_symbol(balance_due)]
   end
 
   def html_full_address

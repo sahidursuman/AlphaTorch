@@ -114,7 +114,7 @@ class Workorder < ActiveRecord::Base
   end
 
   def to_data_table_row
-    [name, customer_property.property.html_full_address, customer_property.customer.html_name, next_event || 'N/A', status.status, humanized_money_with_symbol(balance_due || 0)]
+    [name, customer_property.property.html_full_address, customer_property.customer.html_name, next_event || 'N/A', status.status, humanized_money_with_symbol(balance_due)]
   end
 
   def html_name
@@ -130,7 +130,9 @@ class Workorder < ActiveRecord::Base
 
   def balance_due
     if invoices
-      invoices.map(&:balance_due)
+      invoices.map(&:balance_due).sum
+    else
+      0
     end
   end
 

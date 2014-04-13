@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :remember_me, :admin_confirmed
   # attr_accessible :title, :body
 
-  scope :unconfirmed, -> {where(admin_confirmed:false)}
+  scope :unconfirmed, -> {where('admin_confirmed = false AND confirmed_at IS NOT null')}
   scope :confirmed, -> {where(admin_confirmed:true)}
 
   def admin_confirmed?

@@ -97,27 +97,12 @@ class WorkorderService < ActiveRecord::Base
   end
 
   def create_event_service(event)
-    #because this is a single occurrence, it can by definition only belong
-    #to one event. this will delete all associated event services, unless
-    #the event service belongs to the current associated event.
-    if self.single_occurrence?
-      self.event_services.each do |event_service|
-        unless event_service.event == event
-          evnt = event_service.event
-          event_service.destroy
-          evnt.reload
-          if evnt.event_services.empty?
-            evnt.destroy
-          end
-        end
-      end
-    end
-
     event_service = EventService.new
     event_service.workorder_service_id = self.id
     event_service.event_id = event.id
     event_service.service_id = self.service_id
     event_service.cost_dollars = self.cost_dollars
+
     p "EVENT ID = #{event.id}"
     p "CHECKING IF EVENT SERVICE FOR #{service.name} EXISTS IN EVENT ALREADY"
     if EventService.where(event_id:event.id, service_id:self.service_id).empty?
@@ -126,7 +111,13 @@ class WorkorderService < ActiveRecord::Base
         EventService.create!(event_service.attributes)
       end
     else
+      event_service = EventService.where(event_id:event.id, service_id:self.service_id).first
       p "EVENT SERVICE FOUND FOR EVENT #{event.id} - #{service.name}"
+      #check for price difference
+      unless self.cost == event_service.cost
+        event_service.cost = self.cost
+        event_service.save
+      end
     end
     p '*******************************'
   end

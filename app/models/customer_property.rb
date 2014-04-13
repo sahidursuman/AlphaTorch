@@ -42,4 +42,10 @@ class CustomerProperty < ActiveRecord::Base
     end
   end
 
+  def change_billing_address
+    if self.owner_was && !self.owner
+      self.customer.property_changed(self.property.attributes)
+    end
+  end
+
 end

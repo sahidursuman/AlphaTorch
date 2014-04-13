@@ -7,13 +7,19 @@
             Property Details
       .row
         .col-md-12
-          = link_to 'No Longer Owner?',
-          remove_ownership_path(id:@property.current_customer_property.id),
-          method: :post,
-          remote:true,
-          id:'remove_ownership_link',
-          class:'btn btn-xs btn-default',
-          data:{confirm:"Are you sure #{@property.current_customer_property.customer.name} is no longer the current owner of #{@property.street_address_1}"}
+          -if @property.balance_due == 0
+            = link_to 'No Longer Owner?',
+            remove_ownership_path(id:@property.current_customer_property.id),
+            method: :post,
+            remote:true,
+            id:'remove_ownership_link',
+            class:'btn btn-xs btn-default',
+            data:{confirm:"Are you sure #{@property.current_customer_property.customer.name} is no longer the current owner of #{@property.street_address_1}"}
+          -elsif @property.balance_due > 0
+            = link_to 'No Longer Owner?',
+            '#',
+            class:'btn btn-xs btn-default',
+            onclick:'alert("All invoices must be paid in full before removing ownership!")'
       %hr
 
       .row
@@ -54,7 +60,7 @@
                 %tr
                   %td.col-md-2.h6= workorder_service.workorder.name
                   %td.col-md-2.h6= link_to workorder_service.service.name, service_path(workorder_service.service)
-                  %td.col-md-1.h6= humanized_money_with_symbol(workorder_service.cost)
+                  %td.col-md-1.h6= humanized_money_with_symbol(workorder_service.cost_dollars)
                   %td.col-md-9.h6
                     - if workorder_service.schedule.present?
                       = workorder_service.converted_schedule.to_s

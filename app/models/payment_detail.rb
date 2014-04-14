@@ -147,7 +147,7 @@ class PaymentDetail < ActiveRecord::Base
   end
 
   def payment_less_than_amount_due
-    if (cc_subtotal_dollars || check_subtotal_dollars || cash_subtotal_dollars).to_i > invoice.balance_due
+    if (cc_subtotal_dollars || check_subtotal_dollars || cash_subtotal_dollars) > invoice.balance_due
       errors.add(:payment_amount, "cannot be greater than the amount due - $#{invoice.balance_due}")
     end
   end

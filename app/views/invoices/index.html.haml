@@ -17,9 +17,10 @@
         %td.h6= link_to invoice.id, invoice_path(invoice, workorder_id:@workorder.id), target:'_blank'
         %td.h6= invoice.due_date
         %td.h6= humanized_money_with_symbol(invoice.balance_due)
-        %td.h6= invoice.status.status
+        %td.h6{style:"color:#{invoice.past_due? ? 'red' : 'black'}"}
+          = invoice.status.status
         %td
-          - disabled = (invoice.status.status == 'Created') ? false : true
+          - disabled = (invoice.status.status != 'Paid') ? false : true
           =link_to 'Payment', new_payment_detail_path(invoice_id:invoice.id), remote:true, id:'new_payment_detail_link', class:'btn btn-xs btn-success', style:'margin-right: 5px;', disabled:disabled
           - unless @workorder.locked?
             =link_to 'Delete', invoice_path(invoice), remote:true, id:'delete_invoice_link', :method => :delete, :data => { :confirm => 'Are you sure?', type: :json}, class:'btn btn-xs btn-danger'

@@ -35,9 +35,13 @@
         = link_to 'Back To Properties', properties_path, class:'btn btn-sm btn-default'
 
   .col-md-6.col-md-offset-1
-    .row
-      .col-md-12
-        .h4= "Invoice Amount Due:&nbsp;&nbsp;&nbsp;#{humanized_money_with_symbol(@property.balance_due || 0)}".html_safe
+    .h4
+      .row
+        .col-md-12
+          = "Invoice Amount Due: #{humanized_money_with_symbol(@property.balance_due)}"
+      .row
+        .col-md-12{style:'color:red;'}
+          = @customer.past_due? ? 'Past Due' : ''
     .row
       .col-md-4
         .h6{style:'margin-left:-40px;'}

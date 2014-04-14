@@ -54,6 +54,14 @@ class Customer < ActiveRecord::Base
     end
   end
 
+  def past_due?
+    return_val = false
+    invoices.each do |invoice|
+      invoice.past_due? ? return_val=true : nil
+    end
+    return_val
+  end
+
   def balance_due
     if invoices.present?
       invoices.map(&:balance_due).sum

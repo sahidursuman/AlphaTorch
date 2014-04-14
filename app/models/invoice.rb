@@ -1,5 +1,6 @@
 class Invoice < ActiveRecord::Base
   belongs_to :status, primary_key: 'status_code', foreign_key: 'status_code'
+  after_initialize :set_default_status
   has_many :payment_details, dependent: :destroy
   has_many :events
   has_many :workorders, through: :events
@@ -26,6 +27,34 @@ class Invoice < ActiveRecord::Base
     self.invoice_amount = (Float(amount) * 100).to_i
   rescue
     self.invoice_amount = amount
+  end
+
+  def set_default_status
+    if past_due?
+      unless self.status_code == Status.get_code('Past Due')
+        set_past_due
+      end
+    elsif created?
+      unless self.status_code == Status.get_code('Created')
+        set_created
+      end
+    elsif paid?
+      unless self.status_code == Status.get_code('Paid')
+        set_paid
+      end
+    end
+  end
+
+  def past_due?
+    self.due_date < Date.today && self.balance_due > 0
+  end
+
+  def created?
+    !self.past_due? && !paid?
+  end
+
+  def paid?
+    self.balance_due == 0 && self.events.present?
   end
 
   def update_total
@@ -82,7 +111,7 @@ class Invoice < ActiveRecord::Base
   end
 
   def unpaid?
-    status_code == Status.get_code('Created')
+    status_code != Status.get_code('Paid')
   end
 
   def balance_due
@@ -92,6 +121,8 @@ class Invoice < ActiveRecord::Base
   def update_status
     if balance_due == 0 && events.present?
       set_paid
+    elsif balance_due > 0 && due_date < Date.today
+      set_past_due
     else
       set_created
     end
@@ -120,6 +151,11 @@ class Invoice < ActiveRecord::Base
 
   def set_created
     self.status_code = Status.get_code('Created')
+    self.save
+  end
+
+  def set_past_due
+    self.status_code = Status.get_code('Past Due')
     self.save
   end
 

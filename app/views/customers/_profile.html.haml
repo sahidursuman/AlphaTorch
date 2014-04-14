@@ -3,9 +3,15 @@
 .row
   .col-md-6
     .pull-left.h3{style:'margin-top: 0px;'}
-      = @customer.name
+      = "#{@customer.name}"
     .pull-left.h5{style:'margin: 0px;'}
-      = "Invoice Amount Due: #{humanized_money_with_symbol(@customer.balance_due)}"
+      .row
+        .col-md-12
+          = "Invoice Amount Due: #{humanized_money_with_symbol(@customer.balance_due)}"
+      .row
+        .col-md-12{style:'color:red;'}
+          = @customer.past_due? ? 'Past Due' : ''
+
   .col-md-6
     - unless @customer.locked?
       .pull-right{style:'margin-left: 10px;'}

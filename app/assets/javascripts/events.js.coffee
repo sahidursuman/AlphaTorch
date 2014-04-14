@@ -112,7 +112,10 @@ $ ->
       })
 
   triggerEventEdit = (event)->
-    $.ajax({
-      url:"events/#{event.id}/edit"
-      dataType:'script'
-    })
+    if event.editable
+      $.ajax({
+        url:"events/#{event.id}/edit"
+        dataType:'script'
+      })
+    else
+      notify('error', 'Invoiced events cannot be edited.')

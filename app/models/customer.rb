@@ -10,7 +10,7 @@ class Customer < ActiveRecord::Base
   has_many :properties, through: :customer_properties
 
   def to_data_table_row
-    [html_name, first_phone, second_phone, email_address, html_addresses, humanized_money_with_symbol(balance_due)]
+    [html_name, first_phone, second_phone, email_address, html_addresses, humanized_balance_due]
   end
 
   def first_phone
@@ -68,6 +68,10 @@ class Customer < ActiveRecord::Base
     else
       0
     end
+  end
+
+  def humanized_balance_due
+    humanized_money_with_symbol(balance_due) + "#{past_due? ? ' - <span style=\'color:red\'>Past Due</span>'.html_safe : ''}"
   end
 
   def change_status(status)

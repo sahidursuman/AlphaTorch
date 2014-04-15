@@ -47,7 +47,7 @@ class Event < ActiveRecord::Base
     self.invoice = nil
     if self.save
       if self.unlock
-        i.update_total
+        i.reload.update_total
         if i.events.empty?
           i.destroy
         end
@@ -61,7 +61,7 @@ class Event < ActiveRecord::Base
   def add_to_invoice(id)
     self.invoice = Invoice.find(id)
     if self.save && self.make_invoiced
-      self.invoice.update_total
+      self.reload.invoice.update_total
       true
     else
       false

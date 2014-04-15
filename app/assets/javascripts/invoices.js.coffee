@@ -34,8 +34,9 @@ remove_item = (id, callback)->
       if(window.opener != null)
         try
           $('#workorder_invoice_link',window.opener.document)[0].click()
-          window.opener.refresh([$('#profile',window.opener.document), $('#workorders',window.opener.document)])
-      callback()
+          window.opener.refresh([$('#profile',window.opener.document), $('#workorders',window.opener.document)], callback())
+        catch e
+          callback()
   })
 
 add_item = (event_id, invoice_id, callback)->
@@ -50,8 +51,9 @@ add_item = (event_id, invoice_id, callback)->
         log($('#profile',window.opener.document))
         try
           $('#workorder_invoice_link',window.opener.document)[0].click()
-          window.opener.refresh([$('#profile',window.opener.document), $('#workorders',window.opener.document)])
-      callback()
+          window.opener.refresh([$('#profile',window.opener.document), $('#workorders',window.opener.document)], callback())
+        catch e
+          callback()
   })
 
 add_all_items = ->
@@ -72,4 +74,6 @@ refresh = ->
   })
 
 return_to_property = ->
+  $.each [$('#profile',window.opener.document), $('#workorders',window.opener.document)], ->
+    $(this).css('opacity', 1)
   window.close()

@@ -30,16 +30,12 @@ class Invoice < ActiveRecord::Base
   end
 
   def set_default_status
-    if past_due?
-      unless self.status_code == Status.get_code('Past Due')
+    unless self.new_record?
+      if past_due?
         set_past_due
-      end
-    elsif created?
-      unless self.status_code == Status.get_code('Created')
+      elsif created?
         set_created
-      end
-    elsif paid?
-      unless self.status_code == Status.get_code('Paid')
+      elsif paid?
         set_paid
       end
     end
@@ -54,11 +50,11 @@ class Invoice < ActiveRecord::Base
   end
 
   def paid?
-    self.balance_due == 0 && self.events.present?
+    self.balance_due == 0 && self.events.present? && self.payment_details.present?
   end
 
   def update_total
-    p 'Updating Invoice Total'
+    p "Updating Invoice Total - #{events.map {|e| e.event_services.map(&:cost_dollars).sum}.sum}"
     self.invoice_amount_dollars = events.map {|e| e.event_services.map(&:cost_dollars).sum}.sum
     self.save
   end
@@ -145,18 +141,21 @@ class Invoice < ActiveRecord::Base
   private
 
   def set_paid
-    self.status_code = Status.get_code('Paid')
-    self.save
+    unless self.status_code == Status.get_code('Paid')
+      self.status_code = Status.get_code('Paid')
+    end
   end
 
   def set_created
-    self.status_code = Status.get_code('Created')
-    self.save
+    unless self.status_code == Status.get_code('Created')
+      self.status_code = Status.get_code('Created')
+    end
   end
 
   def set_past_due
-    self.status_code = Status.get_code('Past Due')
-    self.save
+    unless self.status_code == Status.get_code('Past Due')
+      self.status_code = Status.get_code('Past Due')
+    end
   end
 
 end

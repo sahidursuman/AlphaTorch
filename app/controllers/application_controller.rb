@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   before_filter :authenticate_user!
+  before_filter :check_is_admin_confirmed, unless: :devise_controller?
 
   def search
     search_term = params[:term]
@@ -61,6 +62,13 @@ class ApplicationController < ActionController::Base
   def easter_egg
     respond_to do |format|
       format.js
+    end
+  end
+
+  def check_is_admin_confirmed
+    unless current_user.admin_confirmed?
+      sign_out(current_user)
+      redirect_to after_sign_out_path_for(current_user)
     end
   end
 end

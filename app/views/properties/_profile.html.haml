@@ -41,7 +41,8 @@
           = "Invoice Amount Due: #{humanized_money_with_symbol(@property.balance_due)}"
       .row
         .col-md-12{style:'color:red;'}
-          = @customer.past_due? ? 'Past Due' : ''
+          -if @customer
+            = @customer.past_due? ? 'Past Due' : ''
     .row
       .col-md-4
         .h6{style:'margin-left:-40px;'}

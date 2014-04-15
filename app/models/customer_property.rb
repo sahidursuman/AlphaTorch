@@ -45,6 +45,8 @@ class CustomerProperty < ActiveRecord::Base
   def change_billing_address
     if self.owner_was && !self.owner
       self.customer.property_changed(self.property.attributes)
+    elsif !self.owner_was && self.owner
+      create_billing_address
     end
   end
 

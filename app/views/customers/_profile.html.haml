@@ -1,4 +1,4 @@
--confirm_msg = 'This is going to PERMANENTLY destroy a TON of data including: WORKORDERS & EVENTS. We suggest you DO NOT DO THIS!'
+-confirm_msg = 'This is going to PERMANENTLY destroy a TON of data including: WORKORDERS, EVENTS, INVOICES, & PAYMENTS. We strongly suggest you DO NOT DO THIS!'
 
 .row
   .col-md-6
@@ -15,7 +15,7 @@
   .col-md-6
     - unless @customer.locked?
       .pull-right{style:'margin-left: 10px;'}
-        = link_to 'Delete', customer_path(@customer), class:'btn btn-xs btn-danger', method: :delete, confirm: "#{confirm_msg}"
+        = link_to 'Delete', customer_path(@customer), class:'btn btn-xs btn-danger', method: :delete, confirm: confirm_msg
       .pull-right{style:'margin-left: 10px;'}
         = link_to 'Edit', edit_customer_path(@customer), class:'btn btn-xs btn-default', remote:true, id:'edit_customer_link'
     .pull-right

@@ -1,3 +1,4 @@
+-confirm_msg = 'This is going to PERMANENTLY destroy a TON of data including: WORKORDERS, EVENTS, INVOICES, & PAYMENTS. We strongly suggest you DO NOT DO THIS!'
 .row
   .col-md-6
     .pull-left.h3{style:'margin-top: 0px;'}
@@ -5,7 +6,7 @@
   .col-md-6
     - unless @customer_property && @customer_property.locked?
       .pull-right{style:'margin-left: 10px;'}
-        = link_to 'Delete', property_path(@property), class:'btn btn-xs btn-danger', method: :delete, confirm: 'Are You Sure?'
+        = link_to 'Delete', property_path(@property), class:'btn btn-xs btn-danger', method: :delete, confirm: confirm_msg
       .pull-right
         = link_to 'Edit', edit_property_path(@property), class:'btn btn-xs btn-default', remote:true, id:'edit_property_link'
 %hr

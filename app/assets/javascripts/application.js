@@ -699,6 +699,9 @@ function handle_new_property_form_submit(stage, jqXHR){
             })
             $('#ajax-modal').modal('hide')
             refresh_properties()
+            if($('#profile').length){
+                refresh([$('#profile')])
+            }
             break;
         case 'complete' :
             log('new_property_form_submit - ' + stage)

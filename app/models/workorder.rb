@@ -18,7 +18,8 @@ class Workorder < ActiveRecord::Base
   scope :created, ->{where(status_code: Status.get_code('Created'))}
   scope :active, ->{where(status_code: Status.get_code('Active'))}
   scope :on_hold, ->{where(status_code: Status.get_code('Locked'))}
-  scope :cancelled, ->{where(status_code: Status.get_code('Cancelled'))}
+  scope :closed, ->{where(status_code: Status.get_code('Closed'))}
+  scope :current, ->{where("status_code != #{Status.get_code('Closed')}")}
 
   #validates_associated :workorder_services
   validates_presence_of :name

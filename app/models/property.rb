@@ -62,8 +62,8 @@ class Property < ActiveRecord::Base
   end
 
   def services
-    if workorders
-      workorders.map(&:workorder_services).flatten.map(&:service).flatten
+    if workorders.current.present?
+      workorders.current.map(&:workorder_services).flatten.map(&:service).flatten
     end
   end
 

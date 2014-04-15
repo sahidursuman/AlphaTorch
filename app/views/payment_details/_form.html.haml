@@ -5,20 +5,21 @@
     -id = 'edit_payment_details'
 
 = form_for(@payment_detail, html:{id:id, data:{remote:true, type: :json}}) do |f|
-  -if @options.present?
-    -@options.each do |key, value|
-      = hidden_field_tag key, value, name:"payment_detail[#{key}]"
-    - invoice_input = capture_with_haml do
-      %input.form-control{type:'text',
-      readonly:true,
-      value:"##{@invoice.id} - #{@invoice.status.status} - #{humanized_money_with_symbol(@invoice.balance_due+@options[:old_payment_amount])}",
-      style:'width:inherit'}
-  -else
-    - invoice_input = capture_with_haml do
-      %input.form-control{type:'text',
-      readonly:true,
-      value:"##{@invoice.id} - #{@invoice.status.status} - #{humanized_money_with_symbol(@invoice.balance_due)}",
-      style:'width:inherit'}
+  -if @invoice.present?
+    -if @options.present?
+      -@options.each do |key, value|
+        = hidden_field_tag key, value, name:"payment_detail[#{key}]"
+      - invoice_input = capture_with_haml do
+        %input.form-control{type:'text',
+        readonly:true,
+        value:"##{@invoice.id} - #{@invoice.status.status} - #{humanized_money_with_symbol(@invoice.balance_due+@options[:old_payment_amount])}",
+        style:'width:inherit'}
+    -else
+      - invoice_input = capture_with_haml do
+        %input.form-control{type:'text',
+        readonly:true,
+        value:"##{@invoice.id} - #{@invoice.status.status} - #{humanized_money_with_symbol(@invoice.balance_due)}",
+        style:'width:inherit'}
   .row
     .col-md-6
       .row

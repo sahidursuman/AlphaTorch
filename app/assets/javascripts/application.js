@@ -456,7 +456,7 @@ function handle_ajax(event, jqXHR, stage){
         case 'new_payment_detail_link' :
             handle_new_payment_detail_link(stage, jqXHR)
             break
-        case 'new_payment_detail' :
+        case 'new_payment_details' :
             handle_new_payment_detail_form_submit(stage, jqXHR)
             break
         case 'workorder_invoice_link' :

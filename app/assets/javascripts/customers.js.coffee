@@ -1,4 +1,11 @@
+adjustDivHeight = ->
+  $('#customer-overview').css('height', $('#new_customer').height())
+  $('#properties').css('height', $('#profile').height())
+
 $ ->
+  adjustDivHeight()
+  $(window).on 'resize', ->
+    adjustDivHeight()
 
   options = $.extend(datatable_defaults(),
     "sAjaxSource": "/customers_data_tables_source",

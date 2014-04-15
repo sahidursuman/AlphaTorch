@@ -917,6 +917,7 @@ function handle_new_customer_form_submit(stage, jqXHR){
             $('#new_customer input:not([type="submit"])').each(function(){
                 $(this).val('')
             })
+            refresh([$('#customer-overview')])
             break;
         case 'complete' :
             log('new_customer_form_submit - ' + stage)

@@ -3,7 +3,29 @@
     %legend.h4
       Overview
     .row
-      .col-md-6
+      .col-md-8
         .h5= 'Total Customers:'
-      .col-md-6
+      .col-md-4
         .pull-left.h5= @customers.count
+    .row
+      .col-md-8
+        .h5= 'Invoice Amount Owned:'
+      .col-md-4
+        .pull-left.h5
+          = humanized_money_with_symbol(Invoice.all.map(&:balance_due).sum)
+    .row
+      .col-md-8
+        .h5= 'Past Due Customers:'
+      .col-md-4
+        .pull-left.h5= @customers.map(&:past_due?).select{|bool| bool}.count
+    .row
+      .col-md-8
+        .h5= 'Customers With No Properties:'
+      .col-md-4
+        .pull-left.h5
+          -count = 0
+          -Customer.all.each do |customer|
+            -if customer.customer_properties.map(&:owner).select{|bool| bool}.empty?
+              -count+=1
+          =count
+    %hr

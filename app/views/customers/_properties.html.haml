@@ -27,7 +27,7 @@
             %td.h6{style:'text-align:center'}= cp.workorders.active.count rescue 0
             %td.h6{style:'text-align:center'}= cp.workorders.on_hold.count rescue 0
             %td.h6{style:'text-align:center'}= cp.workorders.closed.count rescue 0
-            %td.h6{style:'text-align:center'}= humanized_money_with_symbol(cp.property.balance_due)
+            %td.h6{style:'text-align:center; color:red;'}= humanized_money_with_symbol(cp.property.balance_due)
     - else
       .h5{style:'color:red'}
         This customer has no properties.  Click "+" to add a property.

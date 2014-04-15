@@ -59,7 +59,7 @@
               - @property.workorder_services.each do |workorder_service|
                 %tr
                   %td.col-md-2.h6= workorder_service.workorder.name
-                  %td.col-md-2.h6= link_to workorder_service.service.name, service_path(workorder_service.service)
+                  %td.col-md-2.h6= workorder_service.service.name
                   %td.col-md-1.h6= humanized_money_with_symbol(workorder_service.cost_dollars)
                   %td.col-md-9.h6
                     - if workorder_service.schedule.present?

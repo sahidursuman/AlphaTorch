@@ -1,4 +1,24 @@
-= form_for(@payment_detail, html:{data:{remote:true, type: :json}}) do |f|
+-case controller_action
+  -when 'payment_details#new'
+    -id ='new_payment_details'
+  -when 'payment_details#edit'
+    -id = 'edit_payment_details'
+
+= form_for(@payment_detail, html:{id:id, data:{remote:true, type: :json}}) do |f|
+  -if @options.present?
+    -@options.each do |key, value|
+      = hidden_field_tag key, value, name:"payment_detail[#{key}]"
+    - invoice_input = capture_with_haml do
+      %input.form-control{type:'text',
+      readonly:true,
+      value:"##{@invoice.id} - #{@invoice.status.status} - #{humanized_money_with_symbol(@invoice.balance_due+@options[:old_payment_amount])}",
+      style:'width:inherit'}
+  -else
+    - invoice_input = capture_with_haml do
+      %input.form-control{type:'text',
+      readonly:true,
+      value:"##{@invoice.id} - #{@invoice.status.status} - #{humanized_money_with_symbol(@invoice.balance_due)}",
+      style:'width:inherit'}
   .row
     .col-md-6
       .row
@@ -8,7 +28,7 @@
               %input#invoice-search.search_field.form-control{name:'term', type:'text', placeholder:'Invoice Search', autocomplete:'off', style:'width:inherit'}
             %input#invoice-id.customer_id{name:'payment_detail[invoice_id]', type:'hidden'}
           - else
-            %input.form-control{type:'text', readonly:true, value:"##{@invoice.id} - #{@invoice.status.status} - $#{@invoice.balance_due}", style:'width:inherit'}
+            = invoice_input
             %input#invoice-id.customer_id{name:'payment_detail[invoice_id]', value:@invoice.id, type:'hidden'}
       .row
         .col-md-4

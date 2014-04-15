@@ -19,6 +19,18 @@ class PaymentDetailsController < ApplicationController
 
   # GET /payment_details/1/edit
   def edit
+    @options = {
+        method: @payment_detail.payment_method,
+        #name: @payment_detail.name,
+        old_payment_amount: @payment_detail.amount
+        #number: @payment_detail.check_number,
+        #routing: @payment_detail.check_routing,
+        #processing: @payment_detail.cc_processing_code,
+        #cc_type: @payment_detail.cc_type
+    }
+    respond_to do |format|
+      format.js
+    end
   end
 
   # POST /payment_details
@@ -47,7 +59,7 @@ class PaymentDetailsController < ApplicationController
   # PATCH/PUT /payment_details/1.json
   def update
     respond_to do |format|
-      if @payment_detail.update(payment_detail_params)
+      if @payment_detail.update_attributes(payment_detail_params)
         format.html { redirect_to @payment_detail, notice: 'Payment detail was successfully updated.' }
         format.json { render json: {message:'Payment Updated Successfully!'} }
       else
@@ -63,7 +75,14 @@ class PaymentDetailsController < ApplicationController
     @payment_detail.destroy
     respond_to do |format|
       format.html { redirect_to payment_details_url }
-      format.json { head :no_content }
+      format.js { render json:{message:'Payment Has Been Deleted.'} }
+    end
+  end
+
+  def data_tables_source
+    @payment_details = PaymentDetail.all
+    respond_to do |format|
+      format.js {render json: {aaData:@payment_details.map(&:to_data_table_row)}}
     end
   end
 
@@ -92,6 +111,6 @@ class PaymentDetailsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def payment_detail_params
-      params.require(:payment_detail).permit(:payment_date, :cc_processing_code, :check_name, :check_number, :check_routing, :cc_name, :cc_type, :cash_name, :cash_subtotal, :check_subtotal, :cc_subtotal, :cash_subtotal_dollars, :check_subtotal_dollars, :cc_subtotal_dollars, :invoice_id)
+      params.require(:payment_detail).permit(:payment_date, :cc_processing_code, :check_name, :check_number, :check_routing, :cc_name, :cc_type, :cash_name, :cash_subtotal, :check_subtotal, :cc_subtotal, :cash_subtotal_dollars, :check_subtotal_dollars, :cc_subtotal_dollars, :invoice_id, :old_payment_amount, :method)
     end
 end

@@ -1,3 +1,4 @@
+include MoneyRails::ActionViewExtension
 class Search
   attr_reader :results
 
@@ -134,7 +135,7 @@ end
 class InvoiceSearchResult < SearchResult
   def initialize(invoice)
     @result = {
-        value:     "##{invoice.id} - #{invoice.status.status} - $#{(invoice.balance_due)}",
+        value:     "##{invoice.id} - #{invoice.status.status} - #{(humanized_money_with_symbol(invoice.balance_due))}",
         id:        invoice.id,
         icon:     'glyphicon glyphicon-usd',
         category: 'Invoices',

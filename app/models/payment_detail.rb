@@ -1,4 +1,6 @@
 class PaymentDetail < ActiveRecord::Base
+  include ActionView::Helpers::UrlHelper
+  include MoneyRails::ActionViewExtension
   after_commit :update_invoice
   belongs_to :invoice
 
@@ -13,8 +15,11 @@ class PaymentDetail < ActiveRecord::Base
   validate :credit_fields_valid
   validate :only_one_payment_type
   validate :has_payment_type
-  validate :payment_less_than_amount_due
-  validate :invoice_status_not_paid
+  validate :payment_less_than_amount_due, on: :create
+  validate :payment_less_than_amount_due_update, on: :update
+  validate :invoice_status_not_paid, on: :create
+
+  attr_accessor :old_payment_amount, :method
 
   CC_TYPES = %w(Visa Mastercard American\ Express Discover)
 
@@ -88,6 +93,22 @@ class PaymentDetail < ActiveRecord::Base
     end
   end
 
+  def check_routing
+    cr = read_attribute(:check_routing)
+    if cr.blank?
+      cr = nil
+    end
+    cr
+  end
+
+  def cc_processing_code
+    ccp = read_attribute(:cc_processing_code)
+    if ccp.blank?
+      ccp = nil
+    end
+    ccp
+  end
+
   def name
     if cash_subtotal
       cash_name
@@ -98,6 +119,31 @@ class PaymentDetail < ActiveRecord::Base
     else
       nil
     end
+  end
+
+  def to_data_table_row
+    [self.payment_date.strftime('%m/%d/%Y'), invoice_link, self.name, humanized_money_with_symbol(self.amount), self.payment_method, self.check_number||'-', self.check_routing||'-', self.cc_processing_code||'-', edit_link, destroy_link]
+  end
+
+  def edit_link
+    link_to 'Edit',
+    Rails.application.routes.url_helpers.edit_payment_detail_path(id:self.id, invoice_id:self.invoice_id),
+    remote:true,
+    id:'edit_payment_details_link'
+  end
+
+  def destroy_link
+    link_to 'Destroy',
+    Rails.application.routes.url_helpers.payment_detail_path(id:self.id),
+    remote:true,
+    method: :delete,
+    id:'destroy_payment_details_link',
+    data:{confirm:'Are you sure?'}
+  end
+
+  def invoice_link
+    link_to invoice_id,
+    Rails.application.routes.url_helpers.invoice_path(id:self.invoice_id, workorder_id:self.invoice.workorder.id)
   end
 
   private
@@ -149,6 +195,13 @@ class PaymentDetail < ActiveRecord::Base
   def payment_less_than_amount_due
     if (cc_subtotal_dollars || check_subtotal_dollars || cash_subtotal_dollars) > invoice.balance_due
       errors.add(:payment_amount, "cannot be greater than the amount due - $#{invoice.balance_due}")
+    end
+  end
+
+  def payment_less_than_amount_due_update
+    balance = invoice.balance_due + old_payment_amount.to_f
+    if (cc_subtotal_dollars || check_subtotal_dollars || cash_subtotal_dollars) > balance
+      errors.add(:payment_amount, "cannot be greater than the amount due - #{humanized_money_with_symbol(balance)}")
     end
   end
 

@@ -50,6 +50,7 @@ CortezLandscaping::Application.routes.draw do
 
   get 'services_data_tables_source' => 'services#data_tables_source'
   get 'states_data_tables_source' => 'states#data_tables_source'
+  get 'payment_details_data_tables_source' => 'payment_details#data_tables_source'
   get 'unconfirmed_users_data_tables_source' => 'administrative#data_tables_source_unconfirmed'
   get 'confirmed_users_data_tables_source' => 'administrative#data_tables_source_confirmed'
   get 'properties_data_tables_source' => 'properties#data_tables_source'

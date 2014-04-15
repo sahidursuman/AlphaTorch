@@ -553,8 +553,17 @@ function handle_ajax(event, jqXHR, stage){
         case 'destroy_state_link' :
             handle_destroy_state_link(stage, jqXHR)
             break
-        case 'admin_countries_link' :
-            handle_admin_countries_link(stage, jqXHR)
+        case 'admin_payments_link' :
+            handle_admin_payments_link(stage, jqXHR)
+            break
+        case 'edit_payment_details_link' :
+            handle_edit_payment_details_link(stage, jqXHR)
+            break
+        case 'edit_payment_details' :
+            handle_edit_payment_form_submit(stage, jqXHR)
+            break
+        case 'destroy_payment_details_link' :
+            handle_destroy_payment_details_link(stage, jqXHR)
             break
         case 'admin_users_link' :
             handle_admin_users_link(stage, jqXHR)
@@ -683,7 +692,7 @@ function handle_new_property_form_submit(stage, jqXHR){
             log('new_property_form_submit - ' + stage)
             notify('success', jqXHR.message)
             if($('#properties.datatable').length){
-                $('#properties.datatable').dataTable().fnReloadAjax()
+                $('#properties.datatable').dataTable().fnReloadAjax(null,null,true)
             }
             $('#new_property input:not([type="submit"])').each(function(){
                 $(this).val('')
@@ -901,7 +910,7 @@ function handle_new_customer_form_submit(stage, jqXHR){
         case 'success' :
             log('new_customer_form_submit - ' + stage)
             notify('success', jqXHR.message)
-            $('#customers.datatable').dataTable().fnReloadAjax()
+            $('#customers.datatable').dataTable().fnReloadAjax(null,null,true)
             $('#new_customer input:not([type="submit"])').each(function(){
                 $(this).val('')
             })
@@ -970,7 +979,7 @@ function handle_change_status_link(stage, jqXHR){
             refresh([$('#profile')])
             refresh_properties()
             refresh_workorders()
-            $('.datatable').dataTable().fnReloadAjax()
+            $('.datatable').dataTable().fnReloadAjax(null,null,true)
             break;
         case 'complete' :
             log('change_status_link - ' + stage)
@@ -1260,17 +1269,68 @@ function handle_admin_states_link(stage, jqXHR){
     }
 }
 
-function handle_admin_countries_link(stage, jqXHR){
+function handle_admin_payments_link(stage, jqXHR){
     switch(stage){
         case 'error' :
             notify('error', parse_json_errors(jqXHR))
             break
         case 'success' :
-            log('admin_countries_link - ' + stage)
-            set_content(jqXHR)
+            log('admin_payments_link - ' + stage)
+            var options = $.extend(datatable_defaults(),{
+                "sAjaxSource": "/payment_details_data_tables_source",
+                "aaSorting":[[0, 'desc']]
+            })
+            set_content(jqXHR, options)
             break;
         case 'complete' :
-            log('admin_countries_link - ' + stage)
+            log('admin_payments_link - ' + stage)
+            break;
+    }
+}
+
+function handle_edit_payment_details_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            //notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_payment_details_link - ' + stage)
+            break;
+        case 'complete' :
+            log('edit_payment_details_link - ' + stage)
+            break;
+    }
+}
+
+function handle_edit_payment_form_submit(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            notify('error', parse_json_errors(jqXHR))
+            break
+        case 'success' :
+            log('edit_payment_form_submit - ' + stage)
+            $('#ajax-modal').modal('hide')
+            notify('success', jqXHR.message)
+            $('.datatable').dataTable().fnReloadAjax(null,null,true)
+            break;
+        case 'complete' :
+            log('edit_payment_form_submit - ' + stage)
+            break;
+    }
+}
+
+function handle_destroy_payment_details_link(stage, jqXHR){
+    switch(stage){
+        case 'error' :
+            break
+        case 'success' :
+            log('destroy_payment_details_link - ' + stage)
+            break;
+        case 'complete' :
+            log('destroy_payment_details_link - ' + stage)
+            var json = $.parseJSON(jqXHR.responseText)
+            notify('success', json.message)
+            $('.datatable').dataTable().fnReloadAjax(null,null,true)
             break;
     }
 }
@@ -1316,7 +1376,7 @@ function handle_new_service_form_submit(stage, jqXHR){
             log('new_service_form_submit - ' + stage)
             $('#ajax-modal').modal('hide')
             notify('success', jqXHR.message)
-            $('.datatable').dataTable().fnReloadAjax()
+            $('.datatable').dataTable().fnReloadAjax(null,null,true)
             break;
         case 'complete' :
             log('new_service_form_submit - ' + stage)
@@ -1347,7 +1407,7 @@ function handle_edit_service_form_submit(stage, jqXHR){
             log('edit_service_form_submit - ' + stage)
             $('#ajax-modal').modal('hide')
             notify('success', jqXHR.message)
-            $('.datatable').dataTable().fnReloadAjax()
+            $('.datatable').dataTable().fnReloadAjax(null,null,true)
             break;
         case 'complete' :
             log('edit_service_form_submit - ' + stage)
@@ -1366,7 +1426,7 @@ function handle_destroy_services_link(stage, jqXHR){
             log('destroy_services_link - ' + stage)
             var json = $.parseJSON(jqXHR.responseText)
             notify('success', json.message)
-            $('.datatable').dataTable().fnReloadAjax()
+            $('.datatable').dataTable().fnReloadAjax(null,null,true)
             break;
     }
 }
@@ -1394,7 +1454,7 @@ function handle_edit_state_form_submit(stage, jqXHR){
             log('edit_state_form_submit - ' + stage)
             $('#ajax-modal').modal('hide')
             notify('success', jqXHR.message)
-            $('.datatable').dataTable().fnReloadAjax()
+            $('.datatable').dataTable().fnReloadAjax(null,null,true)
             break;
         case 'complete' :
             log('edit_state_form_submit - ' + stage)
@@ -1411,7 +1471,7 @@ function handle_new_state_form_submit(stage, jqXHR){
             log('new_state_form_submit - ' + stage)
             $('#ajax-modal').modal('hide')
             notify('success', jqXHR.message)
-            $('.datatable').dataTable().fnReloadAjax()
+            $('.datatable').dataTable().fnReloadAjax(null,null,true)
             break;
         case 'complete' :
             log('new_state_form_submit - ' + stage)
@@ -1430,7 +1490,7 @@ function handle_destroy_state_link(stage, jqXHR){
             log('destroy_state_link - ' + stage)
             var json = $.parseJSON(jqXHR.responseText)
             notify('success', json.message)
-            $('.datatable').dataTable().fnReloadAjax()
+            $('.datatable').dataTable().fnReloadAjax(null,null,true)
             break;
     }
 }
@@ -1446,7 +1506,7 @@ function handle_approve_login_link(stage, jqXHR){
             log('approve_login_link - ' + stage)
             var json = $.parseJSON(jqXHR.responseText)
             notify('success', json.message)
-            $('.datatable').dataTable().fnReloadAjax()
+            $('.datatable').dataTable().fnReloadAjax(null,null,true)
             break;
     }
 }
@@ -1462,7 +1522,7 @@ function handle_deny_login_link(stage, jqXHR){
             log('deny_login_link - ' + stage)
             var json = $.parseJSON(jqXHR.responseText)
             notify('success', json.message)
-            $('.datatable').dataTable().fnReloadAjax()
+            $('.datatable').dataTable().fnReloadAjax(null,null,true)
             break;
     }
 }
@@ -1478,7 +1538,7 @@ function handle_revoke_login_link(stage, jqXHR){
             log('revoke_login_link - ' + stage)
             var json = $.parseJSON(jqXHR.responseText)
             notify('success', json.message)
-            $('.datatable').dataTable().fnReloadAjax()
+            $('.datatable').dataTable().fnReloadAjax(null,null,true)
             break;
     }
 }
@@ -1494,7 +1554,7 @@ function handle_destroy_user_link(stage, jqXHR){
             log('destroy_user_link - ' + stage)
             var json = $.parseJSON(jqXHR.responseText)
             notify('success', json.message)
-            $('.datatable').dataTable().fnReloadAjax()
+            $('.datatable').dataTable().fnReloadAjax(null,null,true)
             break;
     }
 }
@@ -1524,7 +1584,7 @@ function handle_new_landscaper_form_submit(stage,jqXHR){
             $('#ajax-modal').modal('hide')
             notify('success', jqXHR.message)
             if($('#landscapers.datatable').length){
-                $('#landscapers.datatable').dataTable().fnReloadAjax()
+                $('#landscapers.datatable').dataTable().fnReloadAjax(null,null,true)
             }
             $('#new_landscaper input:not([type="submit"])').each(function(){
                 $(this).val('')
@@ -1560,7 +1620,7 @@ function handle_edit_landscaper_form_submit(stage,jqXHR){
             log('edit_landscaper_form_submit - ' + stage)
             $('#ajax-modal').modal('hide')
             notify('success', jqXHR.message)
-            $('.datatable').dataTable().fnReloadAjax()
+            $('.datatable').dataTable().fnReloadAjax(null,null,true)
             $('.rating').rating(rating_defaults())
             break;
         case 'complete' :
@@ -1580,7 +1640,7 @@ function handle_destroy_landscapers_link(stage,jqXHR){
             log('destroy_landscapers_link - ' + stage)
             var json = $.parseJSON(jqXHR.responseText)
             notify('success', json.message)
-            $('.datatable').dataTable().fnReloadAjax()
+            $('.datatable').dataTable().fnReloadAjax(null,null,true)
             break;
     }
 }

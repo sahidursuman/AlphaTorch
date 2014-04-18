@@ -21,11 +21,11 @@
 set :output, "#{path}/log/cron_log.log"
 
 every '00 00 4 * *' do
-  runner "Workorder.generate_all_invoices", environment: :development
-  #runner "Workorder.generate_all_invoices", environment: :production
+  #runner "Workorder.generate_all_invoices", environment: :development
+  runner "Workorder.generate_all_invoices", environment: :production
 
-  runner "Workorder.create_all_events",   environment: :development
-  #runner "Workorder.generate_all_events",   environment: :production
+  #runner "Workorder.create_all_events",   environment: :development
+  runner "Workorder.generate_all_events",   environment: :production
 end
 
 every 1.months do
